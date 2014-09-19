@@ -1,0 +1,75 @@
+{
+  "name": "blue-button-generate",
+  "version": "0.0.1",
+  "description": "Blue Button CCDA Generator.",
+  "main": "/index.js",
+  "directories": {
+    "doc": "doc",
+    "lib": "lib"
+  },
+  "scripts": {
+    "prepublish": "echo \"Prepublish Build script should go here.\"",
+    "test": "grunt test"
+  },
+  "author": "Dmitry Kachaev <dmitry@amida-tech.com>",
+  "contributors": [
+    {
+      "name": "Matthew McCall",
+      "email": "matt@amida-tech.com"
+    },
+    {
+      "name": "Afsin Ustundag",
+      "email": "afsin.ustundag@us.pwc.com"
+    }
+  ],
+  "license": "Apache-2.0",
+  "engines": {
+    "node": ">= 0.10.0"
+  },
+  "dependencies": {
+    "blue-button": "^1.3.0",
+    "blue-button-meta": "^1.3.0",
+    "deep-equal": "*",
+    "libxmljs": "*",
+    "node-uuid": "*",
+    "underscore": "1.6.x",
+    "winston": "^0.7.3",
+    "xdate": "*",
+    "z-schema": "^2.4.8"
+  },
+  "devDependencies": {
+    "assert": "1.1.x",
+    "chai": "1.8.x",
+    "chai-datetime": "1.1.x",
+    "coveralls": "~2.10.0",
+    "execSync": "^1.0.1-pre",
+    "grunt": "0.4.x",
+    "grunt-contrib-jshint": "0.8.x",
+    "grunt-contrib-watch": "0.6.x",
+    "grunt-coveralls": "*",
+    "grunt-express-server": "0.4.x",
+    "grunt-istanbul-coverage": "*",
+    "grunt-jsbeautifier": "^0.2.7",
+    "grunt-mocha-test": "0.8.x",
+    "mocha": "1.17.x",
+    "mocha-lcov-reporter": "0.0.1",
+    "path": "^0.4.9",
+    "should": "3.1.x",
+    "walk": "^2.3.3",
+    "winston": "^0.7.3",
+    "xmldom": "^0.1.19",
+    "mkdirp": "0.5.x",
+    "xml2js": "0.4.x"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/amida-tech/blue-button-generate.git"
+  },
+  "keywords": [
+    "bluebutton"
+  ],
+  "bugs": {
+    "url": "https://github.com/amida-tech/blue-button-generate/issues"
+  },
+  "homepage": "https://github.com/amida-tech/blue-button-generate"
+}
