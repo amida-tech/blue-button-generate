@@ -1,4 +1,4 @@
-"use strict;";
+"use strict";
 
 var expect = require('chai').expect;
 
@@ -8,8 +8,17 @@ var mkdirp = require('mkdirp');
 var xml2js = require('xml2js');
 var bb = require('blue-button');
 var bbg = require('../../index');
+var libxmljs = require('libxmljs');
+
+var jsonutil = require('../util/jsonutil');
+var xpathutil = require('../util/xpathutil');
 
 describe('xml vs parse generate xml ', function () {
+    var NS = {
+        "h": "urn:hl7-org:v3",
+        "xsi": "http://www.w3.org/2001/XMLSchema-instance"
+    };
+
     var generatedDir = null;
     var sampleDir = null;
 
@@ -133,23 +142,96 @@ describe('xml vs parse generate xml ', function () {
             });
         };
 
-        var removeId = function (original, generated, templateId) {
-            Object.keys(original).forEach(function (key) {
-                if ((key === 'templateId') && original.templateId && original.templateId[0]['$'] && (original.templateId[0]['$'].root !== "2.16.840.1.113883.10.20.22.4.53")) {
-                    delete original.id;
-                } else if (generated[key] && (typeof original[key] === 'object') && (typeof generated[key] === 'object')) {
-                    removeId(original[key], generated[key], templateId);
-                }
-            });
-        };
-
         var xml;
         var xmlGenerated;
         var sections;
         var sectionsGenerated;
 
+        var rmTimeTypeAttrs = function (xmlDoc) {
+            xpathutil.removeAttr(xmlDoc, '//h:effectiveTime[@xsi:type="IVL_TS"]', 'type');
+        };
+
+        var removeNullFlavored = function (xmlDoc) {
+            xpathutil.remove(xmlDoc, '//*[@nullFlavor]');
+        };
+
+        var removeMedInstructions = function (xmlDoc) {
+            var ids = ["2.16.840.1.113883.10.20.22.2.1", "2.16.840.1.113883.10.20.22.4.16", "2.16.840.1.113883.10.20.22.4.20"];
+            var path = ids.reduce(function (p, id) {
+                p += '//h:templateId[@root="' + id + '"]/..';
+                return p;
+            }, "");
+            path += '/..';
+            var nodes = xmlDoc.find(path, NS);
+            if (nodes) {
+                nodes.forEach(function (node) {
+                    node.remove();
+                });
+            }
+        };
+
+        var removeMedSupplyPerformer = function (xmlDoc) {
+            var ids = ["2.16.840.1.113883.10.20.22.2.1", "2.16.840.1.113883.10.20.22.4.16", "2.16.840.1.113883.10.20.22.4.17"];
+            var path = ids.reduce(function (p, id) {
+                p += '//h:templateId[@root="' + id + '"]/..';
+                return p;
+            }, "");
+            var parentNodes = xmlDoc.find(path, NS);
+            parentNodes.forEach(function (parentNode) {
+                ['h:performer', 'h:product'].forEach(function (p) {
+                    var nodes = parentNode.find(p, NS);
+                    nodes.forEach(function (node) {
+                        node.remove();
+                    });
+                });
+            });
+        };
+
+        var removeMedDispenseSupply = function (xmlDoc) {
+            var ids = ["2.16.840.1.113883.10.20.22.2.1", "2.16.840.1.113883.10.20.22.4.16", "2.16.840.1.113883.10.20.22.4.18"];
+            var path = ids.reduce(function (p, id) {
+                p += '//h:templateId[@root="' + id + '"]/..';
+                return p;
+            }, "");
+            var nodes = xmlDoc.find(path, NS);
+            if (nodes) {
+                nodes.forEach(function (node) {
+                    node.childNodes().forEach(function (child) {
+                        var name = child.name();
+                        if ((name !== 'id') && (name !== 'performer') && (name !== 'templateId') && (name !== 'statusCode')) {
+                            child.remove();
+                        }
+                        if (name === 'performer') {
+                            var person = child.find('h:assignedEntity/h:assignedPerson', NS);
+                            if (person) {
+                                person[0].remove();
+                            }
+                        }
+                    });
+                });
+            }
+        };
+
+        var cleanTextWhitespace = function (xmlDoc) {
+            var nodes = xmlDoc.find('//h:streetAddressLine', NS);
+            nodes.forEach(function (node) {
+                var text = node.text();
+                var newText = text.replace(/(\r\n|\n|\r|\t)/gm, " ").replace(/\s+/g, ' ').trim();
+                node.text(newText);
+            });
+        };
+
         it('create xml and generated xml', function () {
-            xml = fs.readFileSync(path.join(sampleDir, "CCD_1.xml")).toString();
+            var xmlRaw = fs.readFileSync(path.join(sampleDir, "CCD_1.xml")).toString();
+
+            var xmlDoc = libxmljs.parseXmlString(xmlRaw);
+            rmTimeTypeAttrs(xmlDoc);
+            removeMedInstructions(xmlDoc);
+            removeNullFlavored(xmlDoc);
+            removeMedSupplyPerformer(xmlDoc);
+            removeMedDispenseSupply(xmlDoc);
+            cleanTextWhitespace(xmlDoc);
+            xml = xmlDoc.toString();
 
             // convert nto JSON 
             var result = bb.parseString(xml);
@@ -158,7 +240,11 @@ describe('xml vs parse generate xml ', function () {
             expect(err.valid).to.be.true;
 
             // generate ccda
-            xmlGenerated = bbg.genWholeCCDA(result).toString();
+            var xmlGeneratedRaw = bbg.genWholeCCDA(result).toString();
+            var xmlDocGenerated = libxmljs.parseXmlString(xmlGeneratedRaw);
+            removeNullFlavored(xmlDocGenerated);
+            rmTimeTypeAttrs(xmlDocGenerated);
+            xmlGenerated = xmlDocGenerated.toString();
         });
 
         it('xml2js original', function (done) {
@@ -191,10 +277,11 @@ describe('xml vs parse generate xml ', function () {
             removeTimeZones(section);
             removeOriginalText(section, sectionGenerated);
             trimText(section, sectionGenerated);
-            //removeId(section, sectionGenerated, "2.16.840.1.113883.10.20.22.4.53");
 
-            fs.writeFileSync(path.join(generatedDir, "o_" + templateId + ".json"), JSON.stringify(section, null, 4));
-            fs.writeFileSync(path.join(generatedDir, "g_" + templateId + ".json"), JSON.stringify(sectionGenerated, null, 4));
+            var orderedSection = jsonutil.orderByKeys(section);
+            fs.writeFileSync(path.join(generatedDir, "o_" + templateId + ".json"), JSON.stringify(orderedSection, null, 4));
+            var orderedSectionGenerated = jsonutil.orderByKeys(sectionGenerated);
+            fs.writeFileSync(path.join(generatedDir, "g_" + templateId + ".json"), JSON.stringify(orderedSectionGenerated, null, 4));
 
             expect(sectionGenerated).to.deep.equal(section);
         };
@@ -207,8 +294,8 @@ describe('xml vs parse generate xml ', function () {
         //    compareSection("2.16.840.1.113883.10.20.22.2.2");
         //});
 
-        //it('medications', function () {
-        //    compareSection("2.16.840.1.113883.10.20.22.2.1");
-        //});
+        it('medications', function () {
+            compareSection("2.16.840.1.113883.10.20.22.2.1");
+        });
     });
 });
