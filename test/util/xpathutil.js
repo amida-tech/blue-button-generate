@@ -21,8 +21,11 @@ exports.removeAttr = function (xmlDoc, xpath, attr) {
 };
 
 var pathConstructor = {
-    'T': function (value) {
+    'TR': function (value) {
         return '//h:templateId[@root="' + value + '"]/..';
+    },
+    'T': function (value) {
+        return './/h:templateId[@root="' + value + '"]/..';
     },
     'N': function (value) {
         return value;

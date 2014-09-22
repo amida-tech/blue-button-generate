@@ -58,13 +58,13 @@ describe('xml vs parse generate xml ', function () {
             action: 'W'
         }, {
             value: '2.16.840.1.113883.10.20.22.2.6', // Allergies Section (entries optional)
-            type: 'T',
+            type: 'TR',
             subPathSpecs: [{
                 value: 'h:text'
             }]
         }, {
             value: '2.16.840.1.113883.10.20.22.2.1', // Medications Section (entries optional)
-            type: 'T',
+            type: 'TR',
             subPathSpecs: [{
                 value: 'h:text'
             }, {
@@ -82,24 +82,56 @@ describe('xml vs parse generate xml ', function () {
                     value: '2.16.840.1.113883.10.20.22.4.18', // Medication Dispense
                     type: 'T',
                     subPathSpecs: [{
-                        value: 'h:product'
+                        value: 'h:product',
+                        comment: 'not read by parser'
                     }, {
-                        value: 'h:quantity'
+                        value: 'h:quantity',
+                        comment: 'not read by parser'
                     }, {
-                        value: 'h:repeatNumber'
+                        value: 'h:repeatNumber',
+                        comment: 'not read by parser'
                     }, {
-                        value: 'h:effectiveTime'
+                        value: 'h:effectiveTime',
+                        comment: 'not read by parser'
                     }, {
                         value: 'h:performer',
                         subPathSpecs: [{
-                            value: 'h:assignedEntity/h:assignedPerson'
+                            value: 'h:assignedEntity/h:assignedPerson',
+                            comment: 'not read by parser'
                         }]
                     }]
                 }, {
                     value: '2.16.840.1.113883.10.20.22.4.20', // Instructions
                     type: 'T',
                     subPathSpecs: [{
-                        value: '..'
+                        value: '..',
+                        comment: 'not read by parser'
+                    }]
+                }]
+            }]
+        }, {
+            value: '2.16.840.1.113883.10.20.22.2.2', // Immunization Section
+            type: 'TR',
+            subPathSpecs: [{
+                value: 'h:text'
+            }, {
+                value: '2.16.840.1.113883.10.20.22.4.52', // Immunization Activity
+                type: 'T',
+                subPathSpecs: [{
+                    value: '2.16.840.1.113883.10.20.22.4.53', // Immunization Refusal Reason
+                    type: 'T',
+                    subPathSpecs: [{
+                        value: 'h:id',
+                        comment: 'not read by parser'
+                    }]
+                }, {
+                    value: '2.16.840.1.113883.10.20.22.4.20', // Instructions
+                    type: 'T',
+                    subPathSpecs: [{
+                        value: '..',
+                        action: 'A',
+                        params: 'inversionInd',
+                        comment: 'erroneous in sample file'
                     }]
                 }]
             }]
@@ -137,15 +169,33 @@ describe('xml vs parse generate xml ', function () {
             action: 'W'
         }, {
             value: '2.16.840.1.113883.10.20.22.2.6', // Allergies Section (entries optional)
-            type: 'T',
+            type: 'TR',
             subPathSpecs: [{
                 value: 'h:text'
             }]
         }, {
             value: '2.16.840.1.113883.10.20.22.2.1', // Medications Section (entries optional)
-            type: 'T',
+            type: 'TR',
             subPathSpecs: [{
                 value: 'h:text'
+            }]
+        }, {
+            value: '2.16.840.1.113883.10.20.22.2.2', // Immunization Section
+            type: 'TR',
+            subPathSpecs: [{
+                value: 'h:text'
+            }, {
+                value: '2.16.840.1.113883.10.20.22.4.52', // Immunization Activity
+                type: 'T',
+                subPathSpecs: [{
+                    value: '2.16.840.1.113883.10.20.22.4.20', // Instructions
+                    type: 'T',
+                    subPathSpecs: [{
+                        value: '..',
+                        action: 'A',
+                        params: 'inversionInd'
+                    }]
+                }]
             }]
         }];
 
@@ -193,8 +243,8 @@ describe('xml vs parse generate xml ', function () {
             compareSection("2.16.840.1.113883.10.20.22.2.1");
         });
 
-        //it('immunizations', function () {
-        //    compareSection("2.16.840.1.113883.10.20.22.2.2");
-        //});
+        it('immunizations', function () {
+            compareSection("2.16.840.1.113883.10.20.22.2.2");
+        });
     });
 });

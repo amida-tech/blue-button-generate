@@ -18,7 +18,7 @@ exports.findSection = function (sections, templateId) {
 };
 
 // Parser does not keep time zones.  This removes them from original until that is fixed
-exports.removeTimeZones = function removeTimeZones (original) {
+exports.removeTimeZones = function removeTimeZones(original) {
     Object.keys(original).forEach(function (key) {
         if ((key === '$') && original[key]) {
             var t = original[key].value;
@@ -38,7 +38,7 @@ exports.removeTimeZones = function removeTimeZones (original) {
         }
     });
 };
-        
+
 var normalizedDisplayNames = {
     "History of immunizations": 'Immunizations',
     "Patient Objection": "Patient objection"
