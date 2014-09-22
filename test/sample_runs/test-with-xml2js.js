@@ -12,13 +12,9 @@ var libxmljs = require('libxmljs');
 
 var jsonutil = require('../util/jsonutil');
 var xpathutil = require('../util/xpathutil');
+var xml2jsutil = require('../util/xml2jsutil');
 
 describe('xml vs parse generate xml ', function () {
-    var NS = {
-        "h": "urn:hl7-org:v3",
-        "xsi": "http://www.w3.org/2001/XMLSchema-instance"
-    };
-
     var generatedDir = null;
     var sampleDir = null;
 
@@ -40,133 +36,38 @@ describe('xml vs parse generate xml ', function () {
             return ccd.ClinicalDocument.component[0].structuredBody[0].component;
         };
 
-        var findSection = function (sections, templateId) {
-            var n = sections.length;
-            for (var i = 0; i < n; ++i) {
-                var sectionInfo = sections[i].section[0];
-                var ids = sectionInfo.templateId;
-                if (ids) {
-                    for (var j = 0; j < ids.length; ++j) {
-                        var id = ids[j];
-                        if (id['$'].root === templateId) {
-                            return sections[i].section[0];
-                        }
-                    }
-                }
-            }
-            return null;
-        };
-
-        var normalizedDisplayNames = {
-            "History of immunizations": 'Immunizations',
-            "Patient Objection": "Patient objection"
-        };
-
-        var normalizedCodeSystemNames = {
-            "National Cancer Institute (NCI) Thesaurus": "Medication Route FDA",
-            "NCI Thesaurus": "Medication Route FDA",
-            "HL7 ActNoImmunizationReason": "Act Reason",
-            "RxNorm": "RXNORM"
-        };
-
-        var cleanIntroducedCodeAttrs = function cleanIntroducedCodeAttrs(original, generated) {
-            Object.keys(generated).forEach(function (key) {
-                if ((key === '$') && original[key]) {
-                    var originalAttrs = original[key];
-                    var generatedAttrs = generated[key];
-                    ['codeSystem', 'codeSystemName', 'displayName'].forEach(function (attr) {
-                        if (generatedAttrs[attr] && !originalAttrs[attr]) {
-                            delete generatedAttrs[attr];
-                        }
-                    });
-                    if (originalAttrs.codeSystemName && (originalAttrs.codeSystemName !== generatedAttrs.codeSystemName)) {
-                        if (normalizedCodeSystemNames[originalAttrs.codeSystemName]) {
-                            originalAttrs.codeSystemName = normalizedCodeSystemNames[originalAttrs.codeSystemName];
-                        }
-                    }
-                    if (originalAttrs.displayName && (originalAttrs.displayName !== generatedAttrs.displayName)) {
-                        if (normalizedDisplayNames[originalAttrs.displayName]) {
-                            originalAttrs.displayName = normalizedDisplayNames[originalAttrs.displayName];
-                        }
-                    }
-                } else if (original[key] && (typeof original[key] === 'object') && (typeof generated[key] === 'object')) {
-                    cleanIntroducedCodeAttrs(original[key], generated[key]);
-                }
-            });
-        };
-
-        // Parser does not keep time zones.  This removes them from original until that is fixed
-        var removeTimeZones = function (original) {
-            Object.keys(original).forEach(function (key) {
-                if ((key === '$') && original[key]) {
-                    var t = original[key].value;
-                    if (t && (typeof t === 'string')) {
-                        if (t.length > 14) {
-                            var index = t.indexOf('-');
-                            if (index < 0) {
-                                index = t.indexOf('+');
-                            }
-                            if ((index + 5) === t.length) {
-                                original[key].value = t.slice(0, index);
-                            }
-                        }
-                    }
-                } else if (original[key] && (typeof original[key] === 'object')) {
-                    removeTimeZones(original[key]);
-                }
-            });
-        };
-
-        // Parser does not keep time zones.  This removes them from original until that is fixed
-        var removeOriginalText = function (original, generated) {
-            Object.keys(original).forEach(function (key) {
-                if ((key === 'originalText') || (key === 'reference')) {
-                    delete original[key];
-                    if (generated[key]) {
-                        delete generated[key];
-                    }
-                } else if (generated[key] && (typeof original[key] === 'object')) {
-                    removeOriginalText(original[key], generated[key]);
-                }
-            });
-        };
-
-        var trimText = function (original, generated) {
-            Object.keys(original).forEach(function (key) {
-                if ((key === '_') && generated[key]) {
-                    original[key] = original[key].replace(/[\r\t\n ]/g, '');
-                    generated[key] = generated[key].replace(/[\r\t\n ]/g, '');
-                } else if (generated[key] && (typeof original[key] === 'object') && (typeof generated[key] === 'object')) {
-                    trimText(original[key], generated[key]);
-                }
-            });
-        };
-
         var xmlRaw;
         var sections;
         var sectionsGenerated;
 
-        var rmTimeTypeAttrs = function (xmlDoc) {
-            xpathutil.removeAttr(xmlDoc, '//h:effectiveTime[@xsi:type="IVL_TS"]', 'type');
-        };
-
-        var removeNullFlavored = function (xmlDoc) {
-            xpathutil.remove(xmlDoc, '//*[@nullFlavor]');
-        };
-
         var removePathSpecs = [{
-            value: '//*[@nullFlavor]'                       // All nullFlavors
+            value: '//*[@nullFlavor]' // All nullFlavors
         }, {
             value: '//h:effectiveTime[@xsi:type="IVL_TS"]', // All "IVL_TS" attributes
             action: 'A',
             params: 'type'
         }, {
-            value: '//h:streetAddressLine',                  // All streetAddressLine white space
+            value: '//h:streetAddressLine', // All streetAddressLine white space
             action: 'W'
+        }, {
+            value: '//h:reference' // All references
+        }, {
+            value: '//h:originalText' // All originalText
+        }, {
+            value: '//h:text', // All text white space
+            action: 'W'
+        }, {
+            value: '2.16.840.1.113883.10.20.22.2.6', // Allergies Section (entries optional)
+            type: 'T',
+            subPathSpecs: [{
+                value: 'h:text'
+            }]
         }, {
             value: '2.16.840.1.113883.10.20.22.2.1', // Medications Section (entries optional)
             type: 'T',
             subPathSpecs: [{
+                value: 'h:text'
+            }, {
                 value: '2.16.840.1.113883.10.20.22.4.16', // Medication Activity
                 type: 'T',
                 subPathSpecs: [{
@@ -193,7 +94,7 @@ describe('xml vs parse generate xml ', function () {
                         subPathSpecs: [{
                             value: 'h:assignedEntity/h:assignedPerson'
                         }]
-                    }]             
+                    }]
                 }, {
                     value: '2.16.840.1.113883.10.20.22.4.20', // Instructions
                     type: 'T',
@@ -221,12 +122,31 @@ describe('xml vs parse generate xml ', function () {
             });
         });
 
-        var generatedXMLMods =  [{
-            value: '//*[@nullFlavor]'                       // All nullFlavors
+        var generatedXMLMods = [{
+            value: '//*[@nullFlavor]' // All nullFlavors
         }, {
             value: '//h:effectiveTime[@xsi:type="IVL_TS"]', // All "IVL_TS" attributes
             action: 'A',
             params: 'type'
+        }, {
+            value: '//h:reference' // All references
+        }, {
+            value: '//h:originalText' // All originalText
+        }, {
+            value: '//h:text', // All text white space
+            action: 'W'
+        }, {
+            value: '2.16.840.1.113883.10.20.22.2.6', // Allergies Section (entries optional)
+            type: 'T',
+            subPathSpecs: [{
+                value: 'h:text'
+            }]
+        }, {
+            value: '2.16.840.1.113883.10.20.22.2.1', // Medications Section (entries optional)
+            type: 'T',
+            subPathSpecs: [{
+                value: 'h:text'
+            }]
         }];
 
         it('xml2js generated', function (done) {
@@ -249,19 +169,13 @@ describe('xml vs parse generate xml ', function () {
         });
 
         var compareSection = function (templateId) {
-            var section = findSection(sections, templateId);
-            var sectionGenerated = findSection(sectionsGenerated, templateId);
+            var section = xml2jsutil.findSection(sections, templateId);
+            var sectionGenerated = xml2jsutil.findSection(sectionsGenerated, templateId);
             expect(section).to.exist;
             expect(sectionGenerated).to.exist;
 
-            // ignore text
-            delete section.text;
-            delete sectionGenerated.text;
-
-            cleanIntroducedCodeAttrs(section, sectionGenerated);
-            removeTimeZones(section);
-            removeOriginalText(section, sectionGenerated);
-            trimText(section, sectionGenerated);
+            xml2jsutil.processIntroducedCodeAttrs(section, sectionGenerated);
+            xml2jsutil.removeTimeZones(section);
 
             var orderedSection = jsonutil.orderByKeys(section);
             fs.writeFileSync(path.join(generatedDir, "o_" + templateId + ".json"), JSON.stringify(orderedSection, null, 4));
@@ -275,12 +189,12 @@ describe('xml vs parse generate xml ', function () {
             compareSection("2.16.840.1.113883.10.20.22.2.6");
         });
 
-        //it('immunizations', function () {
-        //    compareSection("2.16.840.1.113883.10.20.22.2.2");
-        //});
-
         it('medications', function () {
             compareSection("2.16.840.1.113883.10.20.22.2.1");
         });
+
+        //it('immunizations', function () {
+        //    compareSection("2.16.840.1.113883.10.20.22.2.2");
+        //});
     });
 });

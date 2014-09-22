@@ -34,15 +34,15 @@ var actionExecuter = {
         node.remove();
     },
     'A': function (node, attr) {
-       var attrNode = node.attr(attr);
-        attrNode.remove();        
+        var attrNode = node.attr(attr);
+        attrNode.remove();
     },
     'W': function (node) {
         var text = node.text();
         var newText = text.replace(/(\r\n|\n|\r|\t)/gm, " ").replace(/\s+/g, ' ').trim();
         node.text(newText);
     }
-}
+};
 
 exports.removeHierarchical = function removeHierarchical(xmlDoc, pathSpecs) {
     pathSpecs.forEach(function (pathSpec) {
