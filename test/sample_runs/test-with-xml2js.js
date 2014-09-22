@@ -60,6 +60,10 @@ describe('xml vs parse generate xml ', function () {
             value: '//h:text', // All text white space
             action: 'W'
         }, {
+            value: '//h:code[@codeSystemVersion]', // All text white space
+            action: 'A',
+            params: 'codeSystemVersion'
+        }, {
             value: '2.16.840.1.113883.10.20.22.2.6', // Allergies Section (entries optional)
             type: 'TR',
             subPathSpecs: [{
@@ -174,6 +178,12 @@ describe('xml vs parse generate xml ', function () {
                     }]
                 }]
             }]
+        }, {
+            value: '2.16.840.1.113883.10.20.22.2.22', // Encounters Section
+            type: 'TR',
+            subPathSpecs: [{
+                value: 'h:text'
+            }]
         }];
 
         it('read xml', function () {
@@ -266,6 +276,12 @@ describe('xml vs parse generate xml ', function () {
                     params: 'moodCode'
                 }]
             }]
+        }, {
+            value: '2.16.840.1.113883.10.20.22.2.22', // Encounters Section
+            type: 'TR',
+            subPathSpecs: [{
+                value: 'h:text'
+            }]
         }];
 
         it('xml2js generated', function (done) {
@@ -318,6 +334,10 @@ describe('xml vs parse generate xml ', function () {
 
         it('procedures', function () {
             compareSection("2.16.840.1.113883.10.20.22.2.7");
+        });
+
+        it('encounters', function () {
+            compareSection("2.16.840.1.113883.10.20.22.2.22");
         });
     });
 });

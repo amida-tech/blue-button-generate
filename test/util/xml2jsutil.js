@@ -50,7 +50,8 @@ var normalizedCodeSystemNames = {
     "NCI Thesaurus": "Medication Route FDA",
     "HL7 ActNoImmunizationReason": "Act Reason",
     "RxNorm": "RXNORM",
-    "SNOMED-CT": "SNOMED CT"
+    "SNOMED-CT": "SNOMED CT",
+    "HL7 ActEncounterCode": "HL7ActCode"
 };
 
 exports.processIntroducedCodeAttrs = function processIntroducedCodeAttrs(original, generated) {
