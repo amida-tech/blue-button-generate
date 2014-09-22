@@ -44,6 +44,16 @@ var actionExecuter = {
         var text = node.text();
         var newText = text.replace(/(\r\n|\n|\r|\t)/gm, " ").replace(/\s+/g, ' ').trim();
         node.text(newText);
+    },
+    "TEL": function (node) {
+        var attrNode = node.attr('value');
+        if (attrNode) {
+            var value = attrNode.value().toString();
+            if (value.substring(0, 4) !== 'tel:') {
+                var newValue = 'tel:' + value;
+                attrNode.value(newValue);
+            }
+        }
     }
 };
 

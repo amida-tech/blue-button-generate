@@ -47,6 +47,9 @@ describe('xml vs parse generate xml ', function () {
             action: 'A',
             params: 'type'
         }, {
+            value: '//h:telecom[@use="WP"]', // All "WP" attributes
+            action: 'TEL'
+        }, {
             value: '//h:streetAddressLine', // All streetAddressLine white space
             action: 'W'
         }, {
@@ -135,6 +138,42 @@ describe('xml vs parse generate xml ', function () {
                     }]
                 }]
             }]
+        }, {
+            value: '2.16.840.1.113883.10.20.22.2.7', // Procedures Section
+            type: 'TR',
+            subPathSpecs: [{
+                value: 'h:text'
+            }, {
+                value: '2.16.840.1.113883.10.20.22.4.12', // Procedure Actitivity Act
+                type: 'T',
+                subPathSpecs: [{
+                    value: '.',
+                    action: 'A',
+                    params: 'moodCode'
+                }]
+            }, {
+                value: '2.16.840.1.113883.10.20.22.4.13', // Procedure Actitivity Observation
+                type: 'T',
+                subPathSpecs: [{
+                    value: '.',
+                    action: 'A',
+                    params: 'moodCode'
+                }]
+            }, {
+                value: '2.16.840.1.113883.10.20.22.4.14', // Procedure Actitivity Procedure
+                type: 'T',
+                subPathSpecs: [{
+                    value: '.',
+                    action: 'A',
+                    params: 'moodCode'
+                }, {
+                    value: '2.16.840.1.113883.10.20.22.4.37', // Product Instance
+                    type: 'T',
+                    subPathSpecs: [{
+                        value: '..'
+                    }]
+                }]
+            }]
         }];
 
         it('read xml', function () {
@@ -197,6 +236,36 @@ describe('xml vs parse generate xml ', function () {
                     }]
                 }]
             }]
+        }, {
+            value: '2.16.840.1.113883.10.20.22.2.7', // Procedures Section
+            type: 'TR',
+            subPathSpecs: [{
+                value: 'h:text'
+            }, {
+                value: '2.16.840.1.113883.10.20.22.4.12', // Procedure Actitivity Act
+                type: 'T',
+                subPathSpecs: [{
+                    value: '.',
+                    action: 'A',
+                    params: 'moodCode'
+                }]
+            }, {
+                value: '2.16.840.1.113883.10.20.22.4.13', // Procedure Actitivity Observation
+                type: 'T',
+                subPathSpecs: [{
+                    value: '.',
+                    action: 'A',
+                    params: 'moodCode'
+                }]
+            }, {
+                value: '2.16.840.1.113883.10.20.22.4.14', // Procedure Actitivity Procedure
+                type: 'T',
+                subPathSpecs: [{
+                    value: '.',
+                    action: 'A',
+                    params: 'moodCode'
+                }]
+            }]
         }];
 
         it('xml2js generated', function (done) {
@@ -245,6 +314,10 @@ describe('xml vs parse generate xml ', function () {
 
         it('immunizations', function () {
             compareSection("2.16.840.1.113883.10.20.22.2.2");
+        });
+
+        it('procedures', function () {
+            compareSection("2.16.840.1.113883.10.20.22.2.7");
         });
     });
 });

@@ -41,14 +41,16 @@ exports.removeTimeZones = function removeTimeZones(original) {
 
 var normalizedDisplayNames = {
     "History of immunizations": 'Immunizations',
-    "Patient Objection": "Patient objection"
+    "Patient Objection": "Patient objection",
+    "HISTORY OF PROCEDURES": "History of Procedures"
 };
 
 var normalizedCodeSystemNames = {
     "National Cancer Institute (NCI) Thesaurus": "Medication Route FDA",
     "NCI Thesaurus": "Medication Route FDA",
     "HL7 ActNoImmunizationReason": "Act Reason",
-    "RxNorm": "RXNORM"
+    "RxNorm": "RXNORM",
+    "SNOMED-CT": "SNOMED CT"
 };
 
 exports.processIntroducedCodeAttrs = function processIntroducedCodeAttrs(original, generated) {
