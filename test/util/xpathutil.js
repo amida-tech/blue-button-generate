@@ -19,3 +19,43 @@ exports.removeAttr = function (xmlDoc, xpath, attr) {
         attrNode.remove();
     });
 };
+
+var pathConstructor = {
+    'T': function (value) {
+        return '//h:templateId[@root="' + value + '"]/..';
+    },
+    'N': function (value) {
+        return value;
+    }
+};
+
+var actionExecuter = {
+    'R': function (node) {
+        node.remove();
+    },
+    'A': function (node, attr) {
+       var attrNode = node.attr(attr);
+        attrNode.remove();        
+    },
+    'W': function (node) {
+        var text = node.text();
+        var newText = text.replace(/(\r\n|\n|\r|\t)/gm, " ").replace(/\s+/g, ' ').trim();
+        node.text(newText);
+    }
+}
+
+exports.removeHierarchical = function removeHierarchical(xmlDoc, pathSpecs) {
+    pathSpecs.forEach(function (pathSpec) {
+        var t = pathSpec.type || 'N';
+        var path = pathConstructor[t](pathSpec.value);
+        var nodes = xmlDoc.find(path, ns);
+        nodes.forEach(function (node) {
+            if (pathSpec.subPathSpecs) {
+                removeHierarchical(node, pathSpec.subPathSpecs);
+            } else {
+                var execType = pathSpec.action || 'R';
+                actionExecuter[execType](node, pathSpec.params);
+            }
+        });
+    });
+};
