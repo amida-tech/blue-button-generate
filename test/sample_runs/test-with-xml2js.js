@@ -47,7 +47,7 @@ describe('xml vs parse generate xml ', function () {
             action: 'A',
             params: 'type'
         }, {
-            value: '//h:telecom[@use="WP"]', // All "WP" attributes
+            value: ' //h:telecom[@use="WP"]', // All "WP" attributes
             action: 'TEL'
         }, {
             value: '//h:streetAddressLine', // All streetAddressLine white space
@@ -184,6 +184,15 @@ describe('xml vs parse generate xml ', function () {
             subPathSpecs: [{
                 value: 'h:text'
             }]
+        }, {
+            value: "2.16.840.1.113883.10.20.22.2.18", // Payers Section
+            type: 'TR',
+            subPathSpecs: [{
+                value: 'h:text'
+            }, {
+                value: './/h:time',
+                comment: "null flavored induced text value"
+            }]
         }];
 
         it('read xml', function () {
@@ -194,7 +203,9 @@ describe('xml vs parse generate xml ', function () {
         it('xml2js original', function (done) {
             var xmlDoc = libxmljs.parseXmlString(xmlRaw);
             xpathutil.removeHierarchical(xmlDoc, removePathSpecs);
+            console.log('here;');
             var xml = xmlDoc.toString();
+            //fs.writeFileSync(path.join(generatedDir, "CCD_1_modified.xml"), xml);
 
             var parser = new xml2js.Parser();
             parser.parseString(xml, function (err, result) {
@@ -282,6 +293,15 @@ describe('xml vs parse generate xml ', function () {
             subPathSpecs: [{
                 value: 'h:text'
             }]
+        }, {
+            value: "2.16.840.1.113883.10.20.22.2.18", // Payers Section
+            type: 'TR',
+            subPathSpecs: [{
+                value: 'h:text'
+            }, {
+                value: './/h:time',
+                comment: "null flavored induced text value"
+            }]
         }];
 
         it('xml2js generated', function (done) {
@@ -312,6 +332,7 @@ describe('xml vs parse generate xml ', function () {
             xml2jsutil.processIntroducedCodeAttrs(section, sectionGenerated);
             xml2jsutil.removeTimeZones(section);
 
+            //console.log(JSON.stringify(section, null, 4));
             var orderedSection = jsonutil.orderByKeys(section);
             fs.writeFileSync(path.join(generatedDir, "o_" + templateId + ".json"), JSON.stringify(orderedSection, null, 4));
             var orderedSectionGenerated = jsonutil.orderByKeys(sectionGenerated);
@@ -338,6 +359,10 @@ describe('xml vs parse generate xml ', function () {
 
         it('encounters', function () {
             compareSection("2.16.840.1.113883.10.20.22.2.22");
+        });
+
+        it('payers', function () {
+            compareSection("2.16.840.1.113883.10.20.22.2.18");
         });
     });
 });

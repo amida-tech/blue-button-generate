@@ -28,7 +28,7 @@ exports.removeTimeZones = function removeTimeZones(original) {
                     if (index < 0) {
                         index = t.indexOf('+');
                     }
-                    if ((index + 5) === t.length) {
+                    if ((index > 12) && (index + 5) === t.length) {
                         original[key].value = t.slice(0, index);
                     }
                 }
@@ -42,7 +42,8 @@ exports.removeTimeZones = function removeTimeZones(original) {
 var normalizedDisplayNames = {
     "History of immunizations": 'Immunizations',
     "Patient Objection": "Patient objection",
-    "HISTORY OF PROCEDURES": "History of Procedures"
+    "HISTORY OF PROCEDURES": "History of Procedures",
+    "Payer": "Payers"
 };
 
 var normalizedCodeSystemNames = {
@@ -51,7 +52,9 @@ var normalizedCodeSystemNames = {
     "HL7 ActNoImmunizationReason": "Act Reason",
     "RxNorm": "RXNORM",
     "SNOMED-CT": "SNOMED CT",
-    "HL7 ActEncounterCode": "HL7ActCode"
+    "HL7 ActEncounterCode": "HL7ActCode",
+    "HL7 RoleClassRelationship": "HL7 RoleCode",
+    "HL7 RoleCode": "HL7 Role"
 };
 
 exports.processIntroducedCodeAttrs = function processIntroducedCodeAttrs(original, generated) {
