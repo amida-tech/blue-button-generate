@@ -36,9 +36,24 @@ describe('xml vs parse generate xml ', function () {
             return ccd.ClinicalDocument.component[0].structuredBody[0].component;
         };
 
+        var toDemographics = function (ccd) {
+            expect(ccd.ClinicalDocument).to.exist;
+            expect(ccd.ClinicalDocument.recordTarget).to.exist;
+            expect(ccd.ClinicalDocument.recordTarget[0]).to.exist;
+            expect(ccd.ClinicalDocument.recordTarget[0].patientRole).to.exist;
+            expect(ccd.ClinicalDocument.recordTarget[0].patientRole[0]).to.exist;
+            return ccd.ClinicalDocument.recordTarget[0].patientRole[0];
+
+            //expect(ccd.ClinicalDocument.recordTarget[0].patientRole[0].patient).to.exist;
+            //expect(ccd.ClinicalDocument.recordTarget[0].patientRole[0].patient[0]).to.exist;
+            //return ccd.ClinicalDocument.recordTarget[0].patientRole[0].patient[0];
+        };
+
         var xmlRaw;
         var sections;
         var sectionsGenerated;
+        var demographics;
+        var demographicsGenerated;
 
         var removePathSpecs = [{
             value: '//*[@nullFlavor]' // All nullFlavors
@@ -239,6 +254,13 @@ describe('xml vs parse generate xml ', function () {
             subPathSpecs: [{
                 value: 'h:text'
             }]
+        }, {
+            value: "//h:recordTarget/h:patientRole", // demographics
+            subPathSpecs: [{
+                value: 'h:patient/h:ethnicGroupCode'
+            }, {
+                value: 'h:providerOrganization'
+            }]
         }];
 
         it('read xml', function () {
@@ -255,6 +277,7 @@ describe('xml vs parse generate xml ', function () {
             var parser = new xml2js.Parser();
             parser.parseString(xml, function (err, result) {
                 sections = toSections(result);
+                demographics = toDemographics(result);
                 done(err);
             });
         });
@@ -400,11 +423,12 @@ describe('xml vs parse generate xml ', function () {
             var parser = new xml2js.Parser();
             parser.parseString(xmlGenerated, function (err, result) {
                 sectionsGenerated = toSections(result);
+                demographicsGenerated = toDemographics(result);
                 done(err);
             });
         });
 
-        var compareSection = function(section, sectionGenerated, templateId) {
+        var compareSection = function (section, sectionGenerated, templateId) {
             xml2jsutil.processIntroducedCodeAttrs(section, sectionGenerated);
             xml2jsutil.removeTimeZones(section);
 
@@ -414,8 +438,8 @@ describe('xml vs parse generate xml ', function () {
             var orderedSectionGenerated = jsonutil.orderByKeys(sectionGenerated);
             fs.writeFileSync(path.join(generatedDir, "g_" + templateId + ".json"), JSON.stringify(orderedSectionGenerated, null, 4));
 
-            expect(sectionGenerated).to.deep.equal(section);            
-        }
+            expect(sectionGenerated).to.deep.equal(section);
+        };
 
         var findCompareSection = function (templateId) {
             var section = xml2jsutil.findSection(sections, templateId);
@@ -467,6 +491,10 @@ describe('xml vs parse generate xml ', function () {
 
         it('results', function () {
             findCompareSection("2.16.840.1.113883.10.20.22.2.3");
+        });
+
+        it('demographics', function () {
+            compareSection(demographics, demographicsGenerated, "demographics");
         });
     });
 });

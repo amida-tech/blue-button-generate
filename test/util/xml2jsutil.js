@@ -57,7 +57,9 @@ var normalizedCodeSystemNames = {
     "SNOMED -CT": "SNOMED-CT",
     "HL7 ActEncounterCode": "HL7ActCode",
     "HL7 RoleClassRelationship": "HL7 RoleCode",
-    "HL7 RoleCode": "HL7 Role"
+    "HL7 RoleCode": "HL7 Role",
+    "HL7 Role code": "HL7 Role",
+    "Race & Ethnicity - CDC": "Race and Ethnicity - CDC"
 };
 
 exports.processIntroducedCodeAttrs = function processIntroducedCodeAttrs(original, generated) {

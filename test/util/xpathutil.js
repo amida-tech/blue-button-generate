@@ -60,7 +60,7 @@ var actionExecuter = {
     },
     "ADD": function (parent, node, tid) {
         var childrenPath = pathConstructor['T'](tid);
-        var newChildren = node.find(childrenPath, ns).map(function(v) {
+        var newChildren = node.find(childrenPath, ns).map(function (v) {
             return v.clone();
         });
         newChildren.forEach(function (newChild) {
@@ -77,21 +77,6 @@ var actionExecuter = {
         //    //console.log(newChild.toString());
         //    parent.addChild(newChild);
         //});
-    },
-    "F": function (parent, node, tid) {
-        var childrenPath = pathConstructor['T'](tid);
-        var newChildren = node.find(childrenPath, ns).map(function(v) {
-            return v.clone();
-        });
-        var parent = node.parent();
-        //node.remove();
-        //node.childNodes().forEach(function (childNode) {
-        //    childNode.remove();
-        //});
-        newChildren.forEach(function (newChild) {
-            //console.log(newChild.toString());
-            parent.addChild(newChild);
-        });
     }
 };
 
