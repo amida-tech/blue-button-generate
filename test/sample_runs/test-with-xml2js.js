@@ -226,6 +226,12 @@ describe('xml vs parse generate xml ', function () {
             type: 'TR',
             subPathSpecs: [{
                 value: 'h:text'
+            }, {
+                value: '..',
+                action: 'ADD',
+                params: '2.16.840.1.113883.10.20.22.4.27'
+            }, {
+                value: 'h:entry'
             }]
         }, {
             value: "2.16.840.1.113883.10.20.22.2.3", // results
@@ -243,7 +249,6 @@ describe('xml vs parse generate xml ', function () {
         it('xml2js original', function (done) {
             var xmlDoc = libxmljs.parseXmlString(xmlRaw);
             xpathutil.removeHierarchical(xmlDoc, removePathSpecs);
-            console.log('here;');
             var xml = xmlDoc.toString();
             //fs.writeFileSync(path.join(generatedDir, "CCD_1_modified.xml"), xml);
 
@@ -365,6 +370,12 @@ describe('xml vs parse generate xml ', function () {
             type: 'TR',
             subPathSpecs: [{
                 value: 'h:text'
+            }, {
+                value: '..',
+                action: 'ADD',
+                params: '2.16.840.1.113883.10.20.22.4.27'
+            }, {
+                value: 'h:entry'
             }]
         }, {
             value: "2.16.840.1.113883.10.20.22.2.3", // results
@@ -393,12 +404,7 @@ describe('xml vs parse generate xml ', function () {
             });
         });
 
-        var compareSection = function (templateId) {
-            var section = xml2jsutil.findSection(sections, templateId);
-            var sectionGenerated = xml2jsutil.findSection(sectionsGenerated, templateId);
-            expect(section).to.exist;
-            expect(sectionGenerated).to.exist;
-
+        var compareSection = function(section, sectionGenerated, templateId) {
             xml2jsutil.processIntroducedCodeAttrs(section, sectionGenerated);
             xml2jsutil.removeTimeZones(section);
 
@@ -408,51 +414,59 @@ describe('xml vs parse generate xml ', function () {
             var orderedSectionGenerated = jsonutil.orderByKeys(sectionGenerated);
             fs.writeFileSync(path.join(generatedDir, "g_" + templateId + ".json"), JSON.stringify(orderedSectionGenerated, null, 4));
 
-            expect(sectionGenerated).to.deep.equal(section);
+            expect(sectionGenerated).to.deep.equal(section);            
+        }
+
+        var findCompareSection = function (templateId) {
+            var section = xml2jsutil.findSection(sections, templateId);
+            var sectionGenerated = xml2jsutil.findSection(sectionsGenerated, templateId);
+            expect(section).to.exist;
+            expect(sectionGenerated).to.exist;
+            compareSection(section, sectionGenerated, templateId);
         };
 
         it('allergies', function () {
-            compareSection("2.16.840.1.113883.10.20.22.2.6");
+            findCompareSection("2.16.840.1.113883.10.20.22.2.6");
         });
 
         it('medications', function () {
-            compareSection("2.16.840.1.113883.10.20.22.2.1");
+            findCompareSection("2.16.840.1.113883.10.20.22.2.1");
         });
 
         it('immunizations', function () {
-            compareSection("2.16.840.1.113883.10.20.22.2.2");
+            findCompareSection("2.16.840.1.113883.10.20.22.2.2");
         });
 
         it('procedures', function () {
-            compareSection("2.16.840.1.113883.10.20.22.2.7");
+            findCompareSection("2.16.840.1.113883.10.20.22.2.7");
         });
 
         it('encounters', function () {
-            compareSection("2.16.840.1.113883.10.20.22.2.22");
+            findCompareSection("2.16.840.1.113883.10.20.22.2.22");
         });
 
         it('payers', function () {
-            compareSection("2.16.840.1.113883.10.20.22.2.18");
+            findCompareSection("2.16.840.1.113883.10.20.22.2.18");
         });
 
         it('plan of care', function () {
-            compareSection("2.16.840.1.113883.10.20.22.2.10");
+            findCompareSection("2.16.840.1.113883.10.20.22.2.10");
         });
 
         it('problems', function () {
-            compareSection("2.16.840.1.113883.10.20.22.2.5");
+            findCompareSection("2.16.840.1.113883.10.20.22.2.5");
         });
 
         it('social_history', function () {
-            compareSection("2.16.840.1.113883.10.20.22.2.17");
+            findCompareSection("2.16.840.1.113883.10.20.22.2.17");
         });
 
-        xit('vitals', function () {
-            compareSection("2.16.840.1.113883.10.20.22.2.4");
+        it('vitals', function () {
+            findCompareSection("2.16.840.1.113883.10.20.22.2.4");
         });
 
         it('results', function () {
-            compareSection("2.16.840.1.113883.10.20.22.2.3");
+            findCompareSection("2.16.840.1.113883.10.20.22.2.3");
         });
     });
 });

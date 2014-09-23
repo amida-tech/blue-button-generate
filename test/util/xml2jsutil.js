@@ -54,6 +54,7 @@ var normalizedCodeSystemNames = {
     "HL7 ActNoImmunizationReason": "Act Reason",
     "RxNorm": "RXNORM",
     "SNOMED-CT": "SNOMED CT",
+    "SNOMED -CT": "SNOMED-CT",
     "HL7 ActEncounterCode": "HL7ActCode",
     "HL7 RoleClassRelationship": "HL7 RoleCode",
     "HL7 RoleCode": "HL7 Role"

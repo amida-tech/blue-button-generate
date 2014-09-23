@@ -24,6 +24,9 @@ var pathConstructor = {
     'TR': function (value) {
         return '//h:templateId[@root="' + value + '"]/..';
     },
+    'TP': function (value) {
+        return './/h:templateId[@root="' + value + '"]/../..';
+    },
     'T': function (value) {
         return './/h:templateId[@root="' + value + '"]/..';
     },
@@ -33,19 +36,19 @@ var pathConstructor = {
 };
 
 var actionExecuter = {
-    'R': function (node) {
+    'R': function (parent, node) {
         node.remove();
     },
-    'A': function (node, attr) {
+    'A': function (parent, node, attr) {
         var attrNode = node.attr(attr);
         attrNode.remove();
     },
-    'W': function (node) {
+    'W': function (parent, node) {
         var text = node.text();
         var newText = text.replace(/(\r\n|\n|\r|\t)/gm, " ").replace(/\s+/g, ' ').trim();
         node.text(newText);
     },
-    "TEL": function (node) {
+    "TEL": function (parent, node) {
         var attrNode = node.attr('value');
         if (attrNode) {
             var value = attrNode.value().toString();
@@ -54,6 +57,41 @@ var actionExecuter = {
                 attrNode.value(newValue);
             }
         }
+    },
+    "ADD": function (parent, node, tid) {
+        var childrenPath = pathConstructor['T'](tid);
+        var newChildren = node.find(childrenPath, ns).map(function(v) {
+            return v.clone();
+        });
+        newChildren.forEach(function (newChild) {
+            parent.addChild(newChild);
+        });
+        //node.remove();
+
+        //var parent = node.parent();
+        //node.remove();
+        //node.childNodes().forEach(function (childNode) {
+        //    childNode.remove();
+        //});
+        //newChildren.forEach(function (newChild) {
+        //    //console.log(newChild.toString());
+        //    parent.addChild(newChild);
+        //});
+    },
+    "F": function (parent, node, tid) {
+        var childrenPath = pathConstructor['T'](tid);
+        var newChildren = node.find(childrenPath, ns).map(function(v) {
+            return v.clone();
+        });
+        var parent = node.parent();
+        //node.remove();
+        //node.childNodes().forEach(function (childNode) {
+        //    childNode.remove();
+        //});
+        newChildren.forEach(function (newChild) {
+            //console.log(newChild.toString());
+            parent.addChild(newChild);
+        });
     }
 };
 
@@ -67,7 +105,7 @@ exports.removeHierarchical = function removeHierarchical(xmlDoc, pathSpecs) {
                 removeHierarchical(node, pathSpec.subPathSpecs);
             } else {
                 var execType = pathSpec.action || 'R';
-                actionExecuter[execType](node, pathSpec.params);
+                actionExecuter[execType](xmlDoc, node, pathSpec.params);
             }
         });
     });
