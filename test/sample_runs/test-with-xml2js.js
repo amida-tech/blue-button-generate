@@ -193,6 +193,12 @@ describe('xml vs parse generate xml ', function () {
                 value: './/h:time',
                 comment: "null flavored induced text value"
             }]
+        }, {
+            value: '2.16.840.1.113883.10.20.22.2.10', // Plan Of Care Section
+            type: 'TR',
+            subPathSpecs: [{
+                value: 'h:text'
+            }]
         }];
 
         it('read xml', function () {
@@ -302,6 +308,12 @@ describe('xml vs parse generate xml ', function () {
                 value: './/h:time',
                 comment: "null flavored induced text value"
             }]
+        }, {
+            value: '2.16.840.1.113883.10.20.22.2.10', // Plan Of Care Section
+            type: 'TR',
+            subPathSpecs: [{
+                value: 'h:text'
+            }]
         }];
 
         it('xml2js generated', function (done) {
@@ -363,6 +375,10 @@ describe('xml vs parse generate xml ', function () {
 
         it('payers', function () {
             compareSection("2.16.840.1.113883.10.20.22.2.18");
+        });
+
+        it('plan of care', function () {
+            compareSection("2.16.840.1.113883.10.20.22.2.10");
         });
     });
 });

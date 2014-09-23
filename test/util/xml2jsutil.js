@@ -43,7 +43,8 @@ var normalizedDisplayNames = {
     "History of immunizations": 'Immunizations',
     "Patient Objection": "Patient objection",
     "HISTORY OF PROCEDURES": "History of Procedures",
-    "Payer": "Payers"
+    "Payer": "Payers",
+    "Treatment plan": "Plan of Care"
 };
 
 var normalizedCodeSystemNames = {
