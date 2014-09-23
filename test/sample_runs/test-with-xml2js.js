@@ -215,6 +215,24 @@ describe('xml vs parse generate xml ', function () {
                     }]
                 }]
             }]
+        }, {
+            value: "2.16.840.1.113883.10.20.22.2.17", // social_history
+            type: 'TR',
+            subPathSpecs: [{
+                value: 'h:text'
+            }]
+        }, {
+            value: "2.16.840.1.113883.10.20.22.2.4", // vitals
+            type: 'TR',
+            subPathSpecs: [{
+                value: 'h:text'
+            }]
+        }, {
+            value: "2.16.840.1.113883.10.20.22.2.3", // results
+            type: 'TR',
+            subPathSpecs: [{
+                value: 'h:text'
+            }]
         }];
 
         it('read xml', function () {
@@ -336,6 +354,24 @@ describe('xml vs parse generate xml ', function () {
             subPathSpecs: [{
                 value: 'h:text'
             }]
+        }, {
+            value: "2.16.840.1.113883.10.20.22.2.17", // social_history
+            type: 'TR',
+            subPathSpecs: [{
+                value: 'h:text'
+            }]
+        }, {
+            value: "2.16.840.1.113883.10.20.22.2.4", // vitals
+            type: 'TR',
+            subPathSpecs: [{
+                value: 'h:text'
+            }]
+        }, {
+            value: "2.16.840.1.113883.10.20.22.2.3", // results
+            type: 'TR',
+            subPathSpecs: [{
+                value: 'h:text'
+            }]
         }];
 
         it('xml2js generated', function (done) {
@@ -405,6 +441,18 @@ describe('xml vs parse generate xml ', function () {
 
         it('problems', function () {
             compareSection("2.16.840.1.113883.10.20.22.2.5");
+        });
+
+        it('social_history', function () {
+            compareSection("2.16.840.1.113883.10.20.22.2.17");
+        });
+
+        xit('vitals', function () {
+            compareSection("2.16.840.1.113883.10.20.22.2.4");
+        });
+
+        it('results', function () {
+            compareSection("2.16.840.1.113883.10.20.22.2.3");
         });
     });
 });

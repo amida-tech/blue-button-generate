@@ -44,7 +44,8 @@ var normalizedDisplayNames = {
     "Patient Objection": "Patient objection",
     "HISTORY OF PROCEDURES": "History of Procedures",
     "Payer": "Payers",
-    "Treatment plan": "Plan of Care"
+    "Treatment plan": "Plan of Care",
+    "RESULTS": "Relevant diagnostic tests and/or laboratory data"
 };
 
 var normalizedCodeSystemNames = {
