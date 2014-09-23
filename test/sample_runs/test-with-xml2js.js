@@ -199,6 +199,22 @@ describe('xml vs parse generate xml ', function () {
             subPathSpecs: [{
                 value: 'h:text'
             }]
+        }, {
+            value: "2.16.840.1.113883.10.20.22.2.5", // Problems
+            type: 'TR',
+            subPathSpecs: [{
+                value: 'h:text'
+            }, {
+                value: '2.16.840.1.113883.10.20.22.4.3', // Problem Concern Act
+                type: 'T',
+                subPathSpecs: [{
+                    value: '2.16.840.1.113883.10.20.22.4.4', // Problem Observation
+                    type: 'T',
+                    subPathSpecs: [{
+                        value: 'h:code'
+                    }]
+                }]
+            }]
         }];
 
         it('read xml', function () {
@@ -314,6 +330,12 @@ describe('xml vs parse generate xml ', function () {
             subPathSpecs: [{
                 value: 'h:text'
             }]
+        }, {
+            value: "2.16.840.1.113883.10.20.22.2.5", // Problems
+            type: 'TR',
+            subPathSpecs: [{
+                value: 'h:text'
+            }]
         }];
 
         it('xml2js generated', function (done) {
@@ -379,6 +401,10 @@ describe('xml vs parse generate xml ', function () {
 
         it('plan of care', function () {
             compareSection("2.16.840.1.113883.10.20.22.2.10");
+        });
+
+        it('problems', function () {
+            compareSection("2.16.840.1.113883.10.20.22.2.5");
         });
     });
 });
