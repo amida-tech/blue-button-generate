@@ -1,5 +1,9 @@
 "use strict";
 
+var libxmljs = require('libxmljs');
+
+var jsonutil = require('./jsonutil');
+
 var ns = {
     "h": "urn:hl7-org:v3",
     "xsi": "http://www.w3.org/2001/XMLSchema-instance"
@@ -80,7 +84,7 @@ var actionExecuter = {
     }
 };
 
-exports.removeHierarchical = function removeHierarchical(xmlDoc, pathSpecs) {
+var removeHierarchical = exports.removeHierarchical = function removeHierarchical(xmlDoc, pathSpecs) {
     pathSpecs.forEach(function (pathSpec) {
         var t = pathSpec.type || 'N';
         var path = pathConstructor[t](pathSpec.value);
@@ -94,4 +98,12 @@ exports.removeHierarchical = function removeHierarchical(xmlDoc, pathSpecs) {
             }
         });
     });
+};
+
+exports.modifyXML = function (xml, modDirectory, modFilename) {
+    var xmlDoc = libxmljs.parseXmlString(xml);
+    var mods = jsonutil.fileToJSON(modDirectory, modFilename);
+    removeHierarchical(xmlDoc, mods);
+    var result = xmlDoc.toString();
+    return result;
 };

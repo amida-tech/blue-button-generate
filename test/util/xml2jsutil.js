@@ -1,5 +1,9 @@
 "use strict";
 
+var xml2js = require('xml2js');
+
+var xpathutil = require('./xpathutil');
+
 exports.findSection = function (sections, templateId) {
     var n = sections.length;
     for (var i = 0; i < n; ++i) {
@@ -86,4 +90,12 @@ exports.processIntroducedCodeAttrs = function processIntroducedCodeAttrs(origina
             processIntroducedCodeAttrs(original[key], generated[key]);
         }
     });
+};
+
+exports.modifyAndToObject = function (xml, modDirectory, modFilename, callback) {
+    var xmlModified = xpathutil.modifyXML(xml, modDirectory, modFilename);
+    var parser = new xml2js.Parser({
+        async: false
+    });
+    parser.parseString(xmlModified, callback);
 };
