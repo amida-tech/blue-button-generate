@@ -12,7 +12,7 @@ module.exports = function (grunt) {
     // Project configuration.
     grunt.initConfig({
         jshint: {
-            files: ['*.js', './lib/*.js', './test/**/*.js'],
+            files: ['*.js', './lib/*.js', './lib/**/*.js', './test/**/*.js'],
             options: {
                 browser: true,
                 smarttabs: true,
@@ -40,19 +40,19 @@ module.exports = function (grunt) {
         },
         watch: {
             all: {
-                files: ['./lib/*.js', '*.js', './test/**/*.js'],
+                files: ['./lib/*.js', './lib/**/*.js', '*.js', './test/**/*.js'],
                 tasks: ['default']
             }
         },
         jsbeautifier: {
             beautify: {
-                src: ['Gruntfile.js', 'lib/*.js', 'test/**/*.js', '*.js', 'test/xmlmods/*.json'],
+                src: ['Gruntfile.js', 'lib/*.js', 'lib/**/*.js', 'test/**/*.js', '*.js', 'test/xmlmods/*.json'],
                 options: {
                     config: '.jsbeautifyrc'
                 }
             },
             check: {
-                src: ['Gruntfile.js', 'lib/*.js', 'test/**/*.js', '*.js', 'test/xmlmods/*.json'],
+                src: ['Gruntfile.js', 'lib/*.js', 'lib/**/*.js', 'test/**/*.js', '*.js', 'test/xmlmods/*.json'],
                 options: {
                     mode: 'VERIFY_ONLY',
                     config: '.jsbeautifyrc'
