@@ -56,6 +56,9 @@ var normalizedCodeSystemNames = {
     "National Cancer Institute (NCI) Thesaurus": "Medication Route FDA",
     "NCI Thesaurus": "Medication Route FDA",
     "HL7 ActNoImmunizationReason": "Act Reason",
+    "AdministrativeGender": "HL7 AdministrativeGender",
+    "MaritalStatus": "HL7 Marital Status",
+    "MaritalStatusCode": "HL7 Marital Status",
     "RxNorm": "RXNORM",
     "SNOMED-CT": "SNOMED CT",
     "SNOMED -CT": "SNOMED-CT",
@@ -92,8 +95,8 @@ exports.processIntroducedCodeAttrs = function processIntroducedCodeAttrs(origina
     });
 };
 
-exports.modifyAndToObject = function (xml, modDirectory, modFilename, callback) {
-    var xmlModified = xpathutil.modifyXML(xml, modDirectory, modFilename);
+exports.modifyAndToObject = function (xml, modifications, callback) {
+    var xmlModified = xpathutil.modifyXML(xml, modifications);
     var parser = new xml2js.Parser({
         async: false
     });

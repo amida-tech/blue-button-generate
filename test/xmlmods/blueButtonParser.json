@@ -22,6 +22,10 @@
     "action": "A",
     "params": "codeSystemVersion"
 }, {
+    "value": "//h:id[@assigningAuthorityName]",
+    "action": "A",
+    "params": "assigningAuthorityName"
+}, {
     "value": "2.16.840.1.113883.10.20.22.2.6",
     "xpathcmt": "Allergies Section (entries optional)",
     "type": "TR",
@@ -223,6 +227,7 @@
     }]
 }, {
     "value": "//h:recordTarget/h:patientRole",
+    "xpathcmt": "Demographics Section",
     "subPathSpecs": [{
         "value": "h:patient/h:ethnicGroupCode"
     }, {

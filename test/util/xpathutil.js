@@ -70,17 +70,6 @@ var actionExecuter = {
         newChildren.forEach(function (newChild) {
             parent.addChild(newChild);
         });
-        //node.remove();
-
-        //var parent = node.parent();
-        //node.remove();
-        //node.childNodes().forEach(function (childNode) {
-        //    childNode.remove();
-        //});
-        //newChildren.forEach(function (newChild) {
-        //    //console.log(newChild.toString());
-        //    parent.addChild(newChild);
-        //});
     }
 };
 
@@ -100,10 +89,9 @@ var removeHierarchical = exports.removeHierarchical = function removeHierarchica
     });
 };
 
-exports.modifyXML = function (xml, modDirectory, modFilename) {
+exports.modifyXML = function (xml, modifications) {
     var xmlDoc = libxmljs.parseXmlString(xml);
-    var mods = jsonutil.fileToJSON(modDirectory, modFilename);
-    removeHierarchical(xmlDoc, mods);
+    removeHierarchical(xmlDoc, modifications);
     var result = xmlDoc.toString();
     return result;
 };

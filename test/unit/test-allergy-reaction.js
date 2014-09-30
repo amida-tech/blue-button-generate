@@ -65,7 +65,8 @@ var reactions2 = {
 describe('test', function () {
     it('test', function () {
         var doc = new libxmljs.Document();
-        js2xml.fillUsingTemplate(doc, reactions1, "observation", entryLevel.reactionObservation);
+        var node = doc.node('root');
+        js2xml.fillUsingTemplate(node, reactions2, "observation", entryLevel.reactionObservation);
         console.log(doc.toString());
     });
 });
