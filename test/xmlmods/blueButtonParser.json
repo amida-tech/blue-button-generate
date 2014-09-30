@@ -22,7 +22,7 @@
     "action": "A",
     "params": "codeSystemVersion"
 }, {
-    "value": "//h:id[@assigningAuthorityName]",
+    "value": "//*[@assigningAuthorityName]",
     "action": "A",
     "params": "assigningAuthorityName"
 }, {

@@ -24,15 +24,37 @@ exports.removeAttr = function (xmlDoc, xpath, attr) {
     });
 };
 
+var templateIdPath = function (templateId, prefix, postfix) {
+    var p = '//h:templateId[@root="' + templateId + '"]/..';
+    if (prefix) {
+        p = prefix + p;
+    }
+    if (postfix) {
+        p = p + postfix;
+    }
+    return p;
+};
+
+var templateIdPathFromSpec = function (spec, prefix, postfix) {
+    if (Array.isArray(spec)) {
+        var paths = spec.map(function (templateId) {
+            return templateIdPath(templateId, prefix, postfix);
+        });
+        return paths.join(' | ');
+    } else {
+        return templateIdPath(spec, prefix, postfix);
+    }
+};
+
 var pathConstructor = {
     'TR': function (value) {
-        return '//h:templateId[@root="' + value + '"]/..';
+        return templateIdPathFromSpec(value);
     },
     'TP': function (value) {
-        return './/h:templateId[@root="' + value + '"]/../..';
+        return templateIdPathFromSpec(value, '.', '/..');
     },
     'T': function (value) {
-        return './/h:templateId[@root="' + value + '"]/..';
+        return templateIdPathFromSpec(value, '.');
     },
     'N': function (value) {
         return value;
