@@ -58,7 +58,7 @@ describe('xml vs parse generate xml ', function () {
                 }
 
                 // generate ccda
-                var xmlGeneratedRaw = bbg.genWholeCCDA(result).toString();
+                var xmlGeneratedRaw = bbg(result).toString();
 
                 var mods = jsonutil.fileToJSON(modsDir, 'blueButtonGenerator.json');
                 if (addlGeneratorMods) {

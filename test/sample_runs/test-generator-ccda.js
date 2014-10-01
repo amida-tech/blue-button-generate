@@ -36,7 +36,7 @@ describe('parse generate parse generate', function () {
         expect(err.valid).to.be.true;
 
         // generate ccda
-        var xml = bbg.genWholeCCDA(result).toString();
+        var xml = bbg(result).toString();
         // write ccda
         fs.writeFileSync(path.join(generatedDir, "CCD_1_generated.xml"), xml);
 
@@ -49,7 +49,7 @@ describe('parse generate parse generate', function () {
         fs.writeFileSync(path.join(generatedDir, "CCD_1_generated_2.json"), JSON.stringify(result2, null, 4));
 
         // re-generate
-        var xml2 = bbg.genWholeCCDA(result2).toString();
+        var xml2 = bbg(result2).toString();
         fs.writeFileSync(path.join(generatedDir, "CCD_1_generated_2.xml"), xml2);
 
         delete result.errors;
@@ -71,7 +71,7 @@ describe('parse generate parse generate', function () {
         var val = bb.validator.validateDocumentModel(result);
 
         // generate ccda
-        var xml = bbg.genWholeCCDA(result).toString();
+        var xml = bbg(result).toString();
         // write ccda
         fs.writeFileSync(path.join(generatedDir, "Vitera_CCDA_SMART_Sample_generated.xml"), xml);
 
@@ -81,7 +81,7 @@ describe('parse generate parse generate', function () {
         fs.writeFileSync(path.join(generatedDir, "Vitera_CCDA_SMART_Sample_generated_2.json"), JSON.stringify(result2, null, 4));
 
         // re-generate
-        var xml2 = bbg.genWholeCCDA(result2).toString();
+        var xml2 = bbg(result2).toString();
         fs.writeFileSync(path.join(generatedDir, "Vitera_CCDA_SMART_Sample_generated_2.xml"), xml2);
 
         delete result.errors;
@@ -104,7 +104,7 @@ describe('parse generate parse generate', function () {
         var val = bb.validator.validateDocumentModel(result);
 
         // generate ccda
-        var xml = bbg.genWholeCCDA(result).toString();
+        var xml = bbg(result).toString();
         // write ccda
         fs.writeFileSync(path.join(generatedDir, "VA_CCD_Sample_File_Version_12_5_1_generated.xml"), xml);
 
@@ -116,7 +116,7 @@ describe('parse generate parse generate', function () {
         fs.writeFileSync(path.join(generatedDir, "VA_CCD_Sample_File_Version_12_5_1_generated_2.json"), JSON.stringify(result2, null, 4));
 
         // re-generate
-        var xml2 = bbg.genWholeCCDA(result2).toString();
+        var xml2 = bbg(result2).toString();
         fs.writeFileSync(path.join(generatedDir, "VA_CCD_Sample_File_Version_12_5_1_generated_2.xml"), xml2);
 
         delete result.errors;
@@ -144,7 +144,7 @@ describe('parse generate parse generate', function () {
         var val = bb.validator.validateDocumentModel(result);
 
         // generate ccda
-        var xml = bbg.genWholeCCDA(result).toString();
+        var xml = bbg(result).toString();
         // write ccda
         fs.writeFileSync(path.join(generatedDir, "SampleCCDDocument_generated.xml"), xml);
 
@@ -156,7 +156,7 @@ describe('parse generate parse generate', function () {
         fs.writeFileSync(path.join(generatedDir, "SampleCCDDocument_generated_2.json"), JSON.stringify(result2, null, 4));
 
         // re-generate
-        var xml2 = bbg.genWholeCCDA(result2).toString();
+        var xml2 = bbg(result2).toString();
         fs.writeFileSync(path.join(generatedDir, "SampleCCDDocument_generated_2.xml"), xml2);
 
         delete result.errors;
@@ -182,7 +182,7 @@ describe('parse generate parse generate', function () {
         var val = bb.validator.validateDocumentModel(result);
 
         // generate ccda
-        var xml = bbg.genWholeCCDA(result).toString();
+        var xml = bbg(result).toString();
         // write ccda
         fs.writeFileSync(path.join(generatedDir, "cms_sample_generated.xml"), xml);
 
@@ -192,7 +192,7 @@ describe('parse generate parse generate', function () {
         fs.writeFileSync(path.join(generatedDir, "cms_sample_generated_2.json"), JSON.stringify(result2, null, 4));
 
         // re-generate
-        var xml2 = bbg.genWholeCCDA(result2).toString();
+        var xml2 = bbg(result2).toString();
         fs.writeFileSync(path.join(generatedDir, "cms_sample_generated_2.xml"), xml2);
 
         delete result.errors;

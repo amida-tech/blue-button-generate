@@ -165,5 +165,5 @@ var genWholeCCDA = function (data) {
     return doc.toString();
 };
 
-module.exports = gen;
-module.exports.genWholeCCDA = genWholeCCDA;
+module.exports.section = gen;
+module.exports = genWholeCCDA;
