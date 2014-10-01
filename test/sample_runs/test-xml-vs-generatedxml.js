@@ -175,7 +175,7 @@ describe('xml vs parse generate xml ', function () {
 
     describe('CCD_1.xml', testSampleFile('CCD_1', true));
 
-    describe('Vitera_CCDA_Smart_Sample', testSampleFile('Vitera_CCDA_Smart_Sample', false, [{
+    describe('Vitera.xml', testSampleFile('Vitera', false, [{
         "value": "//h:recordTarget/h:patientRole/h:patient/h:raceCode",
         "comment": "due to parser merging raceCode and ethnicGroupCode this is generated as ethnicGroupCode (#173)",
     }, {
