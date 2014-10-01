@@ -26,7 +26,7 @@ describe('xml vs parse generate xml ', function () {
         expect(modsDir).to.exist;
     });
 
-    var testSampleFile = function (filename, validate, addlParserMods, addlGeneratorMods) {
+    var testSampleFile = function (filename, validate, addlParserMods, addlGeneratorMods, limited) {
         return function () {
             var xmlRaw;
             var xmlObj;
@@ -117,139 +117,141 @@ describe('xml vs parse generate xml ', function () {
                 findCompareSection('allergies');
             });
 
-            it('medications', function () {
-                findCompareSection('medications');
-            });
+            if (!limited) {
+                it('medications', function () {
+                    findCompareSection('medications');
+                });
 
-            it('immunizations', function () {
-                findCompareSection('immunizations');
-            });
+                it('immunizations', function () {
+                    findCompareSection('immunizations');
+                });
 
-            it('procedures', function () {
-                findCompareSection('procedures');
-            });
+                it('procedures', function () {
+                    findCompareSection('procedures');
+                });
 
-            it('encounters', function () {
-                findCompareSection('encounters');
-            });
+                it('encounters', function () {
+                    findCompareSection('encounters');
+                });
 
-            it('payers', function () {
-                findCompareSection('payers');
-            });
+                it('payers', function () {
+                    findCompareSection('payers');
+                });
 
-            it('plan_of_care', function () {
-                findCompareSection('plan_of_care');
-            });
+                it('plan_of_care', function () {
+                    findCompareSection('plan_of_care');
+                });
 
-            it('problems', function () {
-                findCompareSection('problems');
-            });
+                it('problems', function () {
+                    findCompareSection('problems');
+                });
 
-            it('social_history', function () {
-                findCompareSection('social_history');
-            });
+                it('social_history', function () {
+                    findCompareSection('social_history');
+                });
 
-            it('vitals', function () {
-                findCompareSection('vitals');
-            });
+                it('vitals', function () {
+                    findCompareSection('vitals');
+                });
 
-            it('results', function () {
-                findCompareSection('results');
-            });
+                it('results', function () {
+                    findCompareSection('results');
+                });
 
-            it('demographics', function () {
-                var f = function (obj) {
-                    var result = jsonutil.getDeepValue(obj, 'ClinicalDocument.recordTarget.0.patientRole.0');
-                    expect(result).to.exist;
-                    return result;
-                };
+                it('demographics', function () {
+                    var f = function (obj) {
+                        var result = jsonutil.getDeepValue(obj, 'ClinicalDocument.recordTarget.0.patientRole.0');
+                        expect(result).to.exist;
+                        return result;
+                    };
 
-                var demographics = f(xmlObj);
-                var demographicsGenerated = f(xmlGeneratedObj);
-                compareSection(demographics, demographicsGenerated, filename + '_' + "demographics");
-            });
+                    var demographics = f(xmlObj);
+                    var demographicsGenerated = f(xmlGeneratedObj);
+                    compareSection(demographics, demographicsGenerated, filename + '_' + "demographics");
+                });
+            }
         };
     };
 
     describe('CCD_1.xml', testSampleFile('CCD_1', true));
 
-    // describe('Vitera_CCDA_Smart_Sample', testSampleFile('Vitera_CCDA_Smart_Sample', false, [{
-    //     "value": "//h:recordTarget/h:patientRole/h:patient/h:raceCode",
-    //     "comment": "due to parser merging raceCode and ethnicGroupCode this is generated as ethnicGroupCode (#173)",
-    // }, {
-    //     "value": "//h:text",
-    //     "comment": "text fields are not supported currently"
-    // }, {
-    //     "value": "//h:name",
-    //     "comment": "bunch of empty names to be investigated"
-    // }, {
-    //     "value": "2.16.840.1.113883.10.20.22.2.6.1",
-    //     "xpathcmt": "Allergies Section (entries required)",
-    //     "type": "TR",
-    //     "subPathSpecs": [{
-    //         "value": ".//h:effectiveTime[not(@value | h:low | h:high)]"
-    //     }, {
-    //         "value": "h:id",
-    //         "comment": "error in file: id does not exist in spec"
-    //     }, {
-    //         "value": "h:title",
-    //         "comment": "title may differ"
-    //     }, {
-    //         "value": "2.16.840.1.113883.10.20.22.4.7",
-    //         "type": "T",
-    //         subPathSpecs: [{
-    //             "value": "h:informant",
-    //             "comment": "error in file: informant does not exist in spec"
-    //         }, {
-    //             "value": '..',
-    //             "action": "A",
-    //             "params": "inversionInd",
-    //             "comment": "parser ignores inversionInd attribute"
-    //         }, {
-    //             "value": "2.16.840.1.113883.10.20.22.4.9",
-    //             "type": "T",
-    //             subPathSpecs: [{
-    //                 "value": "h:code",
-    //                 "comment": "can be anything according to spec and parser does not read it"
-    //             }]
-    //         }]
-    //     }, {
-    //         "value": "2.16.840.1.113883.10.20.22.4.64",
-    //         "type": "TP",
-    //         "comment": "error in file: Ignoring Comment Activity"
-    //     }]
-    // }], [{
-    //     "value": "//h:recordTarget/h:patientRole/h:patient/h:ethnicGroupCode",
-    //     "comment": "due to parser merging raceCode and ethnicGroupCode original raceCode is converted to ethnicGroupCode (#173)"
-    // }, {
-    //     "value": "//h:text",
-    //     "comment": "text fields are not supported currently"
-    // }, {
-    //     "value": "//h:recordTarget/h:patientRole/h:patient/h:name[@use]",
-    //     "action": "A",
-    //     "params": "use",
-    //     "comment": "parser does read @use and generator assumes it is always 'L'"
-    // }, {
-    //     "value": "2.16.840.1.113883.10.20.22.2.6.1",
-    //     "xpathcmt": "Allergies Section (entries required)",
-    //     "type": "TR",
-    //     "subPathSpecs": [{
-    //         "value": "h:title",
-    //         "comment": "title may differ"
-    //     }, {
-    //         "value": ".//h:effectiveTime[not(@value | h:low | h:high)]"
-    //     }, {
-    //         "value": "h:templateId[@root=\"2.16.840.1.113883.10.20.22.2.6\"]",
-    //         "comment": "this templateId does not exist in the file"
-    //     }, {
-    //         "value": "2.16.840.1.113883.10.20.22.4.7",
-    //         "type": "T",
-    //         subPathSpecs: [{
-    //             "value": "..",
-    //             "action": "A",
-    //             "params": "inversionInd",
-    //             "comment": "parser ignores inversionInd attribute and generator always generates true"
-    //         }]
-    //     }]
-    // }]));
+    describe('Vitera_CCDA_Smart_Sample', testSampleFile('Vitera_CCDA_Smart_Sample', false, [{
+        "value": "//h:recordTarget/h:patientRole/h:patient/h:raceCode",
+        "comment": "due to parser merging raceCode and ethnicGroupCode this is generated as ethnicGroupCode (#173)",
+    }, {
+        "value": "//h:text",
+        "comment": "text fields are not supported currently"
+    }, {
+        "value": "//h:name",
+        "comment": "bunch of empty names to be investigated"
+    }, {
+        "value": "2.16.840.1.113883.10.20.22.2.6.1",
+        "xpathcmt": "Allergies Section (entries required)",
+        "type": "TR",
+        "subPathSpecs": [{
+            "value": ".//h:effectiveTime[not(@value | h:low | h:high)]"
+        }, {
+            "value": "h:id",
+            "comment": "error in file: id does not exist in spec"
+        }, {
+            "value": "h:title",
+            "comment": "title may differ"
+        }, {
+            "value": "2.16.840.1.113883.10.20.22.4.7",
+            "type": "T",
+            subPathSpecs: [{
+                "value": "h:informant",
+                "comment": "error in file: informant does not exist in spec"
+            }, {
+                "value": '..',
+                "action": "A",
+                "params": "inversionInd",
+                "comment": "parser ignores inversionInd attribute"
+            }, {
+                "value": "2.16.840.1.113883.10.20.22.4.9",
+                "type": "T",
+                subPathSpecs: [{
+                    "value": "h:code",
+                    "comment": "can be anything according to spec and parser does not read it"
+                }]
+            }]
+        }, {
+            "value": "2.16.840.1.113883.10.20.22.4.64",
+            "type": "TP",
+            "comment": "error in file: Ignoring Comment Activity"
+        }]
+    }], [{
+        "value": "//h:recordTarget/h:patientRole/h:patient/h:ethnicGroupCode",
+        "comment": "due to parser merging raceCode and ethnicGroupCode original raceCode is converted to ethnicGroupCode (#173)"
+    }, {
+        "value": "//h:text",
+        "comment": "text fields are not supported currently"
+    }, {
+        "value": "//h:recordTarget/h:patientRole/h:patient/h:name[@use]",
+        "action": "A",
+        "params": "use",
+        "comment": "parser does read @use and generator assumes it is always 'L'"
+    }, {
+        "value": "2.16.840.1.113883.10.20.22.2.6.1",
+        "xpathcmt": "Allergies Section (entries required)",
+        "type": "TR",
+        "subPathSpecs": [{
+            "value": "h:title",
+            "comment": "title may differ"
+        }, {
+            "value": ".//h:effectiveTime[not(@value | h:low | h:high)]"
+        }, {
+            "value": "h:templateId[@root=\"2.16.840.1.113883.10.20.22.2.6\"]",
+            "comment": "this templateId does not exist in the file"
+        }, {
+            "value": "2.16.840.1.113883.10.20.22.4.7",
+            "type": "T",
+            subPathSpecs: [{
+                "value": "..",
+                "action": "A",
+                "params": "inversionInd",
+                "comment": "parser ignores inversionInd attribute and generator always generates true"
+            }]
+        }]
+    }], true));
 });

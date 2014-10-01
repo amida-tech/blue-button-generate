@@ -1,6 +1,8 @@
 [{
     "value": "//*[@nullFlavor]"
 }, {
+    "value": "//h:text"
+}, {
     "value": "//h:effectiveTime[@xsi:type='IVL_TS']",
     "action": "A",
     "params": "type"
