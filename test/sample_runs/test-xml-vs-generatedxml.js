@@ -86,7 +86,7 @@ describe('xml vs parse generate xml ', function () {
             var templateIdsForSection = {
                 'allergies': ["2.16.840.1.113883.10.20.22.2.6", "2.16.840.1.113883.10.20.22.2.6.1"],
                 'medications': ["2.16.840.1.113883.10.20.22.2.1", "2.16.840.1.113883.10.20.22.2.1.1"],
-                'immunizations': ["2.16.840.1.113883.10.20.22.2.2"],
+                'immunizations': ["2.16.840.1.113883.10.20.22.2.2", "2.16.840.1.113883.10.20.22.2.2.1"],
                 'procedures': ["2.16.840.1.113883.10.20.22.2.7"],
                 'encounters': ["2.16.840.1.113883.10.20.22.2.22"],
                 'payers': ["2.16.840.1.113883.10.20.22.2.18"],
@@ -121,11 +121,11 @@ describe('xml vs parse generate xml ', function () {
                 findCompareSection('medications');
             });
 
-            if (!limited) {
-                it('immunizations', function () {
-                    findCompareSection('immunizations');
-                });
+            it('immunizations', function () {
+                findCompareSection('immunizations');
+            });
 
+            if (!limited) {
                 it('procedures', function () {
                     findCompareSection('procedures');
                 });
@@ -185,7 +185,7 @@ describe('xml vs parse generate xml ', function () {
         "value": "//h:name[not(h:family)][not(text())]",
         "comment": "bunch of empty names to be investigated"
     }, {
-        "value": "//h:effectiveTime[not(*)]",
+        "value": "//h:effectiveTime[not(*)][not(@*)]",
         "comment": "all childless and attributeless times (maybe previously removed nullFlavor)"
     }, {
         "value": "//h:assignedPerson[not(*)]",
@@ -321,6 +321,71 @@ describe('xml vs parse generate xml ', function () {
                 }]
             }]
         }]
+    }, {
+        "value": "2.16.840.1.113883.10.20.22.2.2.1",
+        "xpathcmt": "Immunizations Section",
+        "type": "TR",
+        "subPathSpecs": [{
+            "value": "h:id",
+            "comment": "error in file: id does not exist in spec"
+        }, {
+            "value": "h:title",
+            "comment": "title may differ"
+        }, {
+            "value": "2.16.840.1.113883.10.20.22.4.52",
+            "type": "T",
+            "xpathcmt": "Immunization Activity",
+            "subPathSpecs": [{
+                "value": "h:code",
+                "comment": "parser does not read"
+            }, {
+                "value": "h:consumable/h:manufacturedProduct/h:manufacturedMaterial/h:name",
+                "comment": "to be researched"
+            }, {
+                "value": "h:consumable/h:manufacturedProduct/h:manufacturerOrganization/h:standardIndustryClassCode",
+                "comment": "to be researched"
+            }, {
+                "value": "2.16.840.1.113883.10.20.1.46",
+                "type": "TP",
+                "comment": "unknown CCDA templateId"
+            }, {
+                "value": "2.16.840.1.113883.10.20.1.47",
+                "type": "TP",
+                "comment": "unknown CCDA templateId"
+            }, {
+                "value": "h:informant",
+                "comment": "to be researched"
+            }, {
+                "value": "h:performer[@typeCode='PRF']",
+                "action": "A",
+                "params": "typeCode",
+                "comment": "to be researched"
+            }, {
+                "value": "h:performer/h:assignedEntity[@classCode='ASSIGNED']",
+                "action": "A",
+                "params": "classCode",
+                "comment": "to be researched"
+            }, {
+                "value": "2.16.840.1.113883.10.20.22.4.64",
+                "type": "TP",
+                "subPathSpecs": [{
+                    "value": ".",
+                    "action": "A",
+                    "params": "inversionInd",
+                    "comment": "just change  ...22.4.64 is not good anyway"
+                }, {
+                    "value": "h:act",
+                    "action": "A",
+                    "params": "moodCode",
+                    "comment": "just change  ...22.4.64 is not good anyway"
+                }, {
+                    "value": "h:act/h:templateId",
+                    "action": "AM",
+                    "params": ["root", "2.16.840.1.113883.10.20.22.4.20"],
+                    "comment": "2.16.840.1.113883.10.20.22.4.64 (comment) or 2.16.840.1.113883.10.20.22.4.20"
+                }]
+            }]
+        }]
     }], [{
         "value": "//h:recordTarget/h:patientRole/h:patient/h:ethnicGroupCode",
         "comment": "due to parser merging raceCode and ethnicGroupCode original raceCode is converted to ethnicGroupCode (#173)"
@@ -364,6 +429,27 @@ describe('xml vs parse generate xml ', function () {
         }, {
             "value": "h:templateId[@root=\"2.16.840.1.113883.10.20.22.2.1\"]",
             "comment": "this templateId does not exist in the file"
+        }]
+    }, {
+        "value": "2.16.840.1.113883.10.20.22.2.2.1",
+        "xpathcmt": "Immunizations Section",
+        "type": "TR",
+        "subPathSpecs": [{
+            "value": "h:title",
+            "comment": "title may differ"
+        }, {
+            "value": "h:templateId[@root=\"2.16.840.1.113883.10.20.22.2.2\"]",
+            "comment": "this templateId does not exist in the file"
+        }, {
+            "value": "2.16.840.1.113883.10.20.22.4.52",
+            "type": "T",
+            "xpathcmt": "Immunization Activity",
+            "subPathSpecs": [{
+                "value": "2.16.840.1.113883.10.20.22.4.20",
+                "type": "T",
+                "action": "A",
+                "params": "moodCode",
+            }]
         }]
     }], true));
 });

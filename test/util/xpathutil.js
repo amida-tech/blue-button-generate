@@ -69,6 +69,11 @@ var actionExecuter = {
         var attrNode = node.attr(attr);
         attrNode.remove();
     },
+    'AM': function (parent, node, params) {
+        var attrs = {};
+        attrs[params[0]] = params[1];
+        node.attr(attrs);
+    },
     'W': function (parent, node) {
         var text = node.text();
         var newText = text.replace(/(\r\n|\n|\r|\t)/gm, " ").replace(/\s+/g, ' ').trim();
