@@ -87,7 +87,7 @@ describe('xml vs parse generate xml ', function () {
                 'allergies': ["2.16.840.1.113883.10.20.22.2.6", "2.16.840.1.113883.10.20.22.2.6.1"],
                 'medications': ["2.16.840.1.113883.10.20.22.2.1", "2.16.840.1.113883.10.20.22.2.1.1"],
                 'immunizations': ["2.16.840.1.113883.10.20.22.2.2", "2.16.840.1.113883.10.20.22.2.2.1"],
-                'procedures': ["2.16.840.1.113883.10.20.22.2.7"],
+                'procedures': ["2.16.840.1.113883.10.20.22.2.7", "2.16.840.1.113883.10.20.22.2.7.1"],
                 'encounters': ["2.16.840.1.113883.10.20.22.2.22"],
                 'payers': ["2.16.840.1.113883.10.20.22.2.18"],
                 'plan_of_care': ["2.16.840.1.113883.10.20.22.2.10"],
@@ -125,11 +125,11 @@ describe('xml vs parse generate xml ', function () {
                 findCompareSection('immunizations');
             });
 
-            if (!limited) {
-                it('procedures', function () {
-                    findCompareSection('procedures');
-                });
+            it('procedures', function () {
+                findCompareSection('procedures');
+            });
 
+            if (!limited) {
                 it('encounters', function () {
                     findCompareSection('encounters');
                 });
@@ -385,6 +385,49 @@ describe('xml vs parse generate xml ', function () {
                     "comment": "2.16.840.1.113883.10.20.22.4.64 (comment) or 2.16.840.1.113883.10.20.22.4.20"
                 }]
             }]
+        }, {
+            "value": "2.16.840.1.113883.10.20.22.2.7.1",
+            "xpathcmt": "Procedures Section",
+            "type": "TR",
+            "subPathSpecs": [{
+                "value": "h:id",
+                "comment": "error in file: id does not exist in spec"
+            }, {
+                "value": "h:title",
+                "comment": "title may differ"
+            }, {
+                "value": "2.16.840.1.113883.10.20.22.4.14",
+                "xpathcmt": "Procedure Activity Procedure",
+                "type": "T",
+                "subPathSpecs": [{
+                    "value": ".",
+                    "action": "A",
+                    "params": "moodCode"
+                }, {
+                    "value": "2.16.840.1.113883.10.20.22.4.4",
+                    "type": "TP",
+                    "comment": "to be researched"
+                }, {
+                    "value": "h:informant",
+                    "comment": "to be researched"
+                }, {
+                    "value": "h:participant/h:templateId",
+                    "comment": "error in file: this should be in participantRole"
+                }, {
+                    "value": "h:participant/h:participantRole/h:id",
+                    "comment": "to be researched"
+                }, {
+                    "value": "h:performer[@typeCode='PRF']",
+                    "action": "A",
+                    "params": "typeCode",
+                    "comment": "to be researched"
+                }, {
+                    "value": "h:performer/h:assignedEntity[@classCode='ASSIGNED']",
+                    "action": "A",
+                    "params": "classCode",
+                    "comment": "to be researched"
+                }]
+            }]
         }]
     }], [{
         "value": "//h:recordTarget/h:patientRole/h:patient/h:ethnicGroupCode",
@@ -412,7 +455,7 @@ describe('xml vs parse generate xml ', function () {
         }, {
             "value": "2.16.840.1.113883.10.20.22.4.7",
             "type": "T",
-            subPathSpecs: [{
+            "subPathSpecs": [{
                 "value": "..",
                 "action": "A",
                 "params": "inversionInd",
@@ -449,6 +492,24 @@ describe('xml vs parse generate xml ', function () {
                 "type": "T",
                 "action": "A",
                 "params": "moodCode",
+            }]
+        }, {
+            "value": "2.16.840.1.113883.10.20.22.2.7.1",
+            "xpathcmt": "Procedures Section",
+            "type": "TR",
+            "subPathSpecs": [{
+                "value": "h:title",
+                "comment": "title may differ"
+            }, {
+                "value": "h:templateId[@root=\"2.16.840.1.113883.10.20.22.2.7\"]"
+            }, {
+                "value": "2.16.840.1.113883.10.20.22.4.14",
+                "xpathcmt": "Procedure Activity Procedure",
+                "type": "T",
+                "subPathSpecs": [{
+                    "value": "h:participant/h:participantRole/h:templateId",
+                    "comment": "error in file: this should be in participantRole"
+                }]
             }]
         }]
     }], true));

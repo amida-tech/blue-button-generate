@@ -53,7 +53,8 @@ var normalizedDisplayNames = {
     "HISTORY OF IMMUNIZATIONS": "Immunizations",
     "Payer": "Payers",
     "Treatment plan": "Plan of Care",
-    "RESULTS": "Relevant diagnostic tests and/or laboratory data"
+    "RESULTS": "Relevant diagnostic tests and/or laboratory data",
+    "history of prior surgery   [For Hx of Tx, use H prefix]": "history of prior surgery [For Hx of Tx, use H prefix]"
 };
 
 var normalizedCodeSystemNames = {
@@ -70,7 +71,8 @@ var normalizedCodeSystemNames = {
     "HL7 RoleClassRelationship": "HL7 RoleCode",
     "HL7 RoleCode": "HL7 Role",
     "HL7 Role code": "HL7 Role",
-    "Race & Ethnicity - CDC": "Race and Ethnicity - CDC"
+    "Race & Ethnicity - CDC": "Race and Ethnicity - CDC",
+    "CPT-4": "CPT"
 };
 
 exports.processIntroducedCodeAttrs = function processIntroducedCodeAttrs(original, generated) {
