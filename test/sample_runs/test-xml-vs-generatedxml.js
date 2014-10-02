@@ -85,7 +85,7 @@ describe('xml vs parse generate xml ', function () {
 
             var templateIdsForSection = {
                 'allergies': ["2.16.840.1.113883.10.20.22.2.6", "2.16.840.1.113883.10.20.22.2.6.1"],
-                'medications': ["2.16.840.1.113883.10.20.22.2.1"],
+                'medications': ["2.16.840.1.113883.10.20.22.2.1", "2.16.840.1.113883.10.20.22.2.1.1"],
                 'immunizations': ["2.16.840.1.113883.10.20.22.2.2"],
                 'procedures': ["2.16.840.1.113883.10.20.22.2.7"],
                 'encounters': ["2.16.840.1.113883.10.20.22.2.22"],
@@ -117,11 +117,11 @@ describe('xml vs parse generate xml ', function () {
                 findCompareSection('allergies');
             });
 
-            if (!limited) {
-                it('medications', function () {
-                    findCompareSection('medications');
-                });
+            it('medications', function () {
+                findCompareSection('medications');
+            });
 
+            if (!limited) {
                 it('immunizations', function () {
                     findCompareSection('immunizations');
                 });
@@ -182,8 +182,14 @@ describe('xml vs parse generate xml ', function () {
         "value": "//h:text",
         "comment": "text fields are not supported currently"
     }, {
-        "value": "//h:name",
+        "value": "//h:name[not(h:family)][not(text())]",
         "comment": "bunch of empty names to be investigated"
+    }, {
+        "value": "//h:effectiveTime[not(*)]",
+        "comment": "all childless and attributeless times (maybe previously removed nullFlavor)"
+    }, {
+        "value": "//h:assignedPerson[not(*)]",
+        "comment": "all childless and attributeless assignedPerson (maybe previously removed nullFlavor)"
     }, {
         "value": "2.16.840.1.113883.10.20.22.2.6.1",
         "xpathcmt": "Allergies Section (entries required)",
@@ -203,6 +209,9 @@ describe('xml vs parse generate xml ', function () {
                 "value": "h:informant",
                 "comment": "error in file: informant does not exist in spec"
             }, {
+                "value": "h:participant/h:participantRole/h:playingEntity/h:name",
+                "comment": "needs to be researched"
+            }, {
                 "value": '..',
                 "action": "A",
                 "params": "inversionInd",
@@ -219,6 +228,98 @@ describe('xml vs parse generate xml ', function () {
             "value": "2.16.840.1.113883.10.20.22.4.64",
             "type": "TP",
             "comment": "error in file: Ignoring Comment Activity"
+        }]
+    }, {
+        "value": "2.16.840.1.113883.10.20.22.2.1.1",
+        "xpathcmt": "Medications Section",
+        "type": "TR",
+        "subPathSpecs": [{
+            "value": "h:id",
+            "comment": "error in file: id does not exist in spec"
+        }, {
+            "value": "h:title",
+            "comment": "title may differ"
+        }, {
+            "value": "2.16.840.1.113883.10.20.22.4.16",
+            "xpathcmt": "Medication Activity",
+            "type": "T",
+            "subPathSpecs": [{
+                "value": "h:effectiveTime[@operator='A']",
+                "comment": "error in file: unexpected interval"
+            }, {
+                "value": "h:entryRelationship/h:observation[not(h:templateId)]/..",
+                "comment": "error in file: template without templateId"
+            }, {
+                "value": "h:informant",
+                "comment": "error in file: no informant node in spec"
+            }, {
+                "value": "h:title",
+                "comment": "title may differ"
+            }, {
+                "value": "2.16.840.1.113883.10.20.22.4.20",
+                "xpathcmt": "Medication Information",
+                "type": "TP",
+                "comment": "not supported by parser"
+            }, {
+                "value": "2.16.840.1.113883.10.20.1.47",
+                "xpathcmt": "Medication Status",
+                "type": "TP",
+                "comment": "error in file: C32 template not valid in CCDA"
+            }, {
+                "value": "2.16.840.1.113883.10.20.22.4.3",
+                "xpathcmt": 'Problem Concern Act',
+                "type": "TP",
+                "comment": "error in file: there is no Problem Act in meidcations"
+            }, {
+                "value": "2.16.840.1.113883.10.20.22.4.18",
+                "xpathcmt": "Medication Dispense",
+                "type": "T",
+                "subPathSpecs": [{
+                    "value": "h:performer[@typeCode='PRF']",
+                    "action": "A",
+                    "params": "typeCode",
+                    "comment": "needs more research"
+                }, {
+                    "value": "h:performer/h:assignedEntity[@classCode='ASSIGNED']",
+                    "action": "A",
+                    "params": "classCode",
+                    "comment": "needs more research"
+                }, {
+                    "value": "2.16.840.1.113883.10.20.22.4.23",
+                    "xpathcmt": "Medication Information",
+                    "type": "TP",
+                    "comment": "parser does not read"
+                }]
+            }, {
+                "value": "2.16.840.1.113883.10.20.22.4.17",
+                "xpathcmt": "Medication Supply Order",
+                "type": "T",
+                "subPathSpecs": [{
+                    "value": "h:id",
+                    "comment": "parser does not read"
+                }, {
+                    "value": "h:author/h:assignedAuthor/h:addr",
+                    "comment:": "parser does not read"
+                }, {
+                    "value": "h:quantity[@unit]",
+                    "action": "A",
+                    "params": "unit",
+                    "comment": "parser does not read"
+                }, {
+                    "value": "2.16.840.1.113883.10.20.22.4.23",
+                    "xpathcmt": "Medication Information",
+                    "type": "TP",
+                    "comment": "parser does not read"
+                }]
+            }, {
+                "value": "2.16.840.1.113883.10.20.22.4.23",
+                "xpathcmt": "Medication Information",
+                "type": "T",
+                "subPathSpecs": [{
+                    "value": "h:manufacturedMaterial/h:name",
+                    "comment": "parser does not read"
+                }]
+            }]
         }]
     }], [{
         "value": "//h:recordTarget/h:patientRole/h:patient/h:ethnicGroupCode",
@@ -252,6 +353,17 @@ describe('xml vs parse generate xml ', function () {
                 "params": "inversionInd",
                 "comment": "parser ignores inversionInd attribute and generator always generates true"
             }]
+        }]
+    }, {
+        "value": "2.16.840.1.113883.10.20.22.2.1.1",
+        "xpathcmt": "Medication Section",
+        "type": "TR",
+        "subPathSpecs": [{
+            "value": "h:title",
+            "comment": "title may differ"
+        }, {
+            "value": "h:templateId[@root=\"2.16.840.1.113883.10.20.22.2.1\"]",
+            "comment": "this templateId does not exist in the file"
         }]
     }], true));
 });
