@@ -56,7 +56,8 @@ var normalizedDisplayNames = {
     "RESULTS": "Relevant diagnostic tests and/or laboratory data",
     "history of prior surgery   [For Hx of Tx, use H prefix]": "history of prior surgery [For Hx of Tx, use H prefix]",
     "TREATMENT PLAN": "Plan of Care",
-    "PAYMENT SOURCES": "Payment sources"
+    "PAYMENT SOURCES": "Payment sources",
+    "Problem list": "PROBLEM LIST"
 };
 
 var normalizedCodeSystemNames = {

@@ -91,7 +91,7 @@ describe('xml vs parse generate xml ', function () {
                 'encounters': ["2.16.840.1.113883.10.20.22.2.22"],
                 'payers': ["2.16.840.1.113883.10.20.22.2.18"],
                 'plan_of_care': ["2.16.840.1.113883.10.20.22.2.10"],
-                'problems': ["2.16.840.1.113883.10.20.22.2.5"],
+                'problems': ["2.16.840.1.113883.10.20.22.2.5", "2.16.840.1.113883.10.20.22.2.5.1"],
                 'social_history': ["2.16.840.1.113883.10.20.22.2.17"],
                 'vitals': ["2.16.840.1.113883.10.20.22.2.4"],
                 'results': ["2.16.840.1.113883.10.20.22.2.3"]
@@ -141,11 +141,11 @@ describe('xml vs parse generate xml ', function () {
                 findCompareSection('plan_of_care');
             });
 
-            if (!limited) {
-                it('problems', function () {
-                    findCompareSection('problems');
-                });
+            it('problems', function () {
+                findCompareSection('problems');
+            });
 
+            if (!limited) {
                 it('social_history', function () {
                     findCompareSection('social_history');
                 });
@@ -542,6 +542,61 @@ describe('xml vs parse generate xml ', function () {
                 "comment": "not clear in specification, parser does not read"
             }]
         }]
+    }, {
+        "value": "2.16.840.1.113883.10.20.22.2.5.1",
+        "xpathcmt": "Problems Section",
+        "type": "TR",
+        "subPathSpecs": [{
+            "value": "h:id",
+            "comment": "error in file: id does not exist in spec"
+        }, {
+            "value": "h:title",
+            "comment": "title may differ"
+        }, {
+            "value": "2.16.840.1.113883.10.20.22.4.3",
+            "xpathcmt": "Problem Act",
+            "type": "T",
+            "subPathSpecs": [{
+                "value": "h:statusCode",
+                "action": "AM",
+                "params": ["code", "completed"],
+                "comment": "parser deficiency: not read"
+            }, {
+                "value": "h:performer",
+                "comment": "invalid"
+            }, {
+                "value": "2.16.840.1.113883.10.20.22.4.4",
+                "xpathcmt": "Problem Observation",
+                "type": "T",
+                "subPathSpecs": [{
+                    "value": "..",
+                    "action": "A",
+                    "params": "inversionInd"
+                }, {
+                    "value": "h:informant",
+                    "comment": "invalid"
+                }, {
+                    "value": "h:code"
+                }, {
+                    "value": "2.16.840.1.113883.10.20.22.4.6",
+                    "type": "TP",
+                    "subPathSpecs": [{
+                        "value": ".",
+                        "action": "A",
+                        "params": "inversionInd"
+                    }, {
+                        "value": "h:observation/h:value",
+                        "action": "AM",
+                        "params": ["xsi:type", "CD"]
+                    }]
+                }]
+            }, {
+                "value": "2.16.840.1.113883.10.20.22.4.64",
+                "xpathcmt": "Comment Activity",
+                "type": "TP",
+                "comment": "Comment Activity is not implemented by Parser"
+            }]
+        }]
     }], [{
         "value": "//h:recordTarget/h:patientRole/h:patient/h:ethnicGroupCode",
         "comment": "due to parser merging raceCode and ethnicGroupCode original raceCode is converted to ethnicGroupCode (#173)"
@@ -666,6 +721,23 @@ describe('xml vs parse generate xml ', function () {
             }, {
                 "value": ".//h:statusCode[@code=\"new\"]",
                 "comment": "to be researched"
+            }]
+        }, {
+            "value": "2.16.840.1.113883.10.20.22.2.5.1",
+            "xpathcmt": "Problems Section",
+            "type": "TR",
+            "subPathSpecs": [{
+                "value": "h:templateId[@root=\"2.16.840.1.113883.10.20.22.2.5\"]",
+            }, {
+                "value": "h:title",
+                "comment": "title may differ"
+            }, {
+                "value": "2.16.840.1.113883.10.20.22.4.6",
+                "type": "T",
+                "subPathSpecs": [{
+                    "value": "h:id",
+                    "comment": "to be researched"
+                }]
             }]
         }]
     }], true));
