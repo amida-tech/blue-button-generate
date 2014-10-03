@@ -137,11 +137,11 @@ describe('xml vs parse generate xml ', function () {
                 findCompareSection('payers');
             });
 
-            if (!limited) {
-                it('plan_of_care', function () {
-                    findCompareSection('plan_of_care');
-                });
+            it('plan_of_care', function () {
+                findCompareSection('plan_of_care');
+            });
 
+            if (!limited) {
                 it('problems', function () {
                     findCompareSection('problems');
                 });
@@ -514,6 +514,34 @@ describe('xml vs parse generate xml ', function () {
                 }]
             }]
         }]
+    }, {
+        "value": "2.16.840.1.113883.10.20.22.2.10",
+        "xpathcmt": "Plan of Care Section",
+        "type": "TR",
+        "subPathSpecs": [{
+            "value": "h:id",
+            "comment": "error in file: id does not exist in spec"
+        }, {
+            "value": "h:title",
+            "comment": "title may differ"
+        }, {
+            "value": "2.16.840.1.113883.10.20.22.4.41",
+            "xpathcmt": "Plan of Care Activity Procedure",
+            "type": "T",
+            "subPathSpecs": [{
+                "value": ".",
+                "action": "AM",
+                "params": ["moodCode", "RQO"],
+                "comment": "parser does not support"
+            }, {
+                "value": "2.16.840.1.113883.10.20.22.4.4",
+                "type": "TP",
+                "comment": "not clear in specification, parser does not read"
+            }, {
+                "value": "h:performer",
+                "comment": "not clear in specification, parser does not read"
+            }]
+        }]
     }], [{
         "value": "//h:recordTarget/h:patientRole/h:patient/h:ethnicGroupCode",
         "comment": "due to parser merging raceCode and ethnicGroupCode original raceCode is converted to ethnicGroupCode (#173)"
@@ -627,6 +655,17 @@ describe('xml vs parse generate xml ', function () {
                 "params": "displayName"
             }, {
                 "value": ".//h:templateId[@root=\"2.16.840.1.113883.10.20.1.19\"]"
+            }]
+        }, {
+            "value": "2.16.840.1.113883.10.20.22.2.10",
+            "xpathcmt": "Plan of Care Section",
+            "type": "TR",
+            "subPathSpecs": [{
+                "value": "h:title",
+                "comment": "title may differ"
+            }, {
+                "value": ".//h:statusCode[@code=\"new\"]",
+                "comment": "to be researched"
             }]
         }]
     }], true));

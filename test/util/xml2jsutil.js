@@ -55,7 +55,7 @@ var normalizedDisplayNames = {
     "Treatment plan": "Plan of Care",
     "RESULTS": "Relevant diagnostic tests and/or laboratory data",
     "history of prior surgery   [For Hx of Tx, use H prefix]": "history of prior surgery [For Hx of Tx, use H prefix]",
-    //"Payers": "Payment Sources",
+    "TREATMENT PLAN": "Plan of Care",
     "PAYMENT SOURCES": "Payment sources"
 };
 
