@@ -54,7 +54,9 @@ var normalizedDisplayNames = {
     "Payer": "Payers",
     "Treatment plan": "Plan of Care",
     "RESULTS": "Relevant diagnostic tests and/or laboratory data",
-    "history of prior surgery   [For Hx of Tx, use H prefix]": "history of prior surgery [For Hx of Tx, use H prefix]"
+    "history of prior surgery   [For Hx of Tx, use H prefix]": "history of prior surgery [For Hx of Tx, use H prefix]",
+    //"Payers": "Payment Sources",
+    "PAYMENT SOURCES": "Payment sources"
 };
 
 var normalizedCodeSystemNames = {
@@ -74,7 +76,8 @@ var normalizedCodeSystemNames = {
     "Race & Ethnicity - CDC": "Race and Ethnicity - CDC",
     "CPT-4": "CPT",
     "RoleCode": "HL7 Role",
-    "ActCode": "HL7ActCode"
+    "ActCode": "HL7ActCode",
+    "RoleClassRelationshipFormal": "HL7 RoleCode"
 };
 
 exports.processIntroducedCodeAttrs = function processIntroducedCodeAttrs(original, generated) {

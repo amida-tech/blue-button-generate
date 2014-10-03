@@ -133,11 +133,11 @@ describe('xml vs parse generate xml ', function () {
                 findCompareSection('encounters');
             });
 
-            if (!limited) {
-                it('payers', function () {
-                    findCompareSection('payers');
-                });
+            it('payers', function () {
+                findCompareSection('payers');
+            });
 
+            if (!limited) {
                 it('plan_of_care', function () {
                     findCompareSection('plan_of_care');
                 });
@@ -463,6 +463,56 @@ describe('xml vs parse generate xml ', function () {
                     "comment": "to be researched"
                 }]
             }]
+        }, {
+            "value": "2.16.840.1.113883.10.20.22.2.18",
+            "xpathcmt": "Payers Section",
+            "type": "TR",
+            "subPathSpecs": [{
+                "value": "h:id",
+                "comment": "error in file: id does not exist in spec"
+            }, {
+                "value": "h:title",
+                "comment": "title may differ"
+            }, {
+                "value": "h:code",
+                "action": "A",
+                "params": "displayName"
+            }, {
+                "value": "2.16.840.1.113883.10.20.22.4.60",
+                "xpathcmt": "Coverage Activity",
+                "type": "T",
+                "subPathSpecs": [{
+                    "value": "h:informant",
+                    "comment": "to be researched"
+                }, {
+                    "value": "h:entryRelationship/h:sequenceNumber",
+                    "comment": "to be researched"
+                }, {
+                    "value": "2.16.840.1.113883.10.20.22.4.61",
+                    "xpathcmt": "Policy Activity",
+                    "type": "T",
+                    "subPathSpecs": [{
+                        "value": "h:entryRelationship/h:act[@moodCode=\"DEF\"]",
+                        "action": "AM",
+                        "params": ["moodCode", "EVN"],
+                        "comment": "to be researched"
+                    }, {
+                        "value": "h:participant/h:participantRole/h:playingEntity/*[@value=\"19381212\"]",
+                        "comment": "to be researched"
+                    }, {
+                        "value": "h:performer/h:assignedEntity[@classCode='ASSIGNED']",
+                        "action": "A",
+                        "params": "classCode",
+                        "comment": "to be researched"
+                    }, {
+                        "value": "h:performer/h:assignedEntity/h:representedOrganization[not(*)]"
+                    }, {
+                        "value": "h:performer/h:assignedEntity/h:representedOrganization[@classCode=\"ORG\"]",
+                        "action": "A",
+                        "params": "classCode"
+                    }]
+                }]
+            }]
         }]
     }], [{
         "value": "//h:recordTarget/h:patientRole/h:patient/h:ethnicGroupCode",
@@ -563,6 +613,20 @@ describe('xml vs parse generate xml ', function () {
                     "value": "h:participant/h:participantRole/h:templateId",
                     "comment": "error in file: this should be in participantRole"
                 }]
+            }]
+        }, {
+            "value": "2.16.840.1.113883.10.20.22.2.18",
+            "xpathcmt": "Payers Section",
+            "type": "TR",
+            "subPathSpecs": [{
+                "value": "h:title",
+                "comment": "title may differ"
+            }, {
+                "value": "h:code",
+                "action": "A",
+                "params": "displayName"
+            }, {
+                "value": ".//h:templateId[@root=\"2.16.840.1.113883.10.20.1.19\"]"
             }]
         }]
     }], true));
