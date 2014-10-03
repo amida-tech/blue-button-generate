@@ -94,7 +94,7 @@ describe('xml vs parse generate xml ', function () {
                 'problems': ["2.16.840.1.113883.10.20.22.2.5", "2.16.840.1.113883.10.20.22.2.5.1"],
                 'social_history': ["2.16.840.1.113883.10.20.22.2.17"],
                 'vitals': ["2.16.840.1.113883.10.20.22.2.4", "2.16.840.1.113883.10.20.22.2.4.1"],
-                'results': ["2.16.840.1.113883.10.20.22.2.3"]
+                'results': ["2.16.840.1.113883.10.20.22.2.3", "2.16.840.1.113883.10.20.22.2.3.1"]
             };
 
             var findCompareSection = function (sectionName) {
@@ -159,19 +159,19 @@ describe('xml vs parse generate xml ', function () {
                 it('results', function () {
                     findCompareSection('results');
                 });
-
-                it('demographics', function () {
-                    var f = function (obj) {
-                        var result = jsonutil.getDeepValue(obj, 'ClinicalDocument.recordTarget.0.patientRole.0');
-                        expect(result).to.exist;
-                        return result;
-                    };
-
-                    var demographics = f(xmlObj);
-                    var demographicsGenerated = f(xmlGeneratedObj);
-                    compareSection(demographics, demographicsGenerated, filename + '_' + "demographics");
-                });
             }
+            it('demographics', function () {
+                var f = function (obj) {
+                    var result = jsonutil.getDeepValue(obj, 'ClinicalDocument.recordTarget.0.patientRole.0');
+                    expect(result).to.exist;
+                    return result;
+                };
+
+                var demographics = f(xmlObj);
+                var demographicsGenerated = f(xmlGeneratedObj);
+                compareSection(demographics, demographicsGenerated, filename + '_' + "demographics");
+            });
+
         };
     };
 
@@ -207,7 +207,7 @@ describe('xml vs parse generate xml ', function () {
         }, {
             "value": "2.16.840.1.113883.10.20.22.4.7",
             "type": "T",
-            subPathSpecs: [{
+            "subPathSpecs": [{
                 "value": "h:informant",
                 "comment": "error in file: informant does not exist in spec"
             }, {
@@ -221,7 +221,7 @@ describe('xml vs parse generate xml ', function () {
             }, {
                 "value": "2.16.840.1.113883.10.20.22.4.9",
                 "type": "T",
-                subPathSpecs: [{
+                "subPathSpecs": [{
                     "value": "h:code",
                     "comment": "can be anything according to spec and parser does not read it"
                 }]
@@ -615,6 +615,33 @@ describe('xml vs parse generate xml ', function () {
             }, {
                 "value": "h:methodCode"
             }]
+        }]
+    }, {
+        "value": "2.16.840.1.113883.10.20.22.2.3.1.xxx",
+        "xpathcmt": "Results Section",
+        "type": "TR",
+        "subPathSpecs": [{
+            "value": "h:title"
+        }, {
+            "value": "h:id"
+        }, {
+            "value": "2.16.840.1.113883.10.20.22.4.1",
+            "type": "T",
+            "subPathSpecs": [{
+                "value": "h:participant"
+            }, {
+                "value": "h:component/h:procedure"
+            }, {
+                "value": "2.16.840.1.113883.10.20.22.4.2",
+                "type": "T",
+                "subPathSpecs": [{
+                    "value": "h:performer"
+                }]
+            }]
+        }, {
+            "value": "2.16.840.1.113883.10.20.22.4.64",
+            "type": "TP",
+            "comment": "error in file: Ignoring Comment Activity"
         }]
     }], [{
         "value": "//h:recordTarget/h:patientRole/h:patient/h:ethnicGroupCode",

@@ -109,8 +109,6 @@ exports.processIntroducedCodeAttrs = function processIntroducedCodeAttrs(origina
 
 exports.modifyAndToObject = function (xml, modifications, callback) {
     var xmlModified = xpathutil.modifyXML(xml, modifications);
-    var parser = new xml2js.Parser({
-        async: false
-    });
+    var parser = new xml2js.Parser();
     parser.parseString(xmlModified, callback);
 };
