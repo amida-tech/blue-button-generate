@@ -129,11 +129,11 @@ describe('xml vs parse generate xml ', function () {
                 findCompareSection('procedures');
             });
 
-            if (!limited) {
-                it('encounters', function () {
-                    findCompareSection('encounters');
-                });
+            it('encounters', function () {
+                findCompareSection('encounters');
+            });
 
+            if (!limited) {
                 it('payers', function () {
                     findCompareSection('payers');
                 });
@@ -428,6 +428,41 @@ describe('xml vs parse generate xml ', function () {
                     "comment": "to be researched"
                 }]
             }]
+        }, {
+            "value": "2.16.840.1.113883.10.20.22.2.22",
+            "xpathcmt": "Encounters Section",
+            "type": "TR",
+            "subPathSpecs": [{
+                "value": "h:id",
+                "comment": "error in file: id does not exist in spec"
+            }, {
+                "value": "h:title",
+                "comment": "title may differ"
+            }, {
+                "value": "2.16.840.1.113883.10.20.22.4.49",
+                "xpathcmt": "Encounters Activities",
+                "type": "T",
+                "subPathSpecs": [{
+                    "value": "h:informant",
+                    "comment": "to be researched"
+                }, {
+                    "value": "h:participant/h:templateId",
+                    "comment": "error in file: this should be in participantRole"
+                }, {
+                    "value": "h:participant/h:participantRole/h:id",
+                    "comment": "to be researched"
+                }, {
+                    "value": "h:performer[@typeCode='PRF']",
+                    "action": "A",
+                    "params": "typeCode",
+                    "comment": "to be researched"
+                }, {
+                    "value": "h:performer/h:assignedEntity[@classCode='ASSIGNED']",
+                    "action": "A",
+                    "params": "classCode",
+                    "comment": "to be researched"
+                }]
+            }]
         }]
     }], [{
         "value": "//h:recordTarget/h:patientRole/h:patient/h:ethnicGroupCode",
@@ -505,6 +540,24 @@ describe('xml vs parse generate xml ', function () {
             }, {
                 "value": "2.16.840.1.113883.10.20.22.4.14",
                 "xpathcmt": "Procedure Activity Procedure",
+                "type": "T",
+                "subPathSpecs": [{
+                    "value": "h:participant/h:participantRole/h:templateId",
+                    "comment": "error in file: this should be in participantRole"
+                }]
+            }]
+        }, {
+            "value": "2.16.840.1.113883.10.20.22.2.22",
+            "xpathcmt": "Encounters Section",
+            "type": "TR",
+            "subPathSpecs": [{
+                "value": "h:title",
+                "comment": "title may differ"
+            }, {
+                "value": "h:templateId[@root=\"2.16.840.1.113883.10.20.22.2.22.1\"]"
+            }, {
+                "value": "2.16.840.1.113883.10.20.22.4.49",
+                "xpathcmt": "Encounters Activities",
                 "type": "T",
                 "subPathSpecs": [{
                     "value": "h:participant/h:participantRole/h:templateId",

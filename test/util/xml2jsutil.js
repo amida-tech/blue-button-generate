@@ -72,7 +72,9 @@ var normalizedCodeSystemNames = {
     "HL7 RoleCode": "HL7 Role",
     "HL7 Role code": "HL7 Role",
     "Race & Ethnicity - CDC": "Race and Ethnicity - CDC",
-    "CPT-4": "CPT"
+    "CPT-4": "CPT",
+    "RoleCode": "HL7 Role",
+    "ActCode": "HL7ActCode"
 };
 
 exports.processIntroducedCodeAttrs = function processIntroducedCodeAttrs(original, generated) {
