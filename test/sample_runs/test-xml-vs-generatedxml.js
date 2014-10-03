@@ -93,7 +93,7 @@ describe('xml vs parse generate xml ', function () {
                 'plan_of_care': ["2.16.840.1.113883.10.20.22.2.10"],
                 'problems': ["2.16.840.1.113883.10.20.22.2.5", "2.16.840.1.113883.10.20.22.2.5.1"],
                 'social_history': ["2.16.840.1.113883.10.20.22.2.17"],
-                'vitals': ["2.16.840.1.113883.10.20.22.2.4"],
+                'vitals': ["2.16.840.1.113883.10.20.22.2.4", "2.16.840.1.113883.10.20.22.2.4.1"],
                 'results': ["2.16.840.1.113883.10.20.22.2.3"]
             };
 
@@ -149,11 +149,13 @@ describe('xml vs parse generate xml ', function () {
                 it('social_history', function () {
                     findCompareSection('social_history');
                 });
+            }
 
-                it('vitals', function () {
-                    findCompareSection('vitals');
-                });
+            it('vitals', function () {
+                findCompareSection('vitals');
+            });
 
+            if (!limited) {
                 it('results', function () {
                     findCompareSection('results');
                 });
@@ -597,6 +599,23 @@ describe('xml vs parse generate xml ', function () {
                 "comment": "Comment Activity is not implemented by Parser"
             }]
         }]
+    }, {
+        "value": "2.16.840.1.113883.10.20.22.2.4.1",
+        "xpathcmt": "Vital Signs Section",
+        "type": "TR",
+        "subPathSpecs": [{
+            "value": "h:title"
+        }, {
+            "value": "h:id"
+        }, {
+            "value": "2.16.840.1.113883.10.20.22.4.27",
+            "type": "T",
+            "subPathSpecs": [{
+                "value": "h:informant"
+            }, {
+                "value": "h:methodCode"
+            }]
+        }]
     }], [{
         "value": "//h:recordTarget/h:patientRole/h:patient/h:ethnicGroupCode",
         "comment": "due to parser merging raceCode and ethnicGroupCode original raceCode is converted to ethnicGroupCode (#173)"
@@ -739,6 +758,15 @@ describe('xml vs parse generate xml ', function () {
                     "comment": "to be researched"
                 }]
             }]
+        }]
+    }, {
+        "value": "2.16.840.1.113883.10.20.22.2.4.1",
+        "xpathcmt": "Vital Signs Section",
+        "type": "TR",
+        "subPathSpecs": [{
+            "value": "h:title"
+        }, {
+            "value": "h:templateId[@root=\"2.16.840.1.113883.10.20.22.2.4\"]",
         }]
     }], true));
 });
