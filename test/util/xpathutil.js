@@ -134,7 +134,9 @@ var removeHierarchical = exports.removeHierarchical = function removeHierarchica
 };
 
 exports.modifyXML = function (xml, modifications) {
-    var xmlDoc = libxmljs.parseXmlString(xml);
+    var xmlDoc = libxmljs.parseXmlString(xml, {
+        noblanks: true
+    });
     removeHierarchical(xmlDoc, modifications);
     var result = xmlDoc.toString();
     return result;
