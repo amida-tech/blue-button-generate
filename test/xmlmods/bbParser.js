@@ -1,4 +1,4 @@
-[{
+module.exports = [{
     "value": "//*[@nullFlavor]"
 }, {
     "value": "//h:text"
@@ -6,6 +6,9 @@
     "value": "//h:effectiveTime[@xsi:type='IVL_TS']",
     "action": "A",
     "params": "type"
+        //}, {
+        //    "value": "//h:effectiveTime",
+        //    "action": "remove_timezone"
 }, {
     "value": " //h:telecom[@use='WP']",
     "action": "TEL"
@@ -235,4 +238,4 @@
     }, {
         "value": "h:providerOrganization"
     }]
-}]
+}];

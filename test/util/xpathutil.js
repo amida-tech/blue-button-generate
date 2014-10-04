@@ -97,6 +97,23 @@ var actionExecuter = {
         newChildren.forEach(function (newChild) {
             parent.addChild(newChild);
         });
+    },
+    "remove_timezone": function (parent, node) {
+        var attrNode = node.attr('value');
+        if (attrNode) {
+            console.log("here");
+            var t = attrNode.value().toString();
+            if (t.length > 14) {
+                var index = t.indexOf('-');
+                if (index < 0) {
+                    index = t.indexOf('+');
+                }
+                if ((index > 12) && (index + 5) === t.length) {
+                    var newT = t.slice(0, index);
+                    attrNode.value(newT);
+                }
+            }
+        }
     }
 };
 

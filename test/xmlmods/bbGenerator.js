@@ -1,4 +1,4 @@
-[{
+module.exports = [{
     "value": "//*[@nullFlavor]"
 }, {
     "value": "//h:text"
@@ -139,4 +139,4 @@
     "subPathSpecs": [{
         "value": "h:text"
     }]
-}]
+}];
