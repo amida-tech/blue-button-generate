@@ -139,11 +139,11 @@ var actionExecuter = {
 var removeHierarchical = exports.removeHierarchical = function removeHierarchical(xmlDoc, pathSpecs) {
     pathSpecs.forEach(function (pathSpec) {
         var t = pathSpec.type || 'N';
-        var path = pathConstructor[t](pathSpec.value);
+        var path = pathConstructor[t](pathSpec.xpath);
         var nodes = xmlDoc.find(path, ns);
         nodes.forEach(function (node) {
-            if (pathSpec.subPathSpecs) {
-                removeHierarchical(node, pathSpec.subPathSpecs);
+            if (pathSpec.childxpaths) {
+                removeHierarchical(node, pathSpec.childxpaths);
             } else {
                 var execType = pathSpec.action || 'R';
                 actionExecuter[execType](xmlDoc, node, pathSpec.params);

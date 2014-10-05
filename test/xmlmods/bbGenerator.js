@@ -1,142 +1,142 @@
 module.exports = [{
-    "value": "//*[@nullFlavor]"
+    xpath: "//*[@nullFlavor]"
 }, {
-    "value": "//h:text"
+    xpath: "//h:text"
 }, {
-    "value": "//h:effectiveTime[@xsi:type=\"IVL_TS\"]",
-    "action": "A",
-    "params": "type"
+    xpath: "//h:effectiveTime[@xsi:type=\"IVL_TS\"]",
+    action: "A",
+    params: "type"
 }, {
-    "value": "//h:reference"
+    xpath: "//h:reference"
 }, {
-    "value": "//h:originalText"
+    xpath: "//h:originalText"
 }, {
-    "value": "//h:text",
-    "action": "W"
+    xpath: "//h:text",
+    action: "W"
 }, {
-    "value": ["2.16.840.1.113883.10.20.22.2.6", "2.16.840.1.113883.10.20.22.2.6.1"],
-    "xpathcmt": "Allergies Section (entries optional)",
-    "type": "TR",
-    "subPathSpecs": [{
-        "value": "h:text"
+    xpath: ["2.16.840.1.113883.10.20.22.2.6", "2.16.840.1.113883.10.20.22.2.6.1"],
+    description: "Allergies Section (entries optional)",
+    type: "TR",
+    childxpaths: [{
+        xpath: "h:text"
     }]
 }, {
-    "value": "2.16.840.1.113883.10.20.22.2.1",
-    "xpathcmt": "Medications Section (entries optional)",
-    "type": "TR",
-    "subPathSpecs": [{
-        "value": "h:text"
+    xpath: "2.16.840.1.113883.10.20.22.2.1",
+    description: "Medications Section (entries optional)",
+    type: "TR",
+    childxpaths: [{
+        xpath: "h:text"
     }]
 }, {
-    "value": "2.16.840.1.113883.10.20.22.2.2",
-    "xpathcmt": "Immunization Section",
-    "type": "TR",
-    "subPathSpecs": [{
-        "value": "h:text"
+    xpath: "2.16.840.1.113883.10.20.22.2.2",
+    description: "Immunization Section",
+    type: "TR",
+    childxpaths: [{
+        xpath: "h:text"
     }, {
-        "value": "2.16.840.1.113883.10.20.22.4.52",
-        "xpathcmt": "Immunization Activity",
-        "type": "T",
-        "subPathSpecs": [{
-            "value": "2.16.840.1.113883.10.20.22.4.20",
-            "xpathcmt": "Instructions",
-            "type": "T",
-            "subPathSpecs": [{
-                "value": "..",
-                "action": "A",
-                "params": "inversionInd"
+        xpath: "2.16.840.1.113883.10.20.22.4.52",
+        description: "Immunization Activity",
+        type: "T",
+        childxpaths: [{
+            xpath: "2.16.840.1.113883.10.20.22.4.20",
+            description: "Instructions",
+            type: "T",
+            childxpaths: [{
+                xpath: "..",
+                action: "A",
+                params: "inversionInd"
             }]
         }]
     }]
 }, {
-    "value": "2.16.840.1.113883.10.20.22.2.7",
-    "xpathcmt": "Procedures Section",
-    "type": "TR",
-    "subPathSpecs": [{
-        "value": "h:text"
+    xpath: "2.16.840.1.113883.10.20.22.2.7",
+    description: "Procedures Section",
+    type: "TR",
+    childxpaths: [{
+        xpath: "h:text"
     }, {
-        "value": "2.16.840.1.113883.10.20.22.4.12",
-        "xpathcmt": "Procedure Actitivity Act",
-        "type": "T",
-        "subPathSpecs": [{
-            "value": ".",
-            "action": "A",
-            "params": "moodCode"
+        xpath: "2.16.840.1.113883.10.20.22.4.12",
+        description: "Procedure Actitivity Act",
+        type: "T",
+        childxpaths: [{
+            xpath: ".",
+            action: "A",
+            params: "moodCode"
         }]
     }, {
-        "value": "2.16.840.1.113883.10.20.22.4.13",
-        "xpathcmt": "Procedure Actitivity Observation",
-        "type": "T",
-        "subPathSpecs": [{
-            "value": ".",
-            "action": "A",
-            "params": "moodCode"
+        xpath: "2.16.840.1.113883.10.20.22.4.13",
+        description: "Procedure Actitivity Observation",
+        type: "T",
+        childxpaths: [{
+            xpath: ".",
+            action: "A",
+            params: "moodCode"
         }]
     }, {
-        "value": "2.16.840.1.113883.10.20.22.4.14",
-        "xpathcmt": "Procedure Actitivity Procedure",
-        "type": "T",
-        "subPathSpecs": [{
-            "value": ".",
-            "action": "A",
-            "params": "moodCode"
+        xpath: "2.16.840.1.113883.10.20.22.4.14",
+        description: "Procedure Actitivity Procedure",
+        type: "T",
+        childxpaths: [{
+            xpath: ".",
+            action: "A",
+            params: "moodCode"
         }]
     }]
 }, {
-    "value": "2.16.840.1.113883.10.20.22.2.22",
-    "xpathcmt": "Encounters Section",
-    "type": "TR",
-    "subPathSpecs": [{
-        "value": "h:text"
+    xpath: "2.16.840.1.113883.10.20.22.2.22",
+    description: "Encounters Section",
+    type: "TR",
+    childxpaths: [{
+        xpath: "h:text"
     }]
 }, {
-    "value": "2.16.840.1.113883.10.20.22.2.18",
-    "xpathcmt": "Payers Section",
-    "type": "TR",
-    "subPathSpecs": [{
-        "value": "h:text"
+    xpath: "2.16.840.1.113883.10.20.22.2.18",
+    description: "Payers Section",
+    type: "TR",
+    childxpaths: [{
+        xpath: "h:text"
     }, {
-        "value": ".//h:time"
+        xpath: ".//h:time"
     }]
 }, {
-    "value": "2.16.840.1.113883.10.20.22.2.10",
-    "xpathcmt": "Plan Of Care Section",
-    "type": "TR",
-    "subPathSpecs": [{
-        "value": "h:text"
+    xpath: "2.16.840.1.113883.10.20.22.2.10",
+    description: "Plan Of Care Section",
+    type: "TR",
+    childxpaths: [{
+        xpath: "h:text"
     }]
 }, {
-    "value": "2.16.840.1.113883.10.20.22.2.5",
-    "xpathcmt": "Problems",
-    "type": "TR",
-    "subPathSpecs": [{
-        "value": "h:text"
+    xpath: "2.16.840.1.113883.10.20.22.2.5",
+    description: "Problems",
+    type: "TR",
+    childxpaths: [{
+        xpath: "h:text"
     }]
 }, {
-    "value": "2.16.840.1.113883.10.20.22.2.17",
-    "xpathcmt": "Social History Section",
-    "type": "TR",
-    "subPathSpecs": [{
-        "value": "h:text"
+    xpath: "2.16.840.1.113883.10.20.22.2.17",
+    description: "Social History Section",
+    type: "TR",
+    childxpaths: [{
+        xpath: "h:text"
     }]
 }, {
-    "value": "2.16.840.1.113883.10.20.22.2.4",
-    "xpathcmt": "Vital Signs Section",
-    "type": "TR",
-    "subPathSpecs": [{
-        "value": "h:text"
+    xpath: "2.16.840.1.113883.10.20.22.2.4",
+    description: "Vital Signs Section",
+    type: "TR",
+    childxpaths: [{
+        xpath: "h:text"
     }, {
-        "value": "..",
-        "action": "ADD",
-        "params": "2.16.840.1.113883.10.20.22.4.27"
+        xpath: "..",
+        action: "ADD",
+        params: "2.16.840.1.113883.10.20.22.4.27"
     }, {
-        "value": "h:entry"
+        xpath: "h:entry"
     }]
 }, {
-    "value": "2.16.840.1.113883.10.20.22.2.3",
-    "xpathcmt": "Results Section",
-    "type": "TR",
-    "subPathSpecs": [{
-        "value": "h:text"
+    xpath: "2.16.840.1.113883.10.20.22.2.3",
+    description: "Results Section",
+    type: "TR",
+    childxpaths: [{
+        xpath: "h:text"
     }]
 }];
