@@ -12,6 +12,7 @@ var jsonutil = require('../util/jsonutil');
 var xml2jsutil = require('../util/xml2jsutil');
 
 var bbParserMods = require('../xmlmods/bbParser');
+var bbParserPostMods = require('../xmlmods/bbParserPost');
 var bbGeneratorMods = require('../xmlmods/bbGenerator');
 var viteraParserMods = require('../xmlmods/viteraParser');
 var viteraGeneratorMods = require('../xmlmods/viteraGenerator');
@@ -45,6 +46,7 @@ describe('xml vs parse generate xml ', function () {
                 if (addlParserMods) {
                     mods = mods.concat(addlParserMods);
                 }
+                mods = mods.concat(bbParserPostMods);
                 xml2jsutil.modifyAndToObject(xmlRaw, mods, function (err, result) {
                     xmlObj = result;
                     done(err);
@@ -74,7 +76,6 @@ describe('xml vs parse generate xml ', function () {
 
             var compareSection = function (section, sectionGenerated, baseName) {
                 xml2jsutil.processIntroducedCodeAttrs(section, sectionGenerated);
-                xml2jsutil.removeTimeZones(section);
 
                 var orderedSection = jsonutil.orderByKeys(section);
                 var orderedGeneratedSection = jsonutil.orderByKeys(sectionGenerated);

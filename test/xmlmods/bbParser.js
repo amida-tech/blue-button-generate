@@ -6,9 +6,6 @@ module.exports = [{
     xpath: "//h:effectiveTime[@xsi:type='IVL_TS']",
     action: "removeAttribute",
     params: "type"
-        //}, {
-        //    xpath: "//h:effectiveTime",
-        //    action: "removeTimezone"
 }, {
     xpath: " //h:telecom[@use='WP']",
     action: "normalizeTelNumber"
