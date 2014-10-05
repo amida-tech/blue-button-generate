@@ -47,42 +47,39 @@ var templateIdPathFromSpec = function (spec, prefix, postfix) {
 };
 
 var pathConstructor = {
-    'TR': function (value) {
+    'rootTemplate': function (value) {
         return templateIdPathFromSpec(value);
     },
-    'TP': function (value) {
+    'localTemplateParent': function (value) {
         return templateIdPathFromSpec(value, '.', '/..');
     },
-    'T': function (value) {
+    'localTemplate': function (value) {
         return templateIdPathFromSpec(value, '.');
     },
-    'N': function (value) {
+    "normal": function (value) {
         return value;
     }
 };
 
 var actionExecuter = {
-    'R': function (parent, node) {
+    "removeNode": function (parent, node) {
         node.remove();
     },
-    'A': function (parent, node, attr) {
+    "removeAttribute": function (parent, node, attr) {
         var attrNode = node.attr(attr);
         attrNode.remove();
     },
-    'AM': function (parent, node, params) {
+    "addAttribute": function (parent, node, params) {
         var attrs = {};
         attrs[params[0]] = params[1];
         node.attr(attrs);
     },
-    'AT': function (parent, node, params) {
-        node.text(params);
-    },
-    'W': function (parent, node) {
+    "removeWhitespace": function (parent, node) {
         var text = node.text();
         var newText = text.replace(/(\r\n|\n|\r|\t)/gm, " ").replace(/\s+/g, ' ').trim();
         node.text(newText);
     },
-    "TEL": function (parent, node) {
+    "normalizeTelNumber": function (parent, node) {
         var attrNode = node.attr('value');
         if (attrNode) {
             var value = attrNode.value().toString();
@@ -92,8 +89,8 @@ var actionExecuter = {
             }
         }
     },
-    "ADD": function (parent, node, tid) {
-        var childrenPath = pathConstructor['T'](tid);
+    "flatten": function (parent, node, tid) {
+        var childrenPath = pathConstructor["localTemplate"](tid);
         var newChildren = node.find(childrenPath, ns).map(function (v) {
             return v.clone();
         });
@@ -101,7 +98,7 @@ var actionExecuter = {
             parent.addChild(newChild);
         });
     },
-    "remove_timezone": function (parent, node) {
+    "removeTimezone": function (parent, node) {
         var attrNode = node.attr('value');
         if (attrNode) {
             var t = attrNode.value().toString();
@@ -117,7 +114,7 @@ var actionExecuter = {
             }
         }
     },
-    "remove_zeros": function (parent, node) {
+    "removeZeros": function (parent, node) {
         var attrNode = node.attr('value');
         if (attrNode) {
             var v = attrNode.value().toString();
@@ -138,14 +135,14 @@ var actionExecuter = {
 
 var removeHierarchical = exports.removeHierarchical = function removeHierarchical(xmlDoc, pathSpecs) {
     pathSpecs.forEach(function (pathSpec) {
-        var t = pathSpec.type || 'N';
+        var t = pathSpec.type || "normal";
         var path = pathConstructor[t](pathSpec.xpath);
         var nodes = xmlDoc.find(path, ns);
         nodes.forEach(function (node) {
             if (pathSpec.childxpaths) {
                 removeHierarchical(node, pathSpec.childxpaths);
             } else {
-                var execType = pathSpec.action || 'R';
+                var execType = pathSpec.action || "removeNode";
                 actionExecuter[execType](xmlDoc, node, pathSpec.params);
             }
         });

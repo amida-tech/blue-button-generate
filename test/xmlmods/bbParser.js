@@ -4,53 +4,53 @@ module.exports = [{
     xpath: "//h:text"
 }, {
     xpath: "//h:effectiveTime[@xsi:type='IVL_TS']",
-    action: "A",
+    action: "removeAttribute",
     params: "type"
         //}, {
         //    xpath: "//h:effectiveTime",
-        //    action: "remove_timezone"
+        //    action: "removeTimezone"
 }, {
     xpath: " //h:telecom[@use='WP']",
-    action: "TEL"
+    action: "normalizeTelNumber"
 }, {
     xpath: "//h:streetAddressLine",
-    action: "W"
+    action: "removeWhitespace"
 }, {
     xpath: "//h:reference"
 }, {
     xpath: "//h:originalText"
 }, {
     xpath: "//h:text",
-    action: "W"
+    action: "removeWhitespace"
 }, {
     xpath: "//h:code[@codeSystemVersion]",
-    action: "A",
+    action: "removeAttribute",
     params: "codeSystemVersion"
 }, {
     xpath: "//*[@assigningAuthorityName]",
-    action: "A",
+    action: "removeAttribute",
     params: "assigningAuthorityName"
 }, {
     xpath: ["2.16.840.1.113883.10.20.22.2.6", "2.16.840.1.113883.10.20.22.2.6.1"],
     description: "Allergies Section (entries optional)",
-    type: "TR",
+    type: "rootTemplate",
     childxpaths: [{
         xpath: "h:text"
     }]
 }, {
     xpath: "2.16.840.1.113883.10.20.22.2.1",
     description: "Medications Section (entries optional)",
-    type: "TR",
+    type: "rootTemplate",
     childxpaths: [{
         xpath: "h:text"
     }, {
         xpath: "2.16.840.1.113883.10.20.22.4.16",
         description: "Medication Activity",
-        type: "T",
+        type: "localTemplate",
         childxpaths: [{
             xpath: "2.16.840.1.113883.10.20.22.4.17",
             description: "Medication Supply Order",
-            type: "T",
+            type: "localTemplate",
             childxpaths: [{
                 xpath: "h:performer"
             }, {
@@ -59,7 +59,7 @@ module.exports = [{
         }, {
             xpath: "2.16.840.1.113883.10.20.22.4.18",
             description: "Medication Dispense",
-            type: "T",
+            type: "localTemplate",
             childxpaths: [{
                 xpath: "h:product",
                 comment: "not read by parser"
@@ -82,7 +82,7 @@ module.exports = [{
         }, {
             xpath: "2.16.840.1.113883.10.20.22.4.20",
             description: "Instructions",
-            type: "T",
+            type: "localTemplate",
             childxpaths: [{
                 xpath: "..",
                 comment: "not read by parser"
@@ -92,17 +92,17 @@ module.exports = [{
 }, {
     xpath: "2.16.840.1.113883.10.20.22.2.2",
     description: "Immunization Section",
-    type: "TR",
+    type: "rootTemplate",
     childxpaths: [{
         xpath: "h:text"
     }, {
         xpath: "2.16.840.1.113883.10.20.22.4.52",
         description: "Immunization Activity",
-        type: "T",
+        type: "localTemplate",
         childxpaths: [{
             xpath: "2.16.840.1.113883.10.20.22.4.53",
             description: "Immunization Refusal Reason",
-            type: "T",
+            type: "localTemplate",
             childxpaths: [{
                 xpath: "h:id",
                 comment: "not read by parser"
@@ -110,10 +110,10 @@ module.exports = [{
         }, {
             xpath: "2.16.840.1.113883.10.20.22.4.20",
             description: "Instructions",
-            type: "T",
+            type: "localTemplate",
             childxpaths: [{
                 xpath: "..",
-                action: "A",
+                action: "removeAttribute",
                 params: "inversionInd",
                 comment: "erroneous in sample file"
             }]
@@ -122,39 +122,39 @@ module.exports = [{
 }, {
     xpath: "2.16.840.1.113883.10.20.22.2.7",
     description: "Procedures Section",
-    type: "TR",
+    type: "rootTemplate",
     childxpaths: [{
         xpath: "h:text"
     }, {
         xpath: "2.16.840.1.113883.10.20.22.4.12",
         description: "Procedure Actitivity Act",
-        type: "T",
+        type: "localTemplate",
         childxpaths: [{
             xpath: ".",
-            action: "A",
+            action: "removeAttribute",
             params: "moodCode"
         }]
     }, {
         xpath: "2.16.840.1.113883.10.20.22.4.13",
         description: "Procedure Actitivity Observation",
-        type: "T",
+        type: "localTemplate",
         childxpaths: [{
             xpath: ".",
-            action: "A",
+            action: "removeAttribute",
             params: "moodCode"
         }]
     }, {
         xpath: "2.16.840.1.113883.10.20.22.4.14",
         description: "Procedure Actitivity Procedure",
-        type: "T",
+        type: "localTemplate",
         childxpaths: [{
             xpath: ".",
-            action: "A",
+            action: "removeAttribute",
             params: "moodCode"
         }, {
             xpath: "2.16.840.1.113883.10.20.22.4.37",
             description: "Product Instance",
-            type: "T",
+            type: "localTemplate",
             childxpaths: [{
                 xpath: ".."
             }]
@@ -163,14 +163,14 @@ module.exports = [{
 }, {
     xpath: "2.16.840.1.113883.10.20.22.2.22",
     description: "Encounters Section",
-    type: "TR",
+    type: "rootTemplate",
     childxpaths: [{
         xpath: "h:text"
     }]
 }, {
     xpath: "2.16.840.1.113883.10.20.22.2.18",
     description: "Payers Section",
-    type: "TR",
+    type: "rootTemplate",
     childxpaths: [{
         xpath: "h:text"
     }, {
@@ -180,24 +180,24 @@ module.exports = [{
 }, {
     xpath: "2.16.840.1.113883.10.20.22.2.10",
     description: "Plan Of Care Section",
-    type: "TR",
+    type: "rootTemplate",
     childxpaths: [{
         xpath: "h:text"
     }]
 }, {
     xpath: "2.16.840.1.113883.10.20.22.2.5",
     description: "Problems",
-    type: "TR",
+    type: "rootTemplate",
     childxpaths: [{
         xpath: "h:text"
     }, {
         xpath: "2.16.840.1.113883.10.20.22.4.3",
         description: "Problem Concern Act",
-        type: "T",
+        type: "localTemplate",
         childxpaths: [{
             xpath: "2.16.840.1.113883.10.20.22.4.4",
             description: "Problem Observation",
-            type: "T",
+            type: "localTemplate",
             childxpaths: [{
                 xpath: "h:code"
             }]
@@ -206,19 +206,19 @@ module.exports = [{
 }, {
     xpath: "2.16.840.1.113883.10.20.22.2.17",
     description: "Social History Section",
-    type: "TR",
+    type: "rootTemplate",
     childxpaths: [{
         xpath: "h:text"
     }]
 }, {
     xpath: ["2.16.840.1.113883.10.20.22.2.4", "2.16.840.1.113883.10.20.22.2.4.1"],
     description: "Vital Signs Section",
-    type: "TR",
+    type: "rootTemplate",
     childxpaths: [{
         xpath: "h:text"
     }, {
         xpath: "..",
-        action: "ADD",
+        action: "flatten",
         params: "2.16.840.1.113883.10.20.22.4.27"
     }, {
         xpath: "h:entry"
@@ -226,7 +226,7 @@ module.exports = [{
 }, {
     xpath: ["2.16.840.1.113883.10.20.22.2.3", "2.16.840.1.113883.10.20.22.2.3.1"],
     description: "Results Section",
-    type: "TR",
+    type: "rootTemplate",
     childxpaths: [{
         xpath: "h:text"
     }]

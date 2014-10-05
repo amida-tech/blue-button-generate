@@ -6,13 +6,13 @@ module.exports = [{
     comment: "text fields are not supported currently"
 }, {
     xpath: "//h:recordTarget/h:patientRole/h:patient/h:name[@use]",
-    action: "A",
+    action: "removeAttribute",
     params: "use",
     comment: "parser does read @use and generator assumes it is always 'L'"
 }, {
     xpath: "2.16.840.1.113883.10.20.22.2.6.1",
     description: "Allergies Section (entries required)",
-    type: "TR",
+    type: "rootTemplate",
     childxpaths: [{
         xpath: "h:title",
         comment: "title may differ"
@@ -23,10 +23,10 @@ module.exports = [{
         comment: "this templateId does not exist in the file"
     }, {
         xpath: "2.16.840.1.113883.10.20.22.4.7",
-        type: "T",
+        type: "localTemplate",
         childxpaths: [{
             xpath: "..",
-            action: "A",
+            action: "removeAttribute",
             params: "inversionInd",
             comment: "parser ignores inversionInd attribute and generator always generates true"
         }]
@@ -34,7 +34,7 @@ module.exports = [{
 }, {
     xpath: "2.16.840.1.113883.10.20.22.2.1.1",
     description: "Medication Section",
-    type: "TR",
+    type: "rootTemplate",
     childxpaths: [{
         xpath: "h:title",
         comment: "title may differ"
@@ -45,7 +45,7 @@ module.exports = [{
 }, {
     xpath: "2.16.840.1.113883.10.20.22.2.2.1",
     description: "Immunizations Section",
-    type: "TR",
+    type: "rootTemplate",
     childxpaths: [{
         xpath: "h:title",
         comment: "title may differ"
@@ -54,18 +54,18 @@ module.exports = [{
         comment: "this templateId does not exist in the file"
     }, {
         xpath: "2.16.840.1.113883.10.20.22.4.52",
-        type: "T",
+        type: "localTemplate",
         description: "Immunization Activity",
         childxpaths: [{
             xpath: "2.16.840.1.113883.10.20.22.4.20",
-            type: "T",
-            action: "A",
+            type: "localTemplate",
+            action: "removeAttribute",
             params: "moodCode",
         }]
     }, {
         xpath: "2.16.840.1.113883.10.20.22.2.7.1",
         description: "Procedures Section",
-        type: "TR",
+        type: "rootTemplate",
         childxpaths: [{
             xpath: "h:title",
             comment: "title may differ"
@@ -74,7 +74,7 @@ module.exports = [{
         }, {
             xpath: "2.16.840.1.113883.10.20.22.4.14",
             description: "Procedure Activity Procedure",
-            type: "T",
+            type: "localTemplate",
             childxpaths: [{
                 xpath: "h:participant/h:participantRole/h:templateId",
                 comment: "error in file: this should be in participantRole"
@@ -83,7 +83,7 @@ module.exports = [{
     }, {
         xpath: "2.16.840.1.113883.10.20.22.2.22",
         description: "Encounters Section",
-        type: "TR",
+        type: "rootTemplate",
         childxpaths: [{
             xpath: "h:title",
             comment: "title may differ"
@@ -92,7 +92,7 @@ module.exports = [{
         }, {
             xpath: "2.16.840.1.113883.10.20.22.4.49",
             description: "Encounters Activities",
-            type: "T",
+            type: "localTemplate",
             childxpaths: [{
                 xpath: "h:participant/h:participantRole/h:templateId",
                 comment: "error in file: this should be in participantRole"
@@ -101,13 +101,13 @@ module.exports = [{
     }, {
         xpath: "2.16.840.1.113883.10.20.22.2.18",
         description: "Payers Section",
-        type: "TR",
+        type: "rootTemplate",
         childxpaths: [{
             xpath: "h:title",
             comment: "title may differ"
         }, {
             xpath: "h:code",
-            action: "A",
+            action: "removeAttribute",
             params: "displayName"
         }, {
             xpath: ".//h:templateId[@root=\"2.16.840.1.113883.10.20.1.19\"]"
@@ -115,7 +115,7 @@ module.exports = [{
     }, {
         xpath: "2.16.840.1.113883.10.20.22.2.10",
         description: "Plan of Care Section",
-        type: "TR",
+        type: "rootTemplate",
         childxpaths: [{
             xpath: "h:title",
             comment: "title may differ"
@@ -126,7 +126,7 @@ module.exports = [{
     }, {
         xpath: "2.16.840.1.113883.10.20.22.2.5.1",
         description: "Problems Section",
-        type: "TR",
+        type: "rootTemplate",
         childxpaths: [{
             xpath: "h:templateId[@root=\"2.16.840.1.113883.10.20.22.2.5\"]",
         }, {
@@ -134,7 +134,7 @@ module.exports = [{
             comment: "title may differ"
         }, {
             xpath: "2.16.840.1.113883.10.20.22.4.6",
-            type: "T",
+            type: "localTemplate",
             childxpaths: [{
                 xpath: "h:id",
                 comment: "to be researched"
@@ -144,7 +144,7 @@ module.exports = [{
 }, {
     xpath: "2.16.840.1.113883.10.20.22.2.4.1",
     description: "Vital Signs Section",
-    type: "TR",
+    type: "rootTemplate",
     childxpaths: [{
         xpath: "h:title"
     }, {
@@ -153,7 +153,7 @@ module.exports = [{
 }, {
     xpath: "2.16.840.1.113883.10.20.22.2.3.1",
     description: "Results Section",
-    type: "TR",
+    type: "rootTemplate",
     childxpaths: [{
         xpath: "h:title"
     }, {
@@ -162,7 +162,7 @@ module.exports = [{
         xpath: "//h:observationRange[not(*)][not(@*)][not(text())]"
     }, {
         xpath: "2.16.840.1.113883.10.20.22.4.2",
-        type: "T",
+        type: "localTemplate",
         childxpaths: [{
             xpath: "h:value[@xsi:type=\"PQ\"][not(@value)]",
         }]
