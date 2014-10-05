@@ -438,10 +438,14 @@ module.exports = [{
         }]
     }]
 }, {
-    "value": "2.16.840.1.113883.10.20.22.2.3.1.xxx",
+    "value": "2.16.840.1.113883.10.20.22.2.3.1",
     "xpathcmt": "Results Section",
     "type": "TR",
     "subPathSpecs": [{
+        "value": "h:entry",
+        "action": "AM",
+        "params": ["typeCode", "DRIV"]
+    }, {
         "value": "h:title"
     }, {
         "value": "h:id"
@@ -453,10 +457,19 @@ module.exports = [{
         }, {
             "value": "h:component/h:procedure"
         }, {
+            "value": "h:specimen"
+        }, {
+            "value": "h:effectiveTime"
+        }, {
             "value": "2.16.840.1.113883.10.20.22.4.2",
             "type": "T",
             "subPathSpecs": [{
                 "value": "h:performer"
+            }, {
+                "value": "h:value[@xsi:type=\"ST\"]",
+            }, {
+                "value": "h:value[@value]",
+                "action": "remove_zeros"
             }]
         }]
     }, {
@@ -464,4 +477,6 @@ module.exports = [{
         "type": "TP",
         "comment": "error in file: Ignoring Comment Activity"
     }]
+}, {
+    "value": "//*[not(*)][not(@*)][not(text())]",
 }];

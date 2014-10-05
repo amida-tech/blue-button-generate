@@ -150,4 +150,21 @@ module.exports = [{
     }, {
         "value": "h:templateId[@root=\"2.16.840.1.113883.10.20.22.2.4\"]",
     }]
+}, {
+    "value": "2.16.840.1.113883.10.20.22.2.3.1",
+    "xpathcmt": "Results Section",
+    "type": "TR",
+    "subPathSpecs": [{
+        "value": "h:title"
+    }, {
+        "value": "h:templateId[@root=\"2.16.840.1.113883.10.20.22.2.3\"]"
+    }, {
+        "value": "//h:observationRange[not(*)][not(@*)][not(text())]"
+    }, {
+        "value": "2.16.840.1.113883.10.20.22.4.2",
+        "type": "T",
+        "subPathSpecs": [{
+            "value": "h:value[@xsi:type=\"PQ\"][not(@value)]",
+        }]
+    }]
 }];

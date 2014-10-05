@@ -157,11 +157,10 @@ describe('xml vs parse generate xml ', function () {
                 findCompareSection('vitals');
             });
 
-            if (!limited) {
-                it('results', function () {
-                    findCompareSection('results');
-                });
-            }
+            it('results', function () {
+                findCompareSection('results');
+            });
+
             it('demographics', function () {
                 var f = function (obj) {
                     var result = jsonutil.getDeepValue(obj, 'ClinicalDocument.recordTarget.0.patientRole.0');

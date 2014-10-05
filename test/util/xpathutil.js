@@ -74,6 +74,9 @@ var actionExecuter = {
         attrs[params[0]] = params[1];
         node.attr(attrs);
     },
+    'AT': function (parent, node, params) {
+        node.text(params);
+    },
     'W': function (parent, node) {
         var text = node.text();
         var newText = text.replace(/(\r\n|\n|\r|\t)/gm, " ").replace(/\s+/g, ' ').trim();
@@ -101,7 +104,6 @@ var actionExecuter = {
     "remove_timezone": function (parent, node) {
         var attrNode = node.attr('value');
         if (attrNode) {
-            console.log("here");
             var t = attrNode.value().toString();
             if (t.length > 14) {
                 var index = t.indexOf('-');
@@ -112,6 +114,23 @@ var actionExecuter = {
                     var newT = t.slice(0, index);
                     attrNode.value(newT);
                 }
+            }
+        }
+    },
+    "remove_zeros": function (parent, node) {
+        var attrNode = node.attr('value');
+        if (attrNode) {
+            var v = attrNode.value().toString();
+            var n = v.length;
+            var index = v.indexOf('.0');
+            if ((index >= 0) && ((index + 2) === n)) {
+                v = v.slice(0, index);
+                attrNode.value(v);
+            } else if ((v.charAt(n - 1) === '0') && (v.indexOf('.') >= 0)) {
+                v = v.slice(0, n - 1);
+                attrNode.value(v);
+            } else if (v === '00') {
+                attrNode.value('0');
             }
         }
     }
