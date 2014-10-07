@@ -19,6 +19,9 @@ var libCCDAGen = require("./lib/templating_functions.js");
 var bbm = require('blue-button-meta');
 var codeSystems = bbm.CCDA.codeSystems; // maps code systems names to code system IDs
 
+var js2xml = require('./lib/templates/js2xml');
+var sectionLevel = require('./lib/templates/sectionLevel');
+
 // Map section number to section name. 
 var sectionNames = {
     0: "null",
@@ -49,7 +52,8 @@ var gen = function (data, CCD, xmlDoc, section_name) {
         if (section_name === "demographics") {
             return require('./lib/demographics.js')(data, codeSystems, CCD, xmlDoc);
         } else if (section_name === "allergies") {
-            return require('./lib/allergies.js')(data, codeSystems, CCD, xmlDoc);
+            js2xml.fillUsingTemplate(xmlDoc, data, sectionLevel.allergiesSectionEntriesRequired);
+            //return require('./lib/allergies.js')(data, codeSystems, CCD, xmlDoc);
         } else if (section_name === "encounters") {
             return require('./lib/encounters.js')(data, codeSystems, CCD, xmlDoc);
         } else if (section_name === "immunizations") {
@@ -159,10 +163,14 @@ var genWholeCCDA = function (data) {
         var sb = xmlDoc.node('component').node('structuredBody');
         // loop over all the sections and generate each one, adding them iteratively to each other
         for (var i = 2; i < Object.keys(sectionNames).length; i++) {
-            gen(data[sectionNames[i]], true, sb, sectionNames[i]);
+            if (sectionNames[i] === 'allergies') {
+                gen(data, true, sb, sectionNames[i]);
+            } else {
+                gen(data[sectionNames[i]], true, sb, sectionNames[i]);
+            }
         }
+        return doc.toString();
     }
-    return doc.toString();
 };
 
 module.exports.section = gen;

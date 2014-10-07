@@ -14,6 +14,8 @@ var xml2jsutil = require('../util/xml2jsutil');
 var bbParserMods = require('../xmlmods/bbParser');
 var bbParserPostMods = require('../xmlmods/bbParserPost');
 var bbGeneratorMods = require('../xmlmods/bbGenerator');
+var ccd1ParserMods = require('../xmlmods/ccd1Parser');
+var ccd1GeneratorMods = require('../xmlmods/ccd1Generator');
 var viteraParserMods = require('../xmlmods/viteraParser');
 var viteraGeneratorMods = require('../xmlmods/viteraGenerator');
 
@@ -177,7 +179,7 @@ describe('xml vs parse generate xml ', function () {
         };
     };
 
-    describe('CCD_1.xml', testSampleFile('CCD_1', true));
+    describe('CCD_1.xml', testSampleFile('CCD_1', true, ccd1ParserMods, ccd1GeneratorMods));
 
     describe('Vitera.xml', testSampleFile('Vitera', false, viteraParserMods, viteraGeneratorMods, true));
 });
