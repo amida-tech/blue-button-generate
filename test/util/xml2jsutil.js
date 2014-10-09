@@ -29,6 +29,7 @@ var normalizedDisplayNames = {
     "Patient Objection": "Patient objection",
     "HISTORY OF PROCEDURES": "History of Procedures",
     "HISTORY OF IMMUNIZATIONS": "Immunizations",
+    "HISTORY OF MEDICATION USE": "History of medication use",
     "Payer": "Payers",
     "Treatment plan": "Plan of Care",
     "RESULTS": "Relevant diagnostic tests and/or laboratory data",
