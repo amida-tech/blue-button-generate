@@ -56,7 +56,7 @@ var gen = function (data, CCD, xmlDoc, section_name) {
         } else if (section_name === "encounters") {
             return require('./lib/encounters.js')(data, codeSystems, CCD, xmlDoc);
         } else if (section_name === "immunizations") {
-            return require('./lib/immunizations.js')(data, codeSystems, CCD, xmlDoc);
+            js2xml.fillUsingTemplate(xmlDoc, data, sectionLevel.immunizationsSectionEntriesRequired);
         } else if (section_name === "medications") {
             js2xml.fillUsingTemplate(xmlDoc, data, sectionLevel.medicationsSectionEntriesRequired);
         } else if (section_name === "payers") {
@@ -162,7 +162,7 @@ var genWholeCCDA = function (data) {
         var sb = xmlDoc.node('component').node('structuredBody');
         // loop over all the sections and generate each one, adding them iteratively to each other
         for (var i = 2; i < Object.keys(sectionNames).length; i++) {
-            if ((sectionNames[i] === 'allergies') || (sectionNames[i] === 'medications')) {
+            if ((sectionNames[i] === 'allergies') || (sectionNames[i] === 'medications') || (sectionNames[i] === 'immunizations')) {
                 gen(data, true, sb, sectionNames[i]);
             } else {
                 gen(data[sectionNames[i]], true, sb, sectionNames[i]);
