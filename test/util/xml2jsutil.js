@@ -37,6 +37,7 @@ var normalizedDisplayNames = {
     "history of prior surgery   [For Hx of Tx, use H prefix]": "history of prior surgery [For Hx of Tx, use H prefix]",
     "TREATMENT PLAN": "Plan of Care",
     "PAYMENT SOURCES": "Payment sources",
+    "VITAL SIGNS": "Vital Signs",
     "Problem list": "Problem List",
     "PROBLEM LIST": "Problem List"
 };

@@ -62,4 +62,12 @@ module.exports = [{
         xpath: "h:title",
         comment: "titles may differ"
     }]
+}, {
+    xpath: "2.16.840.1.113883.10.20.22.2.4.1",
+    description: "Vitals Sign Section (entries required)",
+    type: "rootTemplate",
+    childxpaths: [{
+        xpath: "h:title",
+        comment: "titles may differ"
+    }]
 }];
