@@ -26,6 +26,7 @@ exports.findSection = function (sections, templateIds) {
 
 var normalizedDisplayNames = {
     "History of immunizations": 'Immunizations',
+    "History of encounters": 'Encounters',
     "Patient Objection": "Patient objection",
     "HISTORY OF PROCEDURES": "History of Procedures",
     "HISTORY OF IMMUNIZATIONS": "Immunizations",
