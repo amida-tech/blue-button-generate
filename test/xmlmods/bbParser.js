@@ -10,15 +10,9 @@ module.exports = [{
     xpath: " //h:telecom[@use='WP']",
     action: "normalizeTelNumber"
 }, {
-    xpath: "//h:streetAddressLine",
-    action: "removeWhitespace"
-}, {
     xpath: "//h:reference"
 }, {
     xpath: "//h:originalText"
-}, {
-    xpath: "//h:text",
-    action: "removeWhitespace"
 }, {
     xpath: "//h:code[@codeSystemVersion]",
     action: "removeAttribute",

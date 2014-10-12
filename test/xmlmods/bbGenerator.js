@@ -11,9 +11,6 @@ module.exports = [{
 }, {
     xpath: "//h:originalText"
 }, {
-    xpath: "//h:text",
-    action: "removeWhitespace"
-}, {
     xpath: ["2.16.840.1.113883.10.20.22.2.6", "2.16.840.1.113883.10.20.22.2.6.1"],
     description: "Allergies Section (entries optional)",
     type: "rootTemplate",

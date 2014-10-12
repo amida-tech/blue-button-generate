@@ -9,21 +9,6 @@ var ns = {
     "xsi": "http://www.w3.org/2001/XMLSchema-instance"
 };
 
-exports.remove = function (xmlDoc, xpath) {
-    var nodes = xmlDoc.find(xpath, ns);
-    nodes.forEach(function (node) {
-        node.remove();
-    });
-};
-
-exports.removeAttr = function (xmlDoc, xpath, attr) {
-    var nodes = xmlDoc.find(xpath, ns);
-    nodes.forEach(function (node) {
-        var attrNode = node.attr(attr);
-        attrNode.remove();
-    });
-};
-
 var templateIdPath = function (templateId, prefix, postfix) {
     var p = '//h:templateId[@root="' + templateId + '"]/..';
     if (prefix) {
@@ -73,11 +58,6 @@ var actionExecuter = {
         var attrs = {};
         attrs[params[0]] = params[1];
         node.attr(attrs);
-    },
-    "removeWhitespace": function (parent, node) {
-        var text = node.text();
-        var newText = text.replace(/(\r\n|\n|\r|\t)/gm, " ").replace(/\s+/g, ' ').trim();
-        node.text(newText);
     },
     "normalizeTelNumber": function (parent, node) {
         var attrNode = node.attr('value');
@@ -140,17 +120,17 @@ var actionExecuter = {
     }
 };
 
-var removeHierarchical = exports.removeHierarchical = function removeHierarchical(xmlDoc, pathSpecs) {
-    pathSpecs.forEach(function (pathSpec) {
-        var t = pathSpec.type || "normal";
-        var path = pathConstructor[t](pathSpec.xpath);
+var doModifications = function doModifications(xmlDoc, modifications) {
+    modifications.forEach(function (modification) {
+        var pathType = modification.type || "normal";
+        var path = pathConstructor[pathType](modification.xpath);
         var nodes = xmlDoc.find(path, ns);
         nodes.forEach(function (node) {
-            if (pathSpec.childxpaths) {
-                removeHierarchical(node, pathSpec.childxpaths);
+            if (modification.childxpaths) {
+                doModifications(node, modification.childxpaths);
             } else {
-                var execType = pathSpec.action || "removeNode";
-                actionExecuter[execType](xmlDoc, node, pathSpec.params);
+                var execType = modification.action || "removeNode";
+                actionExecuter[execType](xmlDoc, node, modification.params);
             }
         });
     });
@@ -160,7 +140,7 @@ exports.modifyXML = function (xml, modifications) {
     var xmlDoc = libxmljs.parseXmlString(xml, {
         noblanks: true
     });
-    removeHierarchical(xmlDoc, modifications);
+    doModifications(xmlDoc, modifications);
     var result = xmlDoc.toString();
     return result;
 };
