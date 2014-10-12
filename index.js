@@ -143,12 +143,10 @@ var genWholeCCDA = function (data) {
     xmlDoc.node('versionNumber').attr({
         value: "1"
     });
-    var pr = xmlDoc.node('recordTarget').node('patientRole');
 
-    libCCDAGen.id(pr, data.demographics && data.demographics.identifiers);
+    //var pr = xmlDoc.node('recordTarget').node('patientRole');
 
-    // generate demographics section
-    gen(data[sectionNames[1]], true, pr, sectionNames[1]);
+    js2xml.update(xmlDoc, data, headerLevel.header);
 
     // count the number of sections defined
     var count_sections = 0;
@@ -163,11 +161,7 @@ var genWholeCCDA = function (data) {
         var sb = xmlDoc.node('component').node('structuredBody');
         // loop over all the sections and generate each one, adding them iteratively to each other
         for (var i = 2; i < Object.keys(sectionNames).length; i++) {
-            if ((sectionNames[i] === 'social_history') || (sectionNames[i] === 'results') || (sectionNames[i] === 'vitals') || (sectionNames[i] === 'payers') || (sectionNames[i] === 'plan_of_care') || (sectionNames[i] === 'procedures') || (sectionNames[i] === 'encounters') || (sectionNames[i] === 'allergies') || (sectionNames[i] === 'medications') || (sectionNames[i] === 'immunizations') || (sectionNames[i] === 'problems')) {
-                gen(data, true, sb, sectionNames[i]);
-            } else {
-                gen(data[sectionNames[i]], true, sb, sectionNames[i]);
-            }
+            gen(data, true, sb, sectionNames[i]);
         }
         return doc.toString();
     }
