@@ -15,7 +15,6 @@ document.
 */
 
 var libxmljs = require("libxmljs");
-var libCCDAGen = require("./lib/templating_functions.js");
 var bbm = require('blue-button-meta');
 var codeSystems = bbm.CCDA.codeSystems; // maps code systems names to code system IDs
 
@@ -92,6 +91,7 @@ var genWholeCCDA = function (data) {
     if (data.data) {
         data = data.data;
     }
+    data.identifiers = meta && meta.identifiers;
 
     var doc = new libxmljs.Document();
 
@@ -103,46 +103,46 @@ var genWholeCCDA = function (data) {
             "xmlns:cda": "urn:hl7-org:v3",
             "xmlns:sdtc": "urn:hl7-org:sdtc"
         });
-    xmlDoc.node('realmCode').attr({
-        code: "US"
-    });
-    xmlDoc.node('typeId').attr({
-        root: "2.16.840.1.113883.1.3",
-        extension: "POCD_HD000040"
-    });
-    xmlDoc.node('templateId').attr({
-        root: "2.16.840.1.113883.10.20.22.1.1"
-    });
-    xmlDoc.node('templateId').attr({
-        root: "2.16.840.1.113883.10.20.22.1.2"
-    });
+    //xmlDoc.node('realmCode').attr({
+    //    code: "US"
+    //});
+    //xmlDoc.node('typeId').attr({
+    //    root: "2.16.840.1.113883.1.3",
+    //    extension: "POCD_HD000040"
+    //});
+    //xmlDoc.node('templateId').attr({
+    //    root: "2.16.840.1.113883.10.20.22.1.1"
+    //});
+    //xmlDoc.node('templateId').attr({
+    //    root: "2.16.840.1.113883.10.20.22.1.2"
+    //});
 
-    libCCDAGen.id(xmlDoc, meta && meta.identifiers);
+    //libCCDAGen.id(xmlDoc, meta && meta.identifiers);
 
-    xmlDoc.node('code').attr({
-        codeSystem: "2.16.840.1.113883.6.1",
-        codeSystemName: "LOINC",
-        code: "34133-9",
-        displayName: "Summarization of Episode Note"
-    });
-    xmlDoc.node('title', "Community Health and Hospitals: Health Summary");
-    xmlDoc.node('effectiveTime').attr({
-        value: "TODO"
-    });
-    xmlDoc.node('confidentialityCode').attr({
-        code: "N",
-        codeSystem: "2.16.840.1.113883.5.25"
-    });
-    xmlDoc.node('languageCode').attr({
-        code: "en-US"
-    });
-    xmlDoc.node('setId').attr({
-        extension: "sTT988",
-        root: "2.16.840.1.113883.19.5.99999.19"
-    });
-    xmlDoc.node('versionNumber').attr({
-        value: "1"
-    });
+    //xmlDoc.node('code').attr({
+    //    codeSystem: "2.16.840.1.113883.6.1",
+    //    codeSystemName: "LOINC",
+    //    code: "34133-9",
+    //    displayName: "Summarization of Episode Note"
+    //});
+    //xmlDoc.node('title', "Community Health and Hospitals: Health Summary");
+    //xmlDoc.node('effectiveTime').attr({
+    //    value: "TODO"
+    //});
+    //xmlDoc.node('confidentialityCode').attr({
+    //    code: "N",
+    //    codeSystem: "2.16.840.1.113883.5.25"
+    //});
+    //xmlDoc.node('languageCode').attr({
+    //    code: "en-US"
+    //});
+    //xmlDoc.node('setId').attr({
+    //    extension: "sTT988",
+    //    root: "2.16.840.1.113883.19.5.99999.19"
+    //});
+    //xmlDoc.node('versionNumber').attr({
+    //    value: "1"
+    //});
 
     //var pr = xmlDoc.node('recordTarget').node('patientRole');
 
