@@ -21,6 +21,7 @@ var codeSystems = bbm.CCDA.codeSystems; // maps code systems names to code syste
 
 var js2xml = require('./lib/templates/js2xml');
 var sectionLevel = require('./lib/templates/sectionLevel');
+var headerLevel = require('./lib/templates/headerLevel');
 
 // Map section number to section name. 
 var sectionNames = {
@@ -50,7 +51,7 @@ Generates CCD-A from JSON data.
 var gen = function (data, CCD, xmlDoc, section_name) {
     if (data) {
         if (section_name === "demographics") {
-            return require('./lib/demographics.js')(data, codeSystems, CCD, xmlDoc);
+            js2xml.update(xmlDoc, data, headerLevel.recordTarget);
         } else if (section_name === "allergies") {
             js2xml.fillUsingTemplate(xmlDoc, data, sectionLevel.allergiesSectionEntriesRequired);
         } else if (section_name === "encounters") {
