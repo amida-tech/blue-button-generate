@@ -3,7 +3,7 @@ This script converts CCDA data in JSON format (originally generated from a Conti
 standard XML/CCDA format) back to XML/CCDA format.
 */
 
-var js2xml = require('./lib/templates/js2xml');
+var js2xml = require('./lib/js2xml');
 var documentLevel = require('./lib/documentLevel');
 
 var generate = function (input) {
