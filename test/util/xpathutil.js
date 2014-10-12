@@ -130,6 +130,13 @@ var actionExecuter = {
                 attrNode.value('0');
             }
         }
+    },
+    replaceText: function (parent, node, map) {
+        var text = node.text();
+        var replacementText = map[text];
+        if (replacementText) {
+            node.text(replacementText);
+        }
     }
 };
 

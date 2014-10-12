@@ -14,9 +14,6 @@ module.exports = [{
     description: "Allergies Section (entries required)",
     type: "rootTemplate",
     childxpaths: [{
-        xpath: "h:title",
-        comment: "title may differ"
-    }, {
         xpath: ".//h:effectiveTime[not(@value | h:low | h:high)]"
     }, {
         xpath: "h:templateId[@root=\"2.16.840.1.113883.10.20.22.2.6\"]",
@@ -36,9 +33,6 @@ module.exports = [{
     description: "Medication Section",
     type: "rootTemplate",
     childxpaths: [{
-        xpath: "h:title",
-        comment: "title may differ"
-    }, {
         xpath: "h:templateId[@root=\"2.16.840.1.113883.10.20.22.2.1\"]",
         comment: "this templateId does not exist in the file"
     }]
@@ -47,9 +41,6 @@ module.exports = [{
     description: "Immunizations Section",
     type: "rootTemplate",
     childxpaths: [{
-        xpath: "h:title",
-        comment: "title may differ"
-    }, {
         xpath: "h:templateId[@root=\"2.16.840.1.113883.10.20.22.2.2\"]",
         comment: "this templateId does not exist in the file"
     }, {
@@ -67,9 +58,6 @@ module.exports = [{
         description: "Procedures Section",
         type: "rootTemplate",
         childxpaths: [{
-            xpath: "h:title",
-            comment: "title may differ"
-        }, {
             xpath: "h:templateId[@root=\"2.16.840.1.113883.10.20.22.2.7\"]"
         }, {
             xpath: "2.16.840.1.113883.10.20.22.4.14",
@@ -85,9 +73,6 @@ module.exports = [{
         description: "Encounters Section",
         type: "rootTemplate",
         childxpaths: [{
-            xpath: "h:title",
-            comment: "title may differ"
-        }, {
             xpath: "h:templateId[@root=\"2.16.840.1.113883.10.20.22.2.22.1\"]"
         }, {
             xpath: "2.16.840.1.113883.10.20.22.4.49",
@@ -103,9 +88,6 @@ module.exports = [{
         description: "Payers Section",
         type: "rootTemplate",
         childxpaths: [{
-            xpath: "h:title",
-            comment: "title may differ"
-        }, {
             xpath: "h:code",
             action: "removeAttribute",
             params: "displayName"
@@ -117,9 +99,6 @@ module.exports = [{
         description: "Plan of Care Section",
         type: "rootTemplate",
         childxpaths: [{
-            xpath: "h:title",
-            comment: "title may differ"
-        }, {
             xpath: ".//h:statusCode[@code=\"new\"]",
             comment: "to be researched"
         }]
@@ -129,9 +108,6 @@ module.exports = [{
         type: "rootTemplate",
         childxpaths: [{
             xpath: "h:templateId[@root=\"2.16.840.1.113883.10.20.22.2.5\"]",
-        }, {
-            xpath: "h:title",
-            comment: "title may differ"
         }, {
             xpath: "2.16.840.1.113883.10.20.22.4.6",
             type: "localTemplate",
@@ -146,8 +122,6 @@ module.exports = [{
     description: "Vital Signs Section",
     type: "rootTemplate",
     childxpaths: [{
-        xpath: "h:title"
-    }, {
         xpath: "h:templateId[@root=\"2.16.840.1.113883.10.20.22.2.4\"]",
     }]
 }, {
@@ -155,8 +129,6 @@ module.exports = [{
     description: "Results Section",
     type: "rootTemplate",
     childxpaths: [{
-        xpath: "h:title"
-    }, {
         xpath: "h:templateId[@root=\"2.16.840.1.113883.10.20.22.2.3\"]"
     }, {
         xpath: "//h:observationRange[not(*)][not(@*)][not(text())]"

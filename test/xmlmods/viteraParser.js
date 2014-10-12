@@ -1,3 +1,13 @@
+var titleMap = {
+    "Allergies": "Allergies, adverse reactions, alerts",
+    "Medications": "History of medication use",
+    "Procedures and Surgical/Medical History": "History of Procedures",
+    "Insurance": "Payers",
+    "Problems": "Problem List",
+    "SOCIAL HISTORY": "Social History",
+    "Lab Results": "Relevant diagnostic tests and/or laboratory data"
+};
+
 module.exports = [{
     xpath: "//h:recordTarget/h:patientRole/h:patient/h:raceCode",
     comment: "due to parser merging raceCode and ethnicGroupCode this is generated as ethnicGroupCode (#173)",
@@ -22,9 +32,6 @@ module.exports = [{
     }, {
         xpath: "h:id",
         comment: "error in file: id does not exist in spec"
-    }, {
-        xpath: "h:title",
-        comment: "title may differ"
     }, {
         xpath: "2.16.840.1.113883.10.20.22.4.7",
         type: "localTemplate",
@@ -60,9 +67,6 @@ module.exports = [{
         xpath: "h:id",
         comment: "error in file: id does not exist in spec"
     }, {
-        xpath: "h:title",
-        comment: "title may differ"
-    }, {
         xpath: "2.16.840.1.113883.10.20.22.4.16",
         description: "Medication Activity",
         type: "localTemplate",
@@ -75,9 +79,6 @@ module.exports = [{
         }, {
             xpath: "h:informant",
             comment: "error in file: no informant node in spec"
-        }, {
-            xpath: "h:title",
-            comment: "title may differ"
         }, {
             xpath: "2.16.840.1.113883.10.20.22.4.20",
             description: "Medication Information",
@@ -152,9 +153,6 @@ module.exports = [{
         xpath: "h:id",
         comment: "error in file: id does not exist in spec"
     }, {
-        xpath: "h:title",
-        comment: "title may differ"
-    }, {
         xpath: "2.16.840.1.113883.10.20.22.4.52",
         type: "localTemplate",
         description: "Immunization Activity",
@@ -216,9 +214,6 @@ module.exports = [{
             xpath: "h:id",
             comment: "error in file: id does not exist in spec"
         }, {
-            xpath: "h:title",
-            comment: "title may differ"
-        }, {
             xpath: "2.16.840.1.113883.10.20.22.4.14",
             description: "Procedure Activity Procedure",
             type: "localTemplate",
@@ -259,9 +254,6 @@ module.exports = [{
             xpath: "h:id",
             comment: "error in file: id does not exist in spec"
         }, {
-            xpath: "h:title",
-            comment: "title may differ"
-        }, {
             xpath: "2.16.840.1.113883.10.20.22.4.49",
             description: "Encounters Activities",
             type: "localTemplate",
@@ -293,9 +285,6 @@ module.exports = [{
         childxpaths: [{
             xpath: "h:id",
             comment: "error in file: id does not exist in spec"
-        }, {
-            xpath: "h:title",
-            comment: "title may differ"
         }, {
             xpath: "h:code",
             action: "removeAttribute",
@@ -345,9 +334,6 @@ module.exports = [{
         xpath: "h:id",
         comment: "error in file: id does not exist in spec"
     }, {
-        xpath: "h:title",
-        comment: "title may differ"
-    }, {
         xpath: "2.16.840.1.113883.10.20.22.4.41",
         description: "Plan of Care Activity Procedure",
         type: "localTemplate",
@@ -372,9 +358,6 @@ module.exports = [{
     childxpaths: [{
         xpath: "h:id",
         comment: "error in file: id does not exist in spec"
-    }, {
-        xpath: "h:title",
-        comment: "title may differ"
     }, {
         xpath: "2.16.840.1.113883.10.20.22.4.3",
         description: "Problem Act",
@@ -425,8 +408,6 @@ module.exports = [{
     description: "Vital Signs Section",
     type: "rootTemplate",
     childxpaths: [{
-        xpath: "h:title"
-    }, {
         xpath: "h:id"
     }, {
         xpath: "2.16.840.1.113883.10.20.22.4.27",
@@ -445,8 +426,6 @@ module.exports = [{
         xpath: "h:entry",
         action: "addAttribute",
         params: ["typeCode", "DRIV"]
-    }, {
-        xpath: "h:title"
     }, {
         xpath: "h:id"
     }, {
@@ -479,4 +458,9 @@ module.exports = [{
     }]
 }, {
     xpath: "//*[not(*)][not(@*)][not(text())]",
+}, {
+    xpath: "//h:title",
+    action: "replaceText",
+    params: titleMap,
+    comment: "titles may differ"
 }];
