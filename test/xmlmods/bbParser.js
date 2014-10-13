@@ -102,32 +102,10 @@ module.exports = [{
     description: "Procedures Section",
     type: "rootTemplate",
     childxpaths: [{
-        xpath: "2.16.840.1.113883.10.20.22.4.12",
-        description: "Procedure Actitivity Act",
-        type: "localTemplate",
-        childxpaths: [{
-            xpath: ".",
-            action: "removeAttribute",
-            params: "moodCode"
-        }]
-    }, {
-        xpath: "2.16.840.1.113883.10.20.22.4.13",
-        description: "Procedure Actitivity Observation",
-        type: "localTemplate",
-        childxpaths: [{
-            xpath: ".",
-            action: "removeAttribute",
-            params: "moodCode"
-        }]
-    }, {
         xpath: "2.16.840.1.113883.10.20.22.4.14",
         description: "Procedure Actitivity Procedure",
         type: "localTemplate",
         childxpaths: [{
-            xpath: ".",
-            action: "removeAttribute",
-            params: "moodCode"
-        }, {
             xpath: "2.16.840.1.113883.10.20.22.4.37",
             description: "Product Instance",
             type: "localTemplate",

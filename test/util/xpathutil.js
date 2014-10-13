@@ -52,7 +52,9 @@ var actionExecuter = {
     },
     "removeAttribute": function (parent, node, attr) {
         var attrNode = node.attr(attr);
-        attrNode.remove();
+        if (attrNode) {
+            attrNode.remove();
+        }
     },
     "addAttribute": function (parent, node, params) {
         var attrs = {};

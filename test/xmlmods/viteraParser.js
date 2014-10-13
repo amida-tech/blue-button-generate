@@ -215,10 +215,6 @@ module.exports = [{
             description: "Procedure Activity Procedure",
             type: "localTemplate",
             childxpaths: [{
-                xpath: ".",
-                action: "removeAttribute",
-                params: "moodCode"
-            }, {
                 xpath: "2.16.840.1.113883.10.20.22.4.4",
                 type: "localTemplateParent",
                 comment: "to be researched"
