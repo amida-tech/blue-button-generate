@@ -98,16 +98,6 @@ module.exports = [{
             description: "Medication Dispense",
             type: "localTemplate",
             childxpaths: [{
-                xpath: "h:performer[@typeCode='PRF']",
-                action: "removeAttribute",
-                params: "typeCode",
-                comment: "needs more research"
-            }, {
-                xpath: "h:performer/h:assignedEntity[@classCode='ASSIGNED']",
-                action: "removeAttribute",
-                params: "classCode",
-                comment: "needs more research"
-            }, {
                 xpath: "2.16.840.1.113883.10.20.22.4.23",
                 description: "Medication Information",
                 type: "localTemplateParent",
@@ -176,16 +166,6 @@ module.exports = [{
             xpath: "h:informant",
             comment: "to be researched"
         }, {
-            xpath: "h:performer[@typeCode='PRF']",
-            action: "removeAttribute",
-            params: "typeCode",
-            comment: "to be researched"
-        }, {
-            xpath: "h:performer/h:assignedEntity[@classCode='ASSIGNED']",
-            action: "removeAttribute",
-            params: "classCode",
-            comment: "to be researched"
-        }, {
             xpath: "2.16.840.1.113883.10.20.22.4.64",
             type: "localTemplateParent",
             childxpaths: [{
@@ -228,16 +208,6 @@ module.exports = [{
             }, {
                 xpath: "h:participant/h:participantRole/h:id",
                 comment: "to be researched"
-            }, {
-                xpath: "h:performer[@typeCode='PRF']",
-                action: "removeAttribute",
-                params: "typeCode",
-                comment: "to be researched"
-            }, {
-                xpath: "h:performer/h:assignedEntity[@classCode='ASSIGNED']",
-                action: "removeAttribute",
-                params: "classCode",
-                comment: "to be researched"
             }]
         }]
     }, {
@@ -259,16 +229,6 @@ module.exports = [{
                 comment: "error in file: this should be in participantRole"
             }, {
                 xpath: "h:participant/h:participantRole/h:id",
-                comment: "to be researched"
-            }, {
-                xpath: "h:performer[@typeCode='PRF']",
-                action: "removeAttribute",
-                params: "typeCode",
-                comment: "to be researched"
-            }, {
-                xpath: "h:performer/h:assignedEntity[@classCode='ASSIGNED']",
-                action: "removeAttribute",
-                params: "classCode",
                 comment: "to be researched"
             }]
         }]
@@ -310,16 +270,7 @@ module.exports = [{
                     xpath: "h:participant/h:participantRole/h:playingEntity/*[@value=\"19381212\"]",
                     comment: "to be researched"
                 }, {
-                    xpath: "h:performer/h:assignedEntity[@classCode='ASSIGNED']",
-                    action: "removeAttribute",
-                    params: "classCode",
-                    comment: "to be researched"
-                }, {
                     xpath: "h:performer/h:assignedEntity/h:representedOrganization[not(*)]"
-                }, {
-                    xpath: "h:performer/h:assignedEntity/h:representedOrganization[@classCode=\"ORG\"]",
-                    action: "removeAttribute",
-                    params: "classCode"
                 }]
             }]
         }]
