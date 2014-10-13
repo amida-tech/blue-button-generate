@@ -12,9 +12,6 @@ module.exports = [{
     xpath: "//h:recordTarget/h:patientRole/h:patient/h:raceCode",
     comment: "due to parser merging raceCode and ethnicGroupCode this is generated as ethnicGroupCode (#173)",
 }, {
-    xpath: "//h:text",
-    comment: "text fields are not supported currently"
-}, {
     xpath: "//h:name[not(h:family)][not(text())]",
     comment: "bunch of empty names to be investigated"
 }, {

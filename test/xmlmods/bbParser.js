@@ -22,19 +22,10 @@ module.exports = [{
     action: "removeAttribute",
     params: "assigningAuthorityName"
 }, {
-    xpath: ["2.16.840.1.113883.10.20.22.2.6", "2.16.840.1.113883.10.20.22.2.6.1"],
-    description: "Allergies Section (entries optional)",
-    type: "rootTemplate",
-    childxpaths: [{
-        xpath: "h:text"
-    }]
-}, {
     xpath: "2.16.840.1.113883.10.20.22.2.1",
     description: "Medications Section (entries optional)",
     type: "rootTemplate",
     childxpaths: [{
-        xpath: "h:text"
-    }, {
         xpath: "2.16.840.1.113883.10.20.22.4.16",
         description: "Medication Activity",
         type: "localTemplate",
@@ -85,8 +76,6 @@ module.exports = [{
     description: "Immunization Section",
     type: "rootTemplate",
     childxpaths: [{
-        xpath: "h:text"
-    }, {
         xpath: "2.16.840.1.113883.10.20.22.4.52",
         description: "Immunization Activity",
         type: "localTemplate",
@@ -115,8 +104,6 @@ module.exports = [{
     description: "Procedures Section",
     type: "rootTemplate",
     childxpaths: [{
-        xpath: "h:text"
-    }, {
         xpath: "2.16.840.1.113883.10.20.22.4.12",
         description: "Procedure Actitivity Act",
         type: "localTemplate",
@@ -152,36 +139,18 @@ module.exports = [{
         }]
     }]
 }, {
-    xpath: "2.16.840.1.113883.10.20.22.2.22",
-    description: "Encounters Section",
-    type: "rootTemplate",
-    childxpaths: [{
-        xpath: "h:text"
-    }]
-}, {
     xpath: "2.16.840.1.113883.10.20.22.2.18",
     description: "Payers Section",
     type: "rootTemplate",
     childxpaths: [{
-        xpath: "h:text"
-    }, {
         xpath: ".//h:time",
         comment: "null flavored induced text value"
-    }]
-}, {
-    xpath: "2.16.840.1.113883.10.20.22.2.10",
-    description: "Plan Of Care Section",
-    type: "rootTemplate",
-    childxpaths: [{
-        xpath: "h:text"
     }]
 }, {
     xpath: "2.16.840.1.113883.10.20.22.2.5",
     description: "Problems",
     type: "rootTemplate",
     childxpaths: [{
-        xpath: "h:text"
-    }, {
         xpath: "2.16.840.1.113883.10.20.22.4.3",
         description: "Problem Concern Act",
         type: "localTemplate",
@@ -195,31 +164,15 @@ module.exports = [{
         }]
     }]
 }, {
-    xpath: "2.16.840.1.113883.10.20.22.2.17",
-    description: "Social History Section",
-    type: "rootTemplate",
-    childxpaths: [{
-        xpath: "h:text"
-    }]
-}, {
     xpath: ["2.16.840.1.113883.10.20.22.2.4", "2.16.840.1.113883.10.20.22.2.4.1"],
     description: "Vital Signs Section",
     type: "rootTemplate",
     childxpaths: [{
-        xpath: "h:text"
-    }, {
         xpath: "..",
         action: "flatten",
         params: "2.16.840.1.113883.10.20.22.4.27"
     }, {
         xpath: "h:entry"
-    }]
-}, {
-    xpath: ["2.16.840.1.113883.10.20.22.2.3", "2.16.840.1.113883.10.20.22.2.3.1"],
-    description: "Results Section",
-    type: "rootTemplate",
-    childxpaths: [{
-        xpath: "h:text"
     }]
 }, {
     xpath: "//h:recordTarget/h:patientRole",

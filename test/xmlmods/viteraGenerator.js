@@ -2,9 +2,6 @@ module.exports = [{
     xpath: "//h:recordTarget/h:patientRole/h:patient/h:ethnicGroupCode",
     comment: "due to parser merging raceCode and ethnicGroupCode original raceCode is converted to ethnicGroupCode (#173)"
 }, {
-    xpath: "//h:text",
-    comment: "text fields are not supported currently"
-}, {
     xpath: "//h:recordTarget/h:patientRole/h:patient/h:name[@use]",
     action: "removeAttribute",
     params: "use",
