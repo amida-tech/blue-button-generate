@@ -2,11 +2,6 @@ module.exports = [{
     xpath: "//h:recordTarget/h:patientRole/h:patient/h:ethnicGroupCode",
     comment: "due to parser merging raceCode and ethnicGroupCode original raceCode is converted to ethnicGroupCode (#173)"
 }, {
-    xpath: "//h:recordTarget/h:patientRole/h:patient/h:name[@use]",
-    action: "removeAttribute",
-    params: "use",
-    comment: "parser does read @use and generator assumes it is always 'L'"
-}, {
     xpath: "2.16.840.1.113883.10.20.22.2.6.1",
     description: "Allergies Section (entries required)",
     type: "rootTemplate",

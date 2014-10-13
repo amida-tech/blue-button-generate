@@ -468,4 +468,11 @@ module.exports = [{
     action: "replaceText",
     params: titleMap,
     comment: "titles may differ"
+}, {
+    xpath: "//h:recordTarget/h:patientRole/h:patient/h:name",
+    action: "addAttribute",
+    params: {
+        "use": "L"
+    },
+    comment: "parser does read @use and generator assumes it is always 'L'"
 }];
