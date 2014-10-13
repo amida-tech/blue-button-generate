@@ -56,10 +56,8 @@ var actionExecuter = {
             attrNode.remove();
         }
     },
-    "addAttribute": function (parent, node, params) {
-        var attrs = {};
-        attrs[params[0]] = params[1];
-        node.attr(attrs);
+    addAttribute: function (parent, node, params) {
+        node.attr(params);
     },
     "normalizeTelNumber": function (parent, node) {
         var attrNode = node.attr('value');

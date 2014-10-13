@@ -199,7 +199,9 @@ module.exports = [{
             }, {
                 xpath: "h:act/h:templateId",
                 action: "addAttribute",
-                params: ["root", "2.16.840.1.113883.10.20.22.4.20"],
+                params: {
+                    "root": "2.16.840.1.113883.10.20.22.4.20"
+                },
                 comment: "2.16.840.1.113883.10.20.22.4.64 (comment) or 2.16.840.1.113883.10.20.22.4.20"
             }]
         }]
@@ -299,7 +301,9 @@ module.exports = [{
                 childxpaths: [{
                     xpath: "h:entryRelationship/h:act[@moodCode=\"DEF\"]",
                     action: "addAttribute",
-                    params: ["moodCode", "EVN"],
+                    params: {
+                        "moodCode": "EVN"
+                    },
                     comment: "to be researched"
                 }, {
                     xpath: "h:participant/h:participantRole/h:playingEntity/*[@value=\"19381212\"]",
@@ -333,7 +337,9 @@ module.exports = [{
         childxpaths: [{
             xpath: ".",
             action: "addAttribute",
-            params: ["moodCode", "RQO"],
+            params: {
+                "moodCode": "RQO"
+            },
             comment: "parser does not support"
         }, {
             xpath: "2.16.840.1.113883.10.20.22.4.4",
@@ -358,7 +364,9 @@ module.exports = [{
         childxpaths: [{
             xpath: "h:statusCode",
             action: "addAttribute",
-            params: ["code", "completed"],
+            params: {
+                "code": "completed"
+            },
             comment: "parser deficiency: not read"
         }, {
             xpath: "h:performer",
@@ -386,7 +394,9 @@ module.exports = [{
                 }, {
                     xpath: "h:observation/h:value",
                     action: "addAttribute",
-                    params: ["xsi:type", "CD"]
+                    params: {
+                        "xsi:type": "CD"
+                    }
                 }]
             }]
         }, {
@@ -418,7 +428,9 @@ module.exports = [{
     childxpaths: [{
         xpath: "h:entry",
         action: "addAttribute",
-        params: ["typeCode", "DRIV"]
+        params: {
+            "typeCode": "DRIV"
+        }
     }, {
         xpath: "h:id"
     }, {
