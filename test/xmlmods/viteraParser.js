@@ -187,11 +187,6 @@ module.exports = [{
             xpath: "2.16.840.1.113883.10.20.22.4.64",
             type: "localTemplateParent",
             childxpaths: [{
-                xpath: ".",
-                action: "removeAttribute",
-                params: "inversionInd",
-                comment: "just change  ...22.4.64 is not good anyway"
-            }, {
                 xpath: "h:act",
                 action: "removeAttribute",
                 params: "moodCode",

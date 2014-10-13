@@ -85,16 +85,6 @@ module.exports = [{
                 xpath: "h:id",
                 comment: "not read by parser"
             }]
-        }, {
-            xpath: "2.16.840.1.113883.10.20.22.4.20",
-            description: "Instructions",
-            type: "localTemplate",
-            childxpaths: [{
-                xpath: "..",
-                action: "removeAttribute",
-                params: "inversionInd",
-                comment: "erroneous in sample file"
-            }]
         }]
     }]
 }, {
