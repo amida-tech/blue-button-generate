@@ -281,8 +281,10 @@ module.exports = [{
             comment: "error in file: id does not exist in spec"
         }, {
             xpath: "h:code",
-            action: "removeAttribute",
-            params: "displayName"
+            action: "addAttribute",
+            params: {
+                "displayName": "Payers"
+            }
         }, {
             xpath: "2.16.840.1.113883.10.20.22.4.60",
             description: "Coverage Activity",
