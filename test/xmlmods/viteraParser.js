@@ -40,9 +40,11 @@ module.exports = [{
             comment: "needs to be researched"
         }, {
             xpath: '..',
-            action: "removeAttribute",
-            params: "inversionInd",
-            comment: "parser ignores inversionInd attribute"
+            action: "addAttribute",
+            params: {
+                "inversionInd": "true"
+            },
+            comment: "parser expects a value"
         }, {
             xpath: "2.16.840.1.113883.10.20.22.4.9",
             type: "localTemplate",
@@ -188,8 +190,10 @@ module.exports = [{
             type: "localTemplateParent",
             childxpaths: [{
                 xpath: "h:act",
-                action: "removeAttribute",
-                params: "moodCode",
+                action: "addAttribute",
+                params: {
+                    "moodCode": "INT"
+                },
                 comment: "just change  ...22.4.64 is not good anyway"
             }, {
                 xpath: "h:act/h:templateId",

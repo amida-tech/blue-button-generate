@@ -10,15 +10,6 @@ module.exports = [{
     }, {
         xpath: "h:templateId[@root=\"2.16.840.1.113883.10.20.22.2.6\"]",
         comment: "this templateId does not exist in the file"
-    }, {
-        xpath: "2.16.840.1.113883.10.20.22.4.7",
-        type: "localTemplate",
-        childxpaths: [{
-            xpath: "..",
-            action: "removeAttribute",
-            params: "inversionInd",
-            comment: "parser ignores inversionInd attribute and generator always generates true"
-        }]
     }]
 }, {
     xpath: "2.16.840.1.113883.10.20.22.2.1.1",
@@ -35,16 +26,6 @@ module.exports = [{
     childxpaths: [{
         xpath: "h:templateId[@root=\"2.16.840.1.113883.10.20.22.2.2\"]",
         comment: "this templateId does not exist in the file"
-    }, {
-        xpath: "2.16.840.1.113883.10.20.22.4.52",
-        type: "localTemplate",
-        description: "Immunization Activity",
-        childxpaths: [{
-            xpath: "2.16.840.1.113883.10.20.22.4.20",
-            type: "localTemplate",
-            action: "removeAttribute",
-            params: "moodCode",
-        }]
     }, {
         xpath: "2.16.840.1.113883.10.20.22.2.7.1",
         description: "Procedures Section",
