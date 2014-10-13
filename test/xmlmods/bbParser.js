@@ -10,8 +10,6 @@ module.exports = [{
     xpath: " //h:telecom[@use='WP']",
     action: "normalizeTelNumber"
 }, {
-    xpath: "//h:reference"
-}, {
     xpath: "//h:originalText"
 }, {
     xpath: "//h:code[@codeSystemVersion]",

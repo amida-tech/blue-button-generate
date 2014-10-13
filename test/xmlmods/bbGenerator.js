@@ -7,8 +7,6 @@ module.exports = [{
     action: "removeAttribute",
     params: "type"
 }, {
-    xpath: "//h:reference"
-}, {
     xpath: "//h:originalText"
 }, {
     xpath: "2.16.840.1.113883.10.20.22.2.2",
