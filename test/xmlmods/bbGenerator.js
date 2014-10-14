@@ -3,10 +3,6 @@ module.exports = [{
 }, {
     xpath: "//h:text"
 }, {
-    xpath: "//h:effectiveTime[@xsi:type=\"IVL_TS\"]",
-    action: "removeAttribute",
-    params: "type"
-}, {
     xpath: "//h:originalText"
 }, {
     xpath: "2.16.840.1.113883.10.20.22.2.18",

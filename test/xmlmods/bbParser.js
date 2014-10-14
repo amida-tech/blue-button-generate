@@ -3,10 +3,6 @@ module.exports = [{
 }, {
     xpath: "//h:text"
 }, {
-    xpath: "//h:effectiveTime[@xsi:type='IVL_TS']",
-    action: "removeAttribute",
-    params: "type"
-}, {
     xpath: " //h:telecom[@use='WP']",
     action: "normalizeTelNumber"
 }, {

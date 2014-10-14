@@ -111,6 +111,9 @@ module.exports = [{
                 xpath: "h:id",
                 comment: "parser does not read"
             }, {
+                xpath: "h:effectiveTime",
+                comment: "no value"
+            }, {
                 xpath: "h:author/h:assignedAuthor/h:addr",
                 "comment:": "parser does not read"
             }, {
@@ -412,9 +415,9 @@ module.exports = [{
         xpath: "2.16.840.1.113883.10.20.22.4.64",
         type: "localTemplateParent",
         comment: "error in file: Ignoring Comment Activity"
+    }, {
+        xpath: "//*[not(*)][not(@*)][not(text())]",
     }]
-}, {
-    xpath: "//*[not(*)][not(@*)][not(text())]",
 }, {
     xpath: "//h:title",
     action: "replaceText",
