@@ -8,10 +8,14 @@ var documentLevel = require('./lib/documentLevel');
 
 var createContext = (function () {
     var base = {
-        getReference: function (referenceKey) {
+        nextReference: function (referenceKey) {
             var index = this.references[referenceKey] || 0;
             ++index;
             this.references[referenceKey] = index;
+            return "#" + referenceKey + index;
+        },
+        sameReference: function (referenceKey) {
+            var index = this.references[referenceKey] || 0;
             return "#" + referenceKey + index;
         }
     };
