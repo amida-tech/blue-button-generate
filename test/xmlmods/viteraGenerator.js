@@ -194,7 +194,7 @@ module.exports = [{
     childxpaths: [{
         xpath: "h:templateId[@root=\"2.16.840.1.113883.10.20.22.2.3\"]"
     }, {
-        xpath: "//h:observationRange[not(*)][not(@*)][not(text())]"
+        xpath: ".//h:observationRange[not(*)][not(@*)][not(text())]"
     }, {
         xpath: "2.16.840.1.113883.10.20.22.4.2",
         type: "localTemplate",

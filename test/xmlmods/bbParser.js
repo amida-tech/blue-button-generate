@@ -94,10 +94,7 @@ module.exports = [{
         childxpaths: [{
             xpath: "2.16.840.1.113883.10.20.22.4.37",
             description: "Product Instance",
-            type: "localTemplate",
-            childxpaths: [{
-                xpath: ".."
-            }]
+            type: "localTemplateParent",
         }]
     }]
 }, {

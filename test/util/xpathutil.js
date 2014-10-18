@@ -126,10 +126,13 @@ var doModifications = function doModifications(xmlDoc, modifications) {
         var path = pathConstructor[pathType](modification.xpath);
         var nodes = xmlDoc.find(path, ns);
         nodes.forEach(function (node) {
+            var execType = modification.action;
             if (modification.childxpaths) {
                 doModifications(node, modification.childxpaths);
             } else {
-                var execType = modification.action || "removeNode";
+                execType = execType || "removeNode";
+            }
+            if (execType) {
                 actionExecuter[execType](xmlDoc, node, modification.params);
             }
         });

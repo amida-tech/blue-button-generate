@@ -31,20 +31,18 @@ module.exports = [{
         comment: "error in file: id does not exist in spec"
     }, {
         xpath: "2.16.840.1.113883.10.20.22.4.7",
-        type: "localTemplate",
+        type: "localTemplateParent",
+        action: "addAttribute",
+        params: {
+            "inversionInd": "true"
+        },
+        comment: "parser expects a value",
         childxpaths: [{
-            xpath: "h:informant",
+            xpath: "h:observation/h:informant",
             comment: "error in file: informant does not exist in spec"
         }, {
-            xpath: "h:participant/h:participantRole/h:playingEntity/h:name",
+            xpath: "h:observation/h:participant/h:participantRole/h:playingEntity/h:name",
             comment: "needs to be researched"
-        }, {
-            xpath: '..',
-            action: "addAttribute",
-            params: {
-                "inversionInd": "true"
-            },
-            comment: "parser expects a value"
         }, {
             xpath: "2.16.840.1.113883.10.20.22.4.9",
             type: "localTemplate",
@@ -289,14 +287,12 @@ module.exports = [{
         xpath: "2.16.840.1.113883.10.20.22.4.41",
         description: "Plan of Care Activity Procedure",
         type: "localTemplate",
+        action: "addAttribute",
+        params: {
+            "moodCode": "RQO"
+        },
+        comment: "parser does not support",
         childxpaths: [{
-            xpath: ".",
-            action: "addAttribute",
-            params: {
-                "moodCode": "RQO"
-            },
-            comment: "parser does not support"
-        }, {
             xpath: "2.16.840.1.113883.10.20.22.4.4",
             type: "localTemplateParent",
             comment: "not clear in specification, parser does not read"
@@ -329,24 +325,20 @@ module.exports = [{
         }, {
             xpath: "2.16.840.1.113883.10.20.22.4.4",
             description: "Problem Observation",
-            type: "localTemplate",
+            type: "localTemplateParent",
+            action: "removeAttribute",
+            params: "inversionInd",
             childxpaths: [{
-                xpath: "..",
-                action: "removeAttribute",
-                params: "inversionInd"
-            }, {
-                xpath: "h:informant",
+                xpath: "h:observation/h:informant",
                 comment: "invalid"
             }, {
-                xpath: "h:code"
+                xpath: "h:observation/h:code"
             }, {
                 xpath: "2.16.840.1.113883.10.20.22.4.6",
                 type: "localTemplateParent",
+                action: "removeAttribute",
+                params: "inversionInd",
                 childxpaths: [{
-                    xpath: ".",
-                    action: "removeAttribute",
-                    params: "inversionInd"
-                }, {
                     xpath: "h:observation/h:value",
                     action: "addAttribute",
                     params: {
@@ -416,7 +408,7 @@ module.exports = [{
         type: "localTemplateParent",
         comment: "error in file: Ignoring Comment Activity"
     }, {
-        xpath: "//*[not(*)][not(@*)][not(text())]",
+        xpath: ".//*[not(*)][not(@*)][not(text())]",
     }]
 }, {
     xpath: "//h:title",

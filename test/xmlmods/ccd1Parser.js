@@ -24,15 +24,12 @@ module.exports = [{
     childxpaths: [{
         xpath: "2.16.840.1.113883.10.20.22.4.20",
         description: "Instructions",
-        type: "localTemplate",
-        childxpaths: [{
-            xpath: "..",
-            action: "addAttribute",
-            params: {
-                "inversionInd": "true"
-            },
-            comment: "erroneous in the sample file"
-        }]
+        type: "localTemplateParent",
+        action: "addAttribute",
+        params: {
+            "inversionInd": "true"
+        },
+        comment: "erroneous in the sample file"
     }, {
         xpath: ".//h:effectiveTime[@xsi:type=\"IVL_TS\"]",
         action: "removeAttribute",
