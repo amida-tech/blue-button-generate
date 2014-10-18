@@ -20,10 +20,12 @@ bar bbg = require('blue-button-generate');
 var xmlString = fs.readFileSync('test/fixtures/files/ccda_xml/CCD_1.xml', 'utf-8');
 var record = bb.parseString(xmlString);
 
-// changes to record here
+// ...
+// changes to record
 // ...
 
-var ccda = bbg(record).toString();
+// get back xml as text
+var updatedXmlString = bbg(record);
 
 ```
 
