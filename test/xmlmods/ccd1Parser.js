@@ -1,3 +1,7 @@
+"use strict";
+
+var t = require("./templatePath");
+
 var titleMap = {
     "ALLERGIES, ADVERSE REACTIONS, ALERTS": "Allergies, adverse reactions, alerts",
     "MEDICATIONS": "History of medication use",
@@ -18,30 +22,18 @@ module.exports = [{
     params: titleMap,
     comment: "titles may differ"
 }, {
-    xpath: "2.16.840.1.113883.10.20.22.2.2",
-    description: "Immunization Section",
-    type: "rootTemplate",
-    childxpaths: [{
-        xpath: "2.16.840.1.113883.10.20.22.4.20",
-        description: "Instructions",
-        type: "localTemplateParent",
-        action: "addAttribute",
-        params: {
-            "inversionInd": "true"
-        },
-        comment: "erroneous in the sample file"
-    }, {
-        xpath: ".//h:effectiveTime[@xsi:type=\"IVL_TS\"]",
-        action: "removeAttribute",
-        params: "type"
-    }]
+    xpath: t.immSection + '/.//h:effectiveTime[@xsi:type="IVL_TS"]',
+    action: "removeAttribute",
+    params: "type"
 }, {
-    xpath: "2.16.840.1.113883.10.20.22.2.1",
-    description: "Medications Section (entries optional)",
-    type: "rootTemplate",
-    childxpaths: [{
-        xpath: ".//h:effectiveTime[@xsi:type=\"IVL_TS\"]",
-        action: "removeAttribute",
-        params: "type"
-    }]
+    xpath: t.immInstructions,
+    action: "addAttribute",
+    params: {
+        "inversionInd": "true"
+    },
+    comment: "erroneous in the sample file"
+}, {
+    xpath: t.medSection + '/.//h:effectiveTime[@xsi:type="IVL_TS"]',
+    action: "removeAttribute",
+    params: "type"
 }];

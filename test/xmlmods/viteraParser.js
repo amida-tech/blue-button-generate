@@ -1,3 +1,7 @@
+"use strict";
+
+var t = require("./templatePath");
+
 var titleMap = {
     "Allergies": "Allergies, adverse reactions, alerts",
     "Medications": "History of medication use",
@@ -10,406 +14,321 @@ var titleMap = {
 
 module.exports = [{
     xpath: "//h:recordTarget/h:patientRole/h:patient/h:raceCode",
+    action: "removeNode",
     comment: "due to parser merging raceCode and ethnicGroupCode this is generated as ethnicGroupCode (#173)",
 }, {
     xpath: "//h:name[not(h:family)][not(text())]",
+    action: "removeNode",
     comment: "bunch of empty names to be investigated"
 }, {
     xpath: "//h:effectiveTime[not(*)][not(@*)]",
+    action: "removeNode",
     comment: "all childless and attributeless times (maybe previously removed nullFlavor)"
 }, {
     xpath: "//h:assignedPerson[not(*)]",
+    action: "removeNode",
     comment: "all childless and attributeless assignedPerson (maybe previously removed nullFlavor)"
 }, {
-    xpath: "2.16.840.1.113883.10.20.22.2.6.1",
-    description: "Allergies Section (entries required)",
-    type: "rootTemplate",
-    childxpaths: [{
-        xpath: ".//h:effectiveTime[not(@value | h:low | h:high)]"
-    }, {
-        xpath: "h:id",
-        comment: "error in file: id does not exist in spec"
-    }, {
-        xpath: "2.16.840.1.113883.10.20.22.4.7",
-        type: "localTemplateParent",
-        action: "addAttribute",
-        params: {
-            "inversionInd": "true"
-        },
-        comment: "parser expects a value",
-        childxpaths: [{
-            xpath: "h:observation/h:informant",
-            comment: "error in file: informant does not exist in spec"
-        }, {
-            xpath: "h:observation/h:participant/h:participantRole/h:playingEntity/h:name",
-            comment: "needs to be researched"
-        }, {
-            xpath: "2.16.840.1.113883.10.20.22.4.9",
-            type: "localTemplate",
-            childxpaths: [{
-                xpath: "h:code",
-                comment: "can be anything according to spec and parser does not read it"
-            }]
-        }]
-    }, {
-        xpath: "2.16.840.1.113883.10.20.22.4.64",
-        type: "localTemplateParent",
-        comment: "error in file: Ignoring Comment Activity"
-    }]
+    xpath: t.allergiesSection + '/.//h:effectiveTime[not(@value | h:low | h:high)]',
+    action: "removeNode",
 }, {
-    xpath: "2.16.840.1.113883.10.20.22.2.1.1",
-    description: "Medications Section",
-    type: "rootTemplate",
-    childxpaths: [{
-        xpath: "h:id",
-        comment: "error in file: id does not exist in spec"
-    }, {
-        xpath: "2.16.840.1.113883.10.20.22.4.16",
-        description: "Medication Activity",
-        type: "localTemplate",
-        childxpaths: [{
-            xpath: "h:effectiveTime[@operator='A']",
-            comment: "error in file: unexpected interval"
-        }, {
-            xpath: "h:entryRelationship/h:observation[not(h:templateId)]/..",
-            comment: "error in file: template without templateId"
-        }, {
-            xpath: "h:informant",
-            comment: "error in file: no informant node in spec"
-        }, {
-            xpath: "2.16.840.1.113883.10.20.22.4.20",
-            description: "Medication Information",
-            type: "localTemplateParent",
-            comment: "not supported by parser"
-        }, {
-            xpath: "2.16.840.1.113883.10.20.1.47",
-            description: "Medication Status",
-            type: "localTemplateParent",
-            comment: "error in file: C32 template not valid in CCDA"
-        }, {
-            xpath: "2.16.840.1.113883.10.20.22.4.3",
-            description: 'Problem Concern Act',
-            type: "localTemplateParent",
-            comment: "error in file: there is no Problem Act in meidcations"
-        }, {
-            xpath: "2.16.840.1.113883.10.20.22.4.18",
-            description: "Medication Dispense",
-            type: "localTemplate",
-            childxpaths: [{
-                xpath: "2.16.840.1.113883.10.20.22.4.23",
-                description: "Medication Information",
-                type: "localTemplateParent",
-                comment: "parser does not read"
-            }]
-        }, {
-            xpath: "2.16.840.1.113883.10.20.22.4.17",
-            description: "Medication Supply Order",
-            type: "localTemplate",
-            childxpaths: [{
-                xpath: "h:id",
-                comment: "parser does not read"
-            }, {
-                xpath: "h:effectiveTime",
-                comment: "no value"
-            }, {
-                xpath: "h:author/h:assignedAuthor/h:addr",
-                "comment:": "parser does not read"
-            }, {
-                xpath: "h:quantity[@unit]",
-                action: "removeAttribute",
-                params: "unit",
-                comment: "parser does not read"
-            }, {
-                xpath: "2.16.840.1.113883.10.20.22.4.23",
-                description: "Medication Information",
-                type: "localTemplateParent",
-                comment: "parser does not read"
-            }]
-        }, {
-            xpath: "2.16.840.1.113883.10.20.22.4.23",
-            description: "Medication Information",
-            type: "localTemplate",
-            childxpaths: [{
-                xpath: "h:manufacturedMaterial/h:name",
-                comment: "parser does not read"
-            }]
-        }]
-    }]
+    xpath: t.allergiesSection + '/h:id',
+    action: "removeNode",
+    comment: "error in file: id does not exist in spec"
 }, {
-    xpath: "2.16.840.1.113883.10.20.22.2.2.1",
-    description: "Immunizations Section",
-    type: "rootTemplate",
-    childxpaths: [{
-        xpath: "h:id",
-        comment: "error in file: id does not exist in spec"
-    }, {
-        xpath: "2.16.840.1.113883.10.20.22.4.52",
-        type: "localTemplate",
-        description: "Immunization Activity",
-        childxpaths: [{
-            xpath: "h:code",
-            comment: "parser does not read"
-        }, {
-            xpath: "h:consumable/h:manufacturedProduct/h:manufacturedMaterial/h:name",
-            comment: "to be researched"
-        }, {
-            xpath: "h:consumable/h:manufacturedProduct/h:manufacturerOrganization/h:standardIndustryClassCode",
-            comment: "to be researched"
-        }, {
-            xpath: "2.16.840.1.113883.10.20.1.46",
-            type: "localTemplateParent",
-            comment: "unknown CCDA templateId"
-        }, {
-            xpath: "2.16.840.1.113883.10.20.1.47",
-            type: "localTemplateParent",
-            comment: "unknown CCDA templateId"
-        }, {
-            xpath: "h:informant",
-            comment: "to be researched"
-        }, {
-            xpath: "2.16.840.1.113883.10.20.22.4.64",
-            type: "localTemplateParent",
-            childxpaths: [{
-                xpath: "h:act",
-                action: "addAttribute",
-                params: {
-                    "moodCode": "INT"
-                },
-                comment: "just change  ...22.4.64 is not good anyway"
-            }, {
-                xpath: "h:act/h:templateId",
-                action: "addAttribute",
-                params: {
-                    "root": "2.16.840.1.113883.10.20.22.4.20"
-                },
-                comment: "2.16.840.1.113883.10.20.22.4.64 (comment) or 2.16.840.1.113883.10.20.22.4.20"
-            }]
-        }]
-    }, {
-        xpath: "2.16.840.1.113883.10.20.22.2.7.1",
-        description: "Procedures Section",
-        type: "rootTemplate",
-        childxpaths: [{
-            xpath: "h:id",
-            comment: "error in file: id does not exist in spec"
-        }, {
-            xpath: "2.16.840.1.113883.10.20.22.4.14",
-            description: "Procedure Activity Procedure",
-            type: "localTemplate",
-            childxpaths: [{
-                xpath: "2.16.840.1.113883.10.20.22.4.4",
-                type: "localTemplateParent",
-                comment: "to be researched"
-            }, {
-                xpath: "h:informant",
-                comment: "to be researched"
-            }, {
-                xpath: "h:participant/h:templateId",
-                comment: "error in file: this should be in participantRole"
-            }, {
-                xpath: "h:participant/h:participantRole/h:id",
-                comment: "to be researched"
-            }]
-        }]
-    }, {
-        xpath: "2.16.840.1.113883.10.20.22.2.22",
-        description: "Encounters Section",
-        type: "rootTemplate",
-        childxpaths: [{
-            xpath: "h:id",
-            comment: "error in file: id does not exist in spec"
-        }, {
-            xpath: "2.16.840.1.113883.10.20.22.4.49",
-            description: "Encounters Activities",
-            type: "localTemplate",
-            childxpaths: [{
-                xpath: "h:informant",
-                comment: "to be researched"
-            }, {
-                xpath: "h:participant/h:templateId",
-                comment: "error in file: this should be in participantRole"
-            }, {
-                xpath: "h:participant/h:participantRole/h:id",
-                comment: "to be researched"
-            }]
-        }]
-    }, {
-        xpath: "2.16.840.1.113883.10.20.22.2.18",
-        description: "Payers Section",
-        type: "rootTemplate",
-        childxpaths: [{
-            xpath: "h:id",
-            comment: "error in file: id does not exist in spec"
-        }, {
-            xpath: "h:code",
-            action: "addAttribute",
-            params: {
-                "displayName": "Payers"
-            }
-        }, {
-            xpath: "2.16.840.1.113883.10.20.22.4.60",
-            description: "Coverage Activity",
-            type: "localTemplate",
-            childxpaths: [{
-                xpath: "h:informant",
-                comment: "to be researched"
-            }, {
-                xpath: "h:entryRelationship/h:sequenceNumber",
-                comment: "to be researched"
-            }, {
-                xpath: "2.16.840.1.113883.10.20.22.4.61",
-                description: "Policy Activity",
-                type: "localTemplate",
-                childxpaths: [{
-                    xpath: "h:entryRelationship/h:act[@moodCode=\"DEF\"]",
-                    action: "addAttribute",
-                    params: {
-                        "moodCode": "EVN"
-                    },
-                    comment: "to be researched"
-                }, {
-                    xpath: "h:participant/h:participantRole/h:playingEntity/*[@value=\"19381212\"]",
-                    comment: "to be researched"
-                }, {
-                    xpath: "h:performer/h:assignedEntity/h:representedOrganization[not(*)]"
-                }]
-            }]
-        }]
-    }]
+    xpath: t.allergyObs + '/..',
+    action: "addAttribute",
+    params: {
+        "inversionInd": "true"
+    },
+    comment: "parser expects a value",
 }, {
-    xpath: "2.16.840.1.113883.10.20.22.2.10",
-    description: "Plan of Care Section",
-    type: "rootTemplate",
-    childxpaths: [{
-        xpath: "h:id",
-        comment: "error in file: id does not exist in spec"
-    }, {
-        xpath: "2.16.840.1.113883.10.20.22.4.41",
-        description: "Plan of Care Activity Procedure",
-        type: "localTemplate",
-        action: "addAttribute",
-        params: {
-            "moodCode": "RQO"
-        },
-        comment: "parser does not support",
-        childxpaths: [{
-            xpath: "2.16.840.1.113883.10.20.22.4.4",
-            type: "localTemplateParent",
-            comment: "not clear in specification, parser does not read"
-        }, {
-            xpath: "h:performer",
-            comment: "not clear in specification, parser does not read"
-        }]
-    }]
+    xpath: t.allergyObs + '/h:informant',
+    action: "removeNode",
+    comment: "error in file: informant does not exist in spec",
 }, {
-    xpath: "2.16.840.1.113883.10.20.22.2.5.1",
-    description: "Problems Section",
-    type: "rootTemplate",
-    childxpaths: [{
-        xpath: "h:id",
-        comment: "error in file: id does not exist in spec"
-    }, {
-        xpath: "2.16.840.1.113883.10.20.22.4.3",
-        description: "Problem Act",
-        type: "localTemplate",
-        childxpaths: [{
-            xpath: "h:statusCode",
-            action: "addAttribute",
-            params: {
-                "code": "completed"
-            },
-            comment: "parser deficiency: not read"
-        }, {
-            xpath: "h:performer",
-            comment: "invalid"
-        }, {
-            xpath: "2.16.840.1.113883.10.20.22.4.4",
-            description: "Problem Observation",
-            type: "localTemplateParent",
-            action: "removeAttribute",
-            params: "inversionInd",
-            childxpaths: [{
-                xpath: "h:observation/h:informant",
-                comment: "invalid"
-            }, {
-                xpath: "h:observation/h:code"
-            }, {
-                xpath: "2.16.840.1.113883.10.20.22.4.6",
-                type: "localTemplateParent",
-                action: "removeAttribute",
-                params: "inversionInd",
-                childxpaths: [{
-                    xpath: "h:observation/h:value",
-                    action: "addAttribute",
-                    params: {
-                        "xsi:type": "CD"
-                    }
-                }]
-            }]
-        }, {
-            xpath: "2.16.840.1.113883.10.20.22.4.64",
-            description: "Comment Activity",
-            type: "localTemplateParent",
-            comment: "Comment Activity is not implemented by Parser"
-        }]
-    }]
+    xpath: t.allergyObs + '/h:participant/h:participantRole/h:playingEntity/h:name',
+    action: "removeNode",
+    comment: "needs to be researched"
 }, {
-    xpath: "2.16.840.1.113883.10.20.22.2.4.1",
-    description: "Vital Signs Section",
-    type: "rootTemplate",
-    childxpaths: [{
-        xpath: "h:id"
-    }, {
-        xpath: "2.16.840.1.113883.10.20.22.4.27",
-        type: "localTemplate",
-        childxpaths: [{
-            xpath: "h:informant"
-        }, {
-            xpath: "h:methodCode"
-        }]
-    }]
+    xpath: t.allergyReaction + '/h:code',
+    action: "removeNode",
+    comment: "can be anything according to spec and parser does not read it"
 }, {
-    xpath: "2.16.840.1.113883.10.20.22.2.3.1",
-    description: "Results Section",
-    type: "rootTemplate",
-    childxpaths: [{
-        xpath: "h:entry",
-        action: "addAttribute",
-        params: {
-            "typeCode": "DRIV"
-        }
-    }, {
-        xpath: "h:id"
-    }, {
-        xpath: "2.16.840.1.113883.10.20.22.4.1",
-        type: "localTemplate",
-        childxpaths: [{
-            xpath: "h:participant"
-        }, {
-            xpath: "h:component/h:procedure"
-        }, {
-            xpath: "h:specimen"
-        }, {
-            xpath: "h:effectiveTime"
-        }, {
-            xpath: "2.16.840.1.113883.10.20.22.4.2",
-            type: "localTemplate",
-            childxpaths: [{
-                xpath: "h:performer"
-            }, {
-                xpath: "h:value[@xsi:type=\"ST\"]",
-            }, {
-                xpath: "h:value[@value]",
-                action: "removeZeros"
-            }]
-        }]
-    }, {
-        xpath: "2.16.840.1.113883.10.20.22.4.64",
-        type: "localTemplateParent",
-        comment: "error in file: Ignoring Comment Activity"
-    }, {
-        xpath: ".//*[not(*)][not(@*)][not(text())]",
-    }]
+    xpath: t.allergyCommentAct,
+    action: "removeNode",
+    comment: "error in file: Ignoring Comment Activity"
+}, {
+    xpath: t.medSection + '/h:id',
+    action: "removeNode",
+    comment: "error in file: id does not exist in spec"
+}, {
+    xpath: t.medActivity + '/h:effectiveTime[@operator="A"]',
+    action: "removeNode",
+    comment: "error in file: unexpected interval"
+}, {
+    xpath: t.medActivity + '/h:informant',
+    action: "removeNode",
+    comment: "error in file: no informant node in spec"
+}, {
+    xpath: t.medActivity + '/h:entryRelationship/h:observation[not(h:templateId)]/..',
+    action: "removeNode",
+    comment: "error in file: template without templateId"
+}, {
+    xpath: t.medStatus,
+    action: "removeNode",
+    comment: "error in file: C32 template not valid in CCDA"
+}, {
+    xpath: t.medProbAct,
+    action: "removeNode",
+    comment: "error in file: there is no Problem Act in meidcations"
+}, {
+    xpath: t.medDispenseInfo,
+    action: "removeNode",
+    comment: "parser does not read"
+}, {
+    xpath: t.medSupplyInfo,
+    action: "removeNode",
+    comment: "parser does not read"
+}, {
+    xpath: t.medActivityInfo + '/h:manufacturedMaterial/h:name',
+    action: "removeNode",
+    comment: "parser does not read"
+}, {
+    xpath: t.medSupplyOrder + '/h:id',
+    action: "removeNode",
+    comment: "parser does not read"
+}, {
+    xpath: t.medSupplyOrder + '/h:effectiveTime',
+    action: "removeNode",
+    comment: "no value"
+}, {
+    xpath: t.medSupplyOrder + '/h:author/h:assignedAuthor/h:addr',
+    action: "removeNode",
+    comment: "parser does not read"
+}, {
+    xpath: t.medSupplyOrder + '/h:quantity[@unit]',
+    action: "removeAttribute",
+    params: "unit",
+    comment: "parser does not read"
+}, {
+    xpath: t.immSection + '/h:id',
+    action: "removeNode",
+    comment: "error in file: id does not exist in spec"
+}, {
+    xpath: t.immActivity + '/h:code',
+    action: "removeNode",
+    comment: "parser does not read"
+}, {
+    xpath: t.immActivity + '/h:consumable/h:manufacturedProduct/h:manufacturedMaterial/h:name',
+    action: "removeNode",
+    comment: "to be researched"
+}, {
+    xpath: t.immActivity + '/h:consumable/h:manufacturedProduct/h:manufacturerOrganization/h:standardIndustryClassCode',
+    action: "removeNode",
+    comment: "to be researched"
+}, {
+    xpath: t.immActivity + '/h:informant',
+    action: "removeNode",
+    comment: "to be researched"
+}, {
+    xpath: t.immActUnknown1,
+    action: "removeNode",
+    comment: "unknown CCDA templateId"
+}, {
+    xpath: t.immActUnknown2,
+    action: "removeNode",
+    comment: "unknown CCDA templateId"
+}, {
+    xpath: t.immActComment + '/h:act',
+    action: "addAttribute",
+    params: {
+        "moodCode": "INT"
+    },
+    comment: "just change  ...22.4.64 is not good anyway"
+}, {
+    xpath: t.immActComment + '/h:act/h:templateId',
+    action: "addAttribute",
+    params: {
+        "root": "2.16.840.1.113883.10.20.22.4.20"
+    },
+    comment: "2.16.840.1.113883.10.20.22.4.64 (comment) or 2.16.840.1.113883.10.20.22.4.20"
+}, {
+    xpath: t.procSection + '/h:id',
+    action: "removeNode",
+    comment: "error in file: id does not exist in spec"
+}, {
+    xpath: t.procActProc + '/h:informant',
+    action: "removeNode",
+    comment: "to be researched"
+}, {
+    xpath: t.procActProc + '/h:participant/h:templateId',
+    action: "removeNode",
+    comment: "error in file: this should be in participantRole"
+}, {
+    xpath: t.procActProc + '/h:participant/h:participantRole/h:id',
+    action: "removeNode",
+    comment: "to be researched"
+}, {
+    xpath: t.procActProcUnknown,
+    action: "removeNode",
+    comment: "to be researched"
+}, {
+    xpath: t.encSection + '/h:id',
+    action: "removeNode",
+    comment: "error in file: id does not exist in spec"
+}, {
+    xpath: t.encAct + '/h:informant',
+    action: "removeNode",
+    comment: "to be researched"
+}, {
+    xpath: t.encAct + '/h:participant/h:templateId',
+    action: "removeNode",
+    comment: "error in file: this should be in participantRole"
+}, {
+    xpath: t.encAct + '/h:participant/h:participantRole/h:id',
+    action: "removeNode",
+    comment: "to be researched"
+}, {
+    xpath: t.payersSection + '/h:id',
+    action: "removeNode",
+    comment: "error in file: id does not exist in spec"
+}, {
+    xpath: t.payersSection + '/h:code',
+    action: "addAttribute",
+    params: {
+        "displayName": "Payers"
+    }
+}, {
+    xpath: t.coverageAct + '/h:informant',
+    action: "removeNode",
+    comment: "to be researched"
+}, {
+    xpath: t.coverageAct + '/h:entryRelationship/h:sequenceNumber',
+    action: "removeNode",
+    comment: "to be researched"
+}, {
+    xpath: t.policyAct + '/h:entryRelationship/h:act[@moodCode="DEF"]',
+    action: "addAttribute",
+    params: {
+        "moodCode": "EVN"
+    },
+    comment: "to be researched"
+}, {
+    xpath: t.policyAct + '/h:participant/h:participantRole/h:playingEntity/*[@value="19381212"]',
+    action: "removeNode",
+    comment: "to be researched"
+}, {
+    xpath: t.policyAct + '/h:performer/h:assignedEntity/h:representedOrganization[not(*)]',
+    action: "removeNode",
+    comment: "to be researched"
+}, {
+    xpath: t.pocSection + '/h:id',
+    action: "removeNode",
+    comment: "error in file: id does not exist in spec"
+}, {
+    xpath: t.pocActProc,
+    action: "addAttribute",
+    params: {
+        "moodCode": "RQO"
+    },
+    comment: "parser does not support"
+}, {
+    xpath: t.pocActProcUnknown,
+    action: "removeNode",
+    comment: "not clear in specification, parser does not read"
+}, {
+    xpath: t.pocActProc + '/h:performer',
+    action: "removeNode",
+    comment: "not clear in specification, parser does not read"
+}, {
+    xpath: t.probSection + '/h:id',
+    action: "removeNode",
+    comment: "error in file: id does not exist in spec"
+}, {
+    xpath: t.probAct + '/h:statusCode',
+    action: "addAttribute",
+    params: {
+        "code": "completed"
+    },
+    comment: "parser deficiency: not read"
+}, {
+    xpath: t.probAct + '/h:performer',
+    action: "removeNode",
+    comment: "invalid"
+}, {
+    xpath: t.probObservation + '/h:informant',
+    action: "removeNode",
+    comment: "invalid"
+}, {
+    xpath: t.probObservation + '/h:code',
+    action: "removeNode",
+}, {
+    xpath: t.probObservation + '/..',
+    action: "removeAttribute",
+    params: "inversionInd",
+}, {
+    xpath: t.probStatus + '/..',
+    action: "removeAttribute",
+    params: "inversionInd",
+}, {
+    xpath: t.probStatus + '/h:value',
+    action: "addAttribute",
+    params: {
+        "xsi:type": "CD"
+    }
+}, {
+    xpath: t.probActComment,
+    action: "removeNode",
+    comment: "Comment Activity is not implemented by Parser"
+}, {
+    xpath: t.resultsSection + '/h:id',
+    action: "removeNode",
+    comment: "error in file: id does not exist in spec"
+}, {
+    xpath: t.resultsSection + '/h:entry',
+    action: "addAttribute",
+    params: {
+        "typeCode": "DRIV"
+    }
+}, {
+    xpath: t.resultOrg + '/h:participant',
+    action: "removeNode"
+}, {
+    xpath: t.resultOrg + '/h:component/h:procedure',
+    action: "removeNode"
+}, {
+    xpath: t.resultOrg + '/h:specimen',
+    action: "removeNode"
+}, {
+    xpath: t.resultOrg + '/h:effectiveTime',
+    action: "removeNode"
+}, {
+    xpath: t.resultObs + '/h:performer',
+    action: "removeNode"
+}, {
+    xpath: t.resultObs + '/h:value[@xsi:type="ST"]',
+    action: "removeNode"
+}, {
+    xpath: t.resultObs + '/h:value[@value]',
+    action: "removeZeros"
+}, {
+    xpath: t.resultsCommentAct,
+    action: "removeNode",
+    comment: "error in file: Ignoring Comment Activity"
+}, {
+    xpath: t.vitalsSection + '/h:id',
+    action: "removeNode",
+    comment: "error in file: id does not exist in spec"
+}, {
+    xpath: t.vitalsObs + '/h:informant',
+    action: "removeNode"
+}, {
+    xpath: t.vitalsObs + '/h:methodCode',
+    action: "removeNode"
+}, {
+    xpath: t.resultsSection + "/.//*[not(*)][not(@*)][not(text())]",
+    action: "removeNode"
 }, {
     xpath: "//h:title",
     action: "replaceText",

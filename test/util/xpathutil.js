@@ -47,19 +47,19 @@ var pathConstructor = {
 };
 
 var actionExecuter = {
-    "removeNode": function (parent, node) {
+    "removeNode": function (node) {
         node.remove();
     },
-    "removeAttribute": function (parent, node, attr) {
+    "removeAttribute": function (node, attr) {
         var attrNode = node.attr(attr);
         if (attrNode) {
             attrNode.remove();
         }
     },
-    addAttribute: function (parent, node, params) {
+    addAttribute: function (node, params) {
         node.attr(params);
     },
-    "normalizeTelNumber": function (parent, node) {
+    "normalizeTelNumber": function (node) {
         var attrNode = node.attr('value');
         if (attrNode) {
             var value = attrNode.value().toString();
@@ -69,16 +69,19 @@ var actionExecuter = {
             }
         }
     },
-    "flatten": function (parent, node, tid) {
+    "flatten": function (node, tid) {
         var childrenPath = pathConstructor["localTemplate"](tid);
         var newChildren = node.find(childrenPath, ns).map(function (v) {
-            return v.clone();
+            var newChild = v.clone();
+            v.remove();
+            return newChild;
         });
+        var p = node.parent();
         newChildren.forEach(function (newChild) {
-            parent.addChild(newChild);
+            p.addChild(newChild);
         });
     },
-    "removeTimezone": function (parent, node) {
+    "removeTimezone": function (node) {
         var attrNode = node.attr('value');
         if (attrNode) {
             var t = attrNode.value().toString();
@@ -94,7 +97,7 @@ var actionExecuter = {
             }
         }
     },
-    "removeZeros": function (parent, node) {
+    "removeZeros": function (node) {
         var attrNode = node.attr('value');
         if (attrNode) {
             var v = attrNode.value().toString();
@@ -111,7 +114,7 @@ var actionExecuter = {
             }
         }
     },
-    replaceText: function (parent, node, map) {
+    replaceText: function (node, map) {
         var text = node.text();
         var replacementText = map[text];
         if (replacementText) {
@@ -126,15 +129,8 @@ var doModifications = function doModifications(xmlDoc, modifications) {
         var path = pathConstructor[pathType](modification.xpath);
         var nodes = xmlDoc.find(path, ns);
         nodes.forEach(function (node) {
-            var execType = modification.action;
-            if (modification.childxpaths) {
-                doModifications(node, modification.childxpaths);
-            } else {
-                execType = execType || "removeNode";
-            }
-            if (execType) {
-                actionExecuter[execType](xmlDoc, node, modification.params);
-            }
+            var execType = modification.action || "removeNode";
+            actionExecuter[execType](node, modification.params);
         });
     });
 };

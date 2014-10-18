@@ -1,12 +1,19 @@
+"use strict";
+
+var t = require("./templatePath");
+
 module.exports = [{
-    xpath: "//*[@nullFlavor]"
+    xpath: "//*[@nullFlavor]",
+    action: "removeNode"
 }, {
-    xpath: "//h:text"
+    xpath: "//h:text",
+    action: "removeNode"
 }, {
     xpath: " //h:telecom[@use='WP']",
     action: "normalizeTelNumber"
 }, {
-    xpath: "//h:originalText"
+    xpath: "//h:originalText",
+    action: "removeNode"
 }, {
     xpath: "//h:code[@codeSystemVersion]",
     action: "removeAttribute",
@@ -16,129 +23,64 @@ module.exports = [{
     action: "removeAttribute",
     params: "assigningAuthorityName"
 }, {
-    xpath: "2.16.840.1.113883.10.20.22.2.1",
-    description: "Medications Section (entries optional)",
-    type: "rootTemplate",
-    childxpaths: [{
-        xpath: "2.16.840.1.113883.10.20.22.4.16",
-        description: "Medication Activity",
-        type: "localTemplate",
-        childxpaths: [{
-            xpath: "2.16.840.1.113883.10.20.22.4.17",
-            description: "Medication Supply Order",
-            type: "localTemplate",
-            childxpaths: [{
-                xpath: "h:performer"
-            }, {
-                xpath: "h:product"
-            }]
-        }, {
-            xpath: "2.16.840.1.113883.10.20.22.4.18",
-            description: "Medication Dispense",
-            type: "localTemplate",
-            childxpaths: [{
-                xpath: "h:product",
-                comment: "not read by parser"
-            }, {
-                xpath: "h:quantity",
-                comment: "not read by parser"
-            }, {
-                xpath: "h:repeatNumber",
-                comment: "not read by parser"
-            }, {
-                xpath: "h:effectiveTime",
-                comment: "not read by parser"
-            }, {
-                xpath: "h:performer",
-                childxpaths: [{
-                    xpath: "h:assignedEntity/h:assignedPerson",
-                    comment: "not read by parser"
-                }]
-            }]
-        }, {
-            xpath: "2.16.840.1.113883.10.20.22.4.20",
-            description: "Instructions",
-            type: "localTemplate",
-            childxpaths: [{
-                xpath: "..",
-                comment: "not read by parser"
-            }]
-        }]
-    }]
+    xpath: t.medSupplyOrder + '/h:product',
+    action: "removeNode"
 }, {
-    xpath: "2.16.840.1.113883.10.20.22.2.2",
-    description: "Immunization Section",
-    type: "rootTemplate",
-    childxpaths: [{
-        xpath: "2.16.840.1.113883.10.20.22.4.52",
-        description: "Immunization Activity",
-        type: "localTemplate",
-        childxpaths: [{
-            xpath: "2.16.840.1.113883.10.20.22.4.53",
-            description: "Immunization Refusal Reason",
-            type: "localTemplate",
-            childxpaths: [{
-                xpath: "h:id",
-                comment: "not read by parser"
-            }]
-        }]
-    }]
+    xpath: t.medSupplyOrder + '/h:performer',
+    action: "removeNode"
 }, {
-    xpath: "2.16.840.1.113883.10.20.22.2.7",
-    description: "Procedures Section",
-    type: "rootTemplate",
-    childxpaths: [{
-        xpath: "2.16.840.1.113883.10.20.22.4.14",
-        description: "Procedure Actitivity Procedure",
-        type: "localTemplate",
-        childxpaths: [{
-            xpath: "2.16.840.1.113883.10.20.22.4.37",
-            description: "Product Instance",
-            type: "localTemplateParent",
-        }]
-    }]
+    xpath: t.medDispense + '/h:product',
+    action: "removeNode",
+    comment: "not read by parser"
 }, {
-    xpath: "2.16.840.1.113883.10.20.22.2.18",
-    description: "Payers Section",
-    type: "rootTemplate",
-    childxpaths: [{
-        xpath: ".//h:time",
-        comment: "null flavored induced text value"
-    }]
+    xpath: t.medDispense + '/h:product',
+    action: "removeNode",
+    comment: "not read by parser"
 }, {
-    xpath: "2.16.840.1.113883.10.20.22.2.5",
-    description: "Problems",
-    type: "rootTemplate",
-    childxpaths: [{
-        xpath: "2.16.840.1.113883.10.20.22.4.3",
-        description: "Problem Concern Act",
-        type: "localTemplate",
-        childxpaths: [{
-            xpath: "2.16.840.1.113883.10.20.22.4.4",
-            description: "Problem Observation",
-            type: "localTemplate",
-            childxpaths: [{
-                xpath: "h:code"
-            }]
-        }]
-    }]
+    xpath: t.medDispense + '/h:quantity',
+    action: "removeNode",
+    comment: "not read by parser"
 }, {
-    xpath: ["2.16.840.1.113883.10.20.22.2.4", "2.16.840.1.113883.10.20.22.2.4.1"],
-    description: "Vital Signs Section",
-    type: "rootTemplate",
-    childxpaths: [{
-        xpath: "..",
-        action: "flatten",
-        params: "2.16.840.1.113883.10.20.22.4.27"
-    }, {
-        xpath: "h:entry"
-    }]
+    xpath: t.medDispense + '/h:repeatNumber',
+    action: "removeNode",
+    comment: "not read by parser"
 }, {
-    xpath: "//h:recordTarget/h:patientRole",
-    description: "Demographics Section",
-    childxpaths: [{
-        xpath: "h:patient/h:ethnicGroupCode"
-    }, {
-        xpath: "h:providerOrganization"
-    }]
+    xpath: t.medDispense + '/h:effectiveTime',
+    action: "removeNode",
+    comment: "not read by parser"
+}, {
+    xpath: t.medDispense + '/h:performer/h:assignedEntity/h:assignedPerson',
+    action: "removeNode",
+    comment: "not read by parser"
+}, {
+    xpath: t.medActivityInstructions,
+    action: "removeNode",
+    comment: "not read by parser"
+}, {
+    xpath: t.immRefusalReason + '/h:id',
+    action: "removeNode",
+    comment: "not read by parser"
+}, {
+    xpath: t.procProductInstance,
+    action: "removeNode",
+    comment: "not read by parser"
+}, {
+    xpath: t.payersSection + '/.//h:time',
+    action: "removeNode"
+}, {
+    xpath: t.probObservation + '/h:code',
+    action: "removeNode"
+}, {
+    xpath: t.vitalsSection + '/..',
+    action: "flatten",
+    params: "2.16.840.1.113883.10.20.22.4.27"
+}, {
+    xpath: t.vitalsSection + '/h:entry',
+    action: 'removeNode'
+}, {
+    xpath: '//h:recordTarget/h:patientRole/h:patient/h:ethnicGroupCode',
+    action: 'removeNode'
+}, {
+    xpath: '//h:recordTarget/h:patientRole/h:providerOrganization',
+    action: 'removeNode'
 }];
