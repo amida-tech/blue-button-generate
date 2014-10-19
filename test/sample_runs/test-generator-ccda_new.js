@@ -33,7 +33,7 @@ describe('try skewed sample data from app.', function () {
         // generate ccda
 
         //console.log(result.demographics);
-        var xml = bbg(result).toString();
+        var xml = bbg.generateCCD(result);
 
         // write ccda
         fs.writeFileSync(path.join(generatedDir, "CCD_1_generated_new.xml"), xml);
@@ -44,7 +44,7 @@ describe('try skewed sample data from app.', function () {
         fs.writeFileSync(path.join(generatedDir, "CCD_1_generated_2_new.json"), JSON.stringify(result2, null, 4));
 
         // re-generate
-        var xml2 = bbg(result2).toString();
+        var xml2 = bbg.generateCCD(result2);
         fs.writeFileSync(path.join(generatedDir, "CCD_1_generated_2_new.xml"), xml2);
 
         delete result.errors;

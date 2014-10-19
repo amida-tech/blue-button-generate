@@ -27,13 +27,13 @@ var createContext = (function () {
     };
 })();
 
-var generate = function (input) {
-    var data = input.data ? input.data : input;
-    data.identifiers = input.meta && input.meta.identifiers;
-
+var generate = exports.generate = function (template, input) {
     var context = createContext();
-
-    return js2xml.create(documentLevel.ccd, data, context);
+    return js2xml.create(documentLevel.ccd, input, context);
 };
 
-module.exports = generate;
+exports.generateCCD = function (input) {
+    var data = input.data ? input.data : input;
+    data.identifiers = input.meta && input.meta.identifiers;
+    return generate(documentLevel.ccd, data);
+};

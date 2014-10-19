@@ -25,49 +25,53 @@ var record = bb.parseString(xmlString);
 // ...
 
 // get back xml as text
-var updatedXmlString = bbg(record);
+var updatedXmlString = bbg.generateCCD(record);
 
 ```
 
 ## Implementation
 
-blue-button-generate uses javascript template objects for implementation.  As an example Reaction Observation object is shown
+blue-button-generate uses javascript template objects for implementation.  Each template in CCDA is represented with an object. As an example Reaction Observation object is shown
 ``` javascript
 var reactionObservation = exports.reactionObservation = {
-    "$": {
+    key: "observation",
+    attributes: {
         "classCode": "OBS",
         "moodCode": "EVN"
     },
-    "templateId": common.templateId("2.16.840.1.113883.10.20.22.4.9"),
-    "id": fieldLevel.id,
-    "code": common.nullFlavor,
-    "text": fieldLevel.text,
-    "statusCode": common.completed,
-    "effectiveTime": fieldLevel.effectiveTime,
-    "value": {
-        "$": {
-            "xsi:type": "CD",
-            "@": attrLevel.code
-        },
-        '#': 'reaction',
-        '+': condition.eitherKeyExists('code', 'name'),
-        '*': true
-    },
-    "entryRelationship": {
-        "$": {
-            "typeCode": "SUBJ",
-            "inversionInd": "true"
-        },
-        "observation": severityObservation,
-        "+": condition.keyExists('severity')
-    }
+    content: [
+        fieldLevel.templateId("2.16.840.1.113883.10.20.22.4.9"),
+        fieldLevel.id,
+        fieldLevel.nullFlavor("code"),
+        fieldLevel.text(leafLevel.sameReference("reaction")),
+        fieldLevel.statusCodeCompleted,
+        fieldLevel.effectiveTime, {
+            key: "value",
+            attributes: [
+                leafLevel.typeCD,
+                leafLevel.code
+            ],
+            dataKey: 'reaction',
+            existsWhen: condition.codeOrDisplayname,
+            required: true
+        }, {
+            key: "entryRelationship",
+            attributes: {
+                "typeCode": "SUBJ",
+                "inversionInd": "true"
+            },
+            content: severityObservation,
+            existsWhen: condition.keyExists('severity')
+        }
+    ]
 };
 ```
-this template is internally used with a call
+
+This template is internally used with a call
 ```  javascript
-js2xml.fillUsingTemplate(xmlDoc, input, 'observation', reactionObservation)
+js2xml.update(xmlDoc, input, context, reactionObservation);
 ```
-where `xmlDoc` is the parent xml document (Allergy Intolerance Observation) and `input` is the immediate parent of [bluebutton.js](https://github.com/blue-button/bluebutton.js) object that describes Reaction Observation
+where `xmlDoc` is the parent xml document (Allergy Intolerance Observation) and `input` is the immediate parent of [bluebutton.js](https://github.com/blue-button/bluebutton.js) object that describes Reaction Observation.  `context` is internally used for indices in text references.
 
 ### Motivation
 
@@ -82,8 +86,12 @@ This approach is an alternative to direct programming or text based templates su
 
 ### Template Structure
 
-Each alpha-numeric key in the template corresponds a statement in the CCDA specification.  `$` key is used to specify attributes and `*` key is used to indicate an element is required.  Values for `$` and `*` also directly come from the specification. `@` and other keys that start with `@` are used as place holder keys.  Values for `@` are functions that provide both the keys and the values of the attributes.  An additional key `_` is used to represent text value of an xml node.
-
-`#` and `+` keys relates the templates to [blue-button](https://github.com/amida-tech/blue-button) data model. Value for the key `#` identifies the key in the data model that is associated with the node.  For example [blue-button](https://github.com/amida-tech/blue-button) data model uses `reaction` for values of Reaction Observations.  `+` is used to specify a function that checks if the node should exists or not.  For example in `reactionObservation` the Severity Observation `entryRelationship` is only created if `reaction` has a `severity` key.  Required nodes that should not exist based on `+` are created with a `nullFlavor`.
-
-Each value in the template can either be an other template object or a function.  
+The following are the properties of the templates
+* `key`: This is the name for the xml element.
+* `attributes`: This describes the attributes of the element.  `attributes` can be an object of with `key` and `value` pairs for each attribute or it can be an array of such objects.  Each attribute object or can be a function with `input` argument that returns attributes.
+* `text`: This is a function with `input` attribute that returns text value of the element.
+* `content`: This is an array of other templates that describe the children of the element.  For a single child an object can be used.
+* `dataKey`: This is the property of `input` that serves as the date for the template.
+* `required`: This identifies if template is required or not.  If template is required and there is not value in the `input` a `nullFlavor` node is created.
+* `dataTransform`: This is a function to transform the input.
+* `existWhen`: This is a boolean function with `input` argument to describe it the elements should exists or not.
