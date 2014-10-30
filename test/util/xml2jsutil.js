@@ -60,7 +60,8 @@ var normalizedCodeSystemNames = {
     "CPT-4": "CPT",
     "RoleCode": "HL7 Role",
     "ActCode": "HL7ActCode",
-    "RoleClassRelationshipFormal": "HL7 RoleCode"
+    "RoleClassRelationshipFormal": "HL7 RoleCode",
+    "ICD9CM": "ICD-9-CM"
 };
 
 exports.processIntroducedCodeAttrs = function processIntroducedCodeAttrs(original, generated) {
