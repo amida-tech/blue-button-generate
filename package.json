@@ -29,7 +29,6 @@
   "dependencies": {
     "blue-button-meta": "^1.3.0",
     "libxmljs": "*",
-    "underscore": "1.6.x",
     "winston": "^0.7.3"
   },
   "devDependencies": {

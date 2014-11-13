@@ -3,7 +3,7 @@ This script converts CCDA data in JSON format (originally generated from a Conti
 standard XML/CCDA format) back to XML/CCDA format.
 */
 
-var js2xml = require('./lib/js2xml');
+var engine = require('./lib/engine');
 var documentLevel = require('./lib/documentLevel');
 
 var createContext = (function () {
@@ -29,7 +29,7 @@ var createContext = (function () {
 
 var generate = exports.generate = function (template, input) {
     var context = createContext();
-    return js2xml.create(documentLevel.ccd, input, context);
+    return engine.create(documentLevel.ccd, input, context);
 };
 
 exports.generateCCD = function (input) {
