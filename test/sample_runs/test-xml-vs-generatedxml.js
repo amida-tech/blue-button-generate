@@ -59,8 +59,7 @@ describe('xml vs parse generate xml ', function () {
                 var result = bb.parseString(xmlRaw);
                 if (validate) {
                     var val = bb.validator.validateDocumentModel(result);
-                    var err = bb.validator.getLastError();
-                    expect(err.valid).to.be.true;
+                    expect(val).to.be.true;
                 }
 
                 // generate ccda

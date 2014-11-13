@@ -32,8 +32,7 @@ describe('parse generate parse generate', function () {
 
         // check validation
         var val = bb.validator.validateDocumentModel(result);
-        var err = bb.validator.getLastError();
-        expect(err.valid).to.be.true;
+        expect(val).to.be.true;
 
         // generate ccda
         var xml = bbg.generateCCD(result);
@@ -42,8 +41,8 @@ describe('parse generate parse generate', function () {
 
         // parse generated ccda
         var result2 = bb.parseString(xml);
-        var err2 = bb.validator.getLastError();
-        expect(err2.valid).to.be.true;
+        var val2 = bb.validator.validateDocumentModel(result2);
+        expect(val2).to.be.true;
 
         // write the parsed json from the generated ccda
         fs.writeFileSync(path.join(generatedDir, "CCD_1_generated_2.json"), JSON.stringify(result2, null, 4));
