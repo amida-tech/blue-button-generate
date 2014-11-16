@@ -1,13 +1,13 @@
 /*global module*/
 
 module.exports = function (grunt) {
-
     grunt.loadNpmTasks('grunt-contrib-jshint');
     grunt.loadNpmTasks('grunt-mocha-test');
     grunt.loadNpmTasks('grunt-contrib-watch');
     grunt.loadNpmTasks('grunt-istanbul-coverage');
     grunt.loadNpmTasks('grunt-coveralls');
     grunt.loadNpmTasks('grunt-jsbeautifier');
+    grunt.loadNpmTasks('grunt-blue-button');
 
     // Project configuration.
     grunt.initConfig({
@@ -96,46 +96,24 @@ module.exports = function (grunt) {
                 dir: 'coverage/',
                 root: '.'
             }
+        },
+        "blue-button": {
+            "gen-json": {
+                "src": ['test/fixtures/files/ccda_xml/*'],
+                "dest": 'test/fixtures/json',
+            }
         }
-    });
-
-    // Default task.
-    grunt.registerTask('default', ['beautify', 'jshint', 'mochaTest']);
-    //Express omitted for travis build.
-    grunt.registerTask('commit', ['jshint', 'mochaTest']);
-    grunt.registerTask('mocha', ['mochaTest']);
-    grunt.registerTask('timestamp', function () {
-        grunt.log.subhead(Date());
-    });
-
-    // Alias the `generator:ccda_samples` task to run `mocha test --recursive --grep generator` instead
-    grunt.registerTask('generator:ccda_samples', 'mocha test --recursive --grep [ccda_samples]', function () {
-        var done = this.async();
-        require('child_process').exec('mocha test --recursive --grep ccda_samples', function (err, stdout) {
-            grunt.log.write(stdout);
-            done(err);
-        });
-    });
-
-    // Alias the `generator:ccda_samples` task to run `mocha test --recursive --grep generator` instead
-    grunt.registerTask('generator:ccda', 'mocha test --recursive --grep ccda', function () {
-        var done = this.async();
-        require('child_process').exec('mocha test --recursive --grep ccda', function (err, stdout) {
-            grunt.log.write(stdout);
-            done(err);
-        });
-    });
-
-    // Alias the `generator:ccda_samples` task to run `mocha test --recursive --grep generator` instead
-    grunt.registerTask('generator:sections', 'mocha test --recursive --grep sections', function () {
-        var done = this.async();
-        require('child_process').exec('mocha test --recursive --grep sections', function (err, stdout) {
-            grunt.log.writeln(stdout);
-            done(err);
-        });
     });
 
     //JS beautifier
     grunt.registerTask('beautify', ['jsbeautifier:beautify']);
 
+    // Default task.
+    grunt.registerTask('default', ['beautify', 'jshint', 'mochaTest']);
+
+    grunt.registerTask('commit', ['jshint', 'mochaTest']);
+    grunt.registerTask('mocha', ['mochaTest']);
+    grunt.registerTask('timestamp', function () {
+        grunt.log.subhead(Date());
+    });
 };
