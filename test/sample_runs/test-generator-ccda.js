@@ -8,20 +8,14 @@ var bbg = require('../../index');
 
 describe('parse generate parse generate', function () {
     var generatedDir = null;
-    var sampleDir = null;
-    var cmsDir = null;
 
     before(function () {
         generatedDir = path.join(__dirname, "../fixtures/files/generated");
-        sampleDir = path.join(__dirname, "../fixtures/files/ccda_xml");
-        cmsDir = path.join(__dirname, "../fixtures/files/cms_txt");
         expect(generatedDir).to.exist;
-        expect(sampleDir).to.exist;
-        expect(cmsDir).to.exist;
     });
 
     it('CCD_1 should still be same', function () {
-        var data = fs.readFileSync(path.join(sampleDir, "CCD_1.xml")).toString();
+        var data = fs.readFileSync(__dirname + "/../fixtures/files/ccda_xml/CCD_1.xml").toString();
 
         //convert string into JSON 
         var result = bb.parseString(data);
@@ -57,7 +51,7 @@ describe('parse generate parse generate', function () {
     });
 
     it('Vitera_CCDA_SMART_Sample.xml should still be same', function () {
-        var data = fs.readFileSync(path.join(sampleDir, "Vitera_CCDA_SMART_Sample.xml")).toString();
+        var data = fs.readFileSync(__dirname + "/../fixtures/files/ccda_xml/Vitera_CCDA_SMART_Sample.xml").toString();
 
         //convert string into JSON 
         var result = bb.parseString(data);
@@ -89,7 +83,7 @@ describe('parse generate parse generate', function () {
     });
 
     it('VA_CCD_Sample_File_Version_12_5_1.xml should still be same', function () {
-        var data = fs.readFileSync(path.join(sampleDir, "VA_CCD_Sample_File_Version_12_5_1.xml")).toString();
+        var data = fs.readFileSync(__dirname + "/../fixtures/files/ccda_xml/VA_CCD_Sample_File_Version_12_5_1.xml").toString();
 
         //convert string into JSON 
         var result = bb.parseString(data);
@@ -129,7 +123,7 @@ describe('parse generate parse generate', function () {
     });
 
     it('SampleCCDDocument.xml should still be same', function () {
-        var data = fs.readFileSync(path.join(sampleDir, "SampleCCDDocument.xml")).toString();
+        var data = fs.readFileSync(__dirname + "/../fixtures/files/ccda_xml/SampleCCDDocument.xml").toString();
 
         //convert string into JSON 
         var result = bb.parseString(data);
@@ -168,7 +162,7 @@ describe('parse generate parse generate', function () {
     });
 
     it('cms_sample.xml should not crash', function () {
-        var data = fs.readFileSync(path.join(cmsDir, "cms_sample.txt")).toString();
+        var data = fs.readFileSync(__dirname + "/../fixtures/files/cms_txt/cms_sample.txt").toString();
 
         //convert string into JSON 
         var result = bb.parseText(data);
