@@ -125,7 +125,7 @@ module.exports = function (grunt) {
         },
         "blue-button": {
             "gen-json": {
-                "src": ['test/fixtures/files/ccda_xml/*'],
+                "src": ['test/fixtures/files/ccda_xml/*', 'test/fixtures/files/cms_txt/*'],
                 "dest": 'test/fixtures/json',
             }
         }
