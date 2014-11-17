@@ -1,6 +1,9 @@
 /*global module*/
 
 module.exports = function (grunt) {
+    var bbg = require('./index');
+    var path = require('path');
+
     grunt.loadNpmTasks('grunt-contrib-jshint');
     grunt.loadNpmTasks('grunt-mocha-test');
     grunt.loadNpmTasks('grunt-contrib-watch');
@@ -127,6 +130,10 @@ module.exports = function (grunt) {
             "gen-json": {
                 "src": ['test/fixtures/files/ccda_xml/*', 'test/fixtures/files/cms_txt/*'],
                 "dest": 'test/fixtures/json',
+            },
+            "re-gen-json": {
+                "src": ['test/fixtures/files/generated/json_to_xml/*'],
+                "dest": 'test/fixtures/files/generated/xml_to_json'
             }
         }
     });
@@ -134,9 +141,25 @@ module.exports = function (grunt) {
     grunt.registerTask('mkdir-test-temp', 'create test temporary directories', function () {
         grunt.file.mkdir('test/fixtures/files/generated');
     });
+    grunt.registerTask('json-to-xml-main', 'converts json files to xml', function (src, dest) {
+        grunt.file.recurse(src, function (abspath, rootdir, subdir, filename) {
+            var content = grunt.file.read(abspath);
+            var json = JSON.parse(content);
+            var xml = bbg.generateCCD(json);
+            var xmlFilename = path.basename(filename, path.extname(filename)) + '.xml';
+
+            var destPath = subdir ? path.join(dest, subdir, xmlFilename) : path.join(dest, xmlFilename);
+            grunt.file.write(destPath, xml);
+        });
+    });
 
     //JS beautifier
     grunt.registerTask('beautify', ['jsbeautifier:beautify']);
+
+    // generates xml files from source jsons.
+    grunt.registerTask('json-to-xml', ['mkdir-test-temp', 'json-to-xml-main:test/fixtures/json:test/fixtures/files/generated/json_to_xml']);
+    // generates xml files from generated jsons.
+    grunt.registerTask('re-json-to-xml', ['mkdir-test-temp', 'json-to-xml-main:test/fixtures/files/generated/xml_to_json:test/fixtures/files/generated/re_json_to_xml']);
 
     // Default task.
     grunt.registerTask('default', ['beautify', 'jshint', 'mkdir-test-temp', 'mochaTest']);
