@@ -106,6 +106,7 @@ module.exports = function (grunt) {
             standalone: {
                 src: ['<%=pkg.main%>'],
                 dest: 'browser/dist/<%=pkg.name%>.standalone.js',
+                external: ['blue-button'],
                 options: {
                     standalone: '<%=pkg.name%>'
                 }
@@ -120,8 +121,8 @@ module.exports = function (grunt) {
             tests: {
                 src: ['test/sample_runs/test-gen-parse-gen.js'],
                 dest: 'browser/dist/browserified_tests.js',
-                external: ['<%=pkg.main%>'],
                 options: {
+                    external: ['blue-button', 'blue-button-generate', 'blue-button-cms'],
                     transform: ['brfs']
                 }
             }

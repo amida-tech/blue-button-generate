@@ -14,6 +14,8 @@ exports.newNode = function (xmlDoc, name, text) {
 	}
 	if (xmlDoc.ownerDocument) {
 		xmlDoc.appendChild(element);
+	} else {
+		xmlDoc.appendChild(element);
 	}
 	return element;
 };
@@ -23,4 +25,10 @@ exports.nodeAttr = function (node, attr) {
 		var value = attr[key];
 		node.setAttribute(key, value);
 	});
+};
+
+exports.serializeToString = function (xmlDoc) {
+	var serializer = new XMLSerializer();
+	var result = serializer.serializeToString(xmlDoc);
+	return result;
 };
