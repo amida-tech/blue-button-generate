@@ -7,10 +7,12 @@ module.exports = function (grunt) {
     grunt.loadNpmTasks('grunt-istanbul-coverage');
     grunt.loadNpmTasks('grunt-coveralls');
     grunt.loadNpmTasks('grunt-jsbeautifier');
+    grunt.loadNpmTasks('grunt-browserify');
     grunt.loadNpmTasks('grunt-blue-button');
 
     // Project configuration.
     grunt.initConfig({
+        pkg: grunt.file.readJSON('package.json'),
         jshint: {
             files: ['*.js', './lib/*.js', './lib/**/*.js', './test/**/*.js'],
             options: {
@@ -95,6 +97,30 @@ module.exports = function (grunt) {
                 },
                 dir: 'coverage/',
                 root: '.'
+            }
+        },
+        browserify: {
+            standalone: {
+                src: ['<%=pkg.main%>'],
+                dest: 'browser/dist/<%=pkg.name%>.standalone.js',
+                options: {
+                    standalone: '<%=pkg.name%>'
+                }
+            },
+            require: {
+                src: ['<%=pkg.main%>'],
+                dest: 'browser/dist/<%=pkg.name%>.require.js',
+                options: {
+                    alias: ["<%=pkg.main%>:<%=pkg.name%>"]
+                }
+            },
+            tests: {
+                src: ['test/sample_runs/test-generator-ccda_new.js'],
+                dest: 'browser/dist/browserified_tests.js',
+                external: ['<%=pkg.main%>'],
+                options: {
+                    transform: ['brfs']
+                }
             }
         },
         "blue-button": {
