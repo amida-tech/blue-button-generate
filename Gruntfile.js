@@ -118,7 +118,7 @@ module.exports = function (grunt) {
                 }
             },
             tests: {
-                src: ['test/sample_runs/test-generator-ccda_new.js'],
+                src: ['test/sample_runs/test-gen-parse-gen.js'],
                 dest: 'browser/dist/browserified_tests.js',
                 external: ['<%=pkg.main%>'],
                 options: {
