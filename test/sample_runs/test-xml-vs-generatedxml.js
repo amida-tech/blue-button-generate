@@ -4,7 +4,6 @@ var expect = require('chai').expect;
 
 var fs = require("fs");
 var path = require('path');
-var mkdirp = require('mkdirp');
 var bb = require('blue-button');
 var bbg = require('../../index');
 
@@ -26,7 +25,6 @@ describe('xml vs parse generate xml ', function () {
     before(function () {
         generatedDir = path.join(__dirname, "../fixtures/files/generated");
         sampleDir = path.join(__dirname, "../fixtures/files/ccda_xml");
-        mkdirp.sync(generatedDir);
         expect(generatedDir).to.exist;
         expect(sampleDir).to.exist;
     });

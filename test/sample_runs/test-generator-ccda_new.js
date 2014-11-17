@@ -4,7 +4,6 @@ var assert = require('chai').assert;
 var fs = require("fs");
 var bb = require('blue-button');
 var path = require('path');
-var mkdirp = require('mkdirp');
 var bbg = require('../../index');
 
 describe('try skewed sample data from app.', function () {
@@ -12,7 +11,6 @@ describe('try skewed sample data from app.', function () {
 
     before(function () {
         generatedDir = path.join(__dirname, "../fixtures/files/generated");
-        mkdirp.sync(generatedDir);
         expect(generatedDir).to.exist;
     });
 

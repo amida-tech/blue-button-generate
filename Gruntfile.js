@@ -131,14 +131,18 @@ module.exports = function (grunt) {
         }
     });
 
+    grunt.registerTask('mkdir-test-temp', 'create test temporary directories', function () {
+        grunt.file.mkdir('test/fixtures/files/generated');
+    });
+
     //JS beautifier
     grunt.registerTask('beautify', ['jsbeautifier:beautify']);
 
     // Default task.
-    grunt.registerTask('default', ['beautify', 'jshint', 'mochaTest']);
+    grunt.registerTask('default', ['beautify', 'jshint', 'mkdir-test-temp', 'mochaTest']);
 
-    grunt.registerTask('commit', ['jshint', 'mochaTest']);
-    grunt.registerTask('mocha', ['mochaTest']);
+    grunt.registerTask('commit', ['jshint', 'mkdir-test-temp', 'mochaTest']);
+    grunt.registerTask('mocha', ['mkdir-test-temp', 'mochaTest']);
     grunt.registerTask('timestamp', function () {
         grunt.log.subhead(Date());
     });
