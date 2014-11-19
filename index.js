@@ -1,3 +1,5 @@
+"use strict";
+
 /*
 This script converts CCDA data in JSON format (originally generated from a Continuity of Care Document (CCD) in 
 standard XML/CCDA format) back to XML/CCDA format.

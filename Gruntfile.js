@@ -7,7 +7,9 @@ module.exports = function (grunt) {
     grunt.loadNpmTasks('grunt-contrib-jshint');
     grunt.loadNpmTasks('grunt-mocha-test');
     grunt.loadNpmTasks('grunt-contrib-watch');
+    grunt.loadNpmTasks('grunt-contrib-connect');
     grunt.loadNpmTasks('grunt-istanbul-coverage');
+    grunt.loadNpmTasks('grunt-mocha-phantomjs');
     grunt.loadNpmTasks('grunt-coveralls');
     grunt.loadNpmTasks('grunt-jsbeautifier');
     grunt.loadNpmTasks('grunt-browserify');
@@ -136,6 +138,23 @@ module.exports = function (grunt) {
                 "src": ['test/fixtures/files/generated/json_to_xml/*'],
                 "dest": 'test/fixtures/files/generated/xml_to_json'
             }
+        },
+        connect: {
+            server: {
+                options: {
+                    port: 8000,
+                    hostname: '127.0.0.1'
+                }
+            }
+        },
+        'mocha_phantomjs': {
+            all: {
+                options: {
+                    urls: [
+                        'http://127.0.0.1:8000/browser/mocha_run.html'
+                    ]
+                }
+            }
         }
     });
 
@@ -163,7 +182,9 @@ module.exports = function (grunt) {
     grunt.registerTask('re-json-to-xml', ['mkdir-test-temp', 'json-to-xml-main:test/fixtures/files/generated/xml_to_json:test/fixtures/files/generated/re_json_to_xml']);
 
     // Default task.
-    grunt.registerTask('default', ['beautify', 'jshint', 'mkdir-test-temp', 'mochaTest']);
+    grunt.registerTask('default', ['beautify', 'jshint', 'mkdir-test-temp', 'mochaTest', 'browser-test']);
+
+    grunt.registerTask('browser-test', ['browserify:require', 'browserify:tests', 'connect', 'mocha_phantomjs']);
 
     grunt.registerTask('commit', ['jshint', 'mkdir-test-temp', 'mochaTest']);
     grunt.registerTask('mocha', ['mkdir-test-temp', 'mochaTest']);
