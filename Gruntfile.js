@@ -107,7 +107,7 @@ module.exports = function (grunt) {
         browserify: {
             standalone: {
                 src: ['<%=pkg.main%>'],
-                dest: 'browser/dist/<%=pkg.name%>.standalone.js',
+                dest: 'dist/<%=pkg.name%>.standalone.js',
                 external: ['blue-button'],
                 options: {
                     standalone: '<%=pkg.name%>'
@@ -115,7 +115,7 @@ module.exports = function (grunt) {
             },
             require: {
                 src: ['<%=pkg.main%>'],
-                dest: 'browser/dist/<%=pkg.name%>.require.js',
+                dest: 'dist/<%=pkg.name%>.js',
                 options: {
                     external: ['blue-button', 'blue-button-xml'],
                     alias: ["<%=pkg.main%>:<%=pkg.name%>"]
@@ -123,7 +123,7 @@ module.exports = function (grunt) {
             },
             tests: {
                 src: ['test/sample_runs/test-gen-parse-gen.js'],
-                dest: 'browser/dist/browserified_tests.js',
+                dest: 'dist/mocha_tests.js',
                 options: {
                     external: ['blue-button', 'blue-button-xml'],
                     transform: ['brfs']
@@ -152,7 +152,7 @@ module.exports = function (grunt) {
             all: {
                 options: {
                     urls: [
-                        'http://127.0.0.1:8000/browser/mocha_run.html'
+                        'http://127.0.0.1:8000/dist/mocha_runner.html'
                     ]
                 }
             }

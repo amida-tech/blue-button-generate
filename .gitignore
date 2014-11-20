@@ -29,8 +29,5 @@ bower_components
 # Users Environment Variables
 .lock-wscript
 
-#browser dist
-browser/dist
-
 # Generated Files For Tests
 test/fixtures/files/generated/
