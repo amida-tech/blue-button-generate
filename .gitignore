@@ -27,5 +27,8 @@ node_modules
 # Users Environment Variables
 .lock-wscript
 
+#browser dist
+browser/dist
+
 # Generated Files For Tests
 test/fixtures/files/generated/

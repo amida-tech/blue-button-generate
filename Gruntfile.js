@@ -1,16 +1,23 @@
 /*global module*/
 
 module.exports = function (grunt) {
+    var bbg = require('./index');
+    var path = require('path');
 
     grunt.loadNpmTasks('grunt-contrib-jshint');
     grunt.loadNpmTasks('grunt-mocha-test');
     grunt.loadNpmTasks('grunt-contrib-watch');
+    grunt.loadNpmTasks('grunt-contrib-connect');
     grunt.loadNpmTasks('grunt-istanbul-coverage');
+    grunt.loadNpmTasks('grunt-mocha-phantomjs');
     grunt.loadNpmTasks('grunt-coveralls');
     grunt.loadNpmTasks('grunt-jsbeautifier');
+    grunt.loadNpmTasks('grunt-browserify');
+    grunt.loadNpmTasks('grunt-blue-button');
 
     // Project configuration.
     grunt.initConfig({
+        pkg: grunt.file.readJSON('package.json'),
         jshint: {
             files: ['*.js', './lib/*.js', './lib/**/*.js', './test/**/*.js'],
             options: {
@@ -96,46 +103,92 @@ module.exports = function (grunt) {
                 dir: 'coverage/',
                 root: '.'
             }
+        },
+        browserify: {
+            standalone: {
+                src: ['<%=pkg.main%>'],
+                dest: 'browser/dist/<%=pkg.name%>.standalone.js',
+                external: ['blue-button'],
+                options: {
+                    standalone: '<%=pkg.name%>'
+                }
+            },
+            require: {
+                src: ['<%=pkg.main%>'],
+                dest: 'browser/dist/<%=pkg.name%>.require.js',
+                options: {
+                    alias: ["<%=pkg.main%>:<%=pkg.name%>"]
+                }
+            },
+            tests: {
+                src: ['test/sample_runs/test-gen-parse-gen.js'],
+                dest: 'browser/dist/browserified_tests.js',
+                options: {
+                    external: ['blue-button', 'blue-button-generate', 'blue-button-cms'],
+                    transform: ['brfs']
+                }
+            }
+        },
+        "blue-button": {
+            "gen-json": {
+                "src": ['test/fixtures/files/ccda_xml/*', 'test/fixtures/files/cms_txt/*'],
+                "dest": 'test/fixtures/json',
+            },
+            "re-gen-json": {
+                "src": ['test/fixtures/files/generated/json_to_xml/*'],
+                "dest": 'test/fixtures/files/generated/xml_to_json'
+            }
+        },
+        connect: {
+            server: {
+                options: {
+                    port: 8000,
+                    hostname: '127.0.0.1'
+                }
+            }
+        },
+        'mocha_phantomjs': {
+            all: {
+                options: {
+                    urls: [
+                        'http://127.0.0.1:8000/browser/mocha_run.html'
+                    ]
+                }
+            }
         }
     });
 
-    // Default task.
-    grunt.registerTask('default', ['beautify', 'jshint', 'mochaTest']);
-    //Express omitted for travis build.
-    grunt.registerTask('commit', ['jshint', 'mochaTest']);
-    grunt.registerTask('mocha', ['mochaTest']);
-    grunt.registerTask('timestamp', function () {
-        grunt.log.subhead(Date());
+    grunt.registerTask('mkdir-test-temp', 'create test temporary directories', function () {
+        grunt.file.mkdir('test/fixtures/files/generated');
     });
+    grunt.registerTask('json-to-xml-main', 'converts json files to xml', function (src, dest) {
+        grunt.file.recurse(src, function (abspath, rootdir, subdir, filename) {
+            var content = grunt.file.read(abspath);
+            var json = JSON.parse(content);
+            var xml = bbg.generateCCD(json);
+            var xmlFilename = path.basename(filename, path.extname(filename)) + '.xml';
 
-    // Alias the `generator:ccda_samples` task to run `mocha test --recursive --grep generator` instead
-    grunt.registerTask('generator:ccda_samples', 'mocha test --recursive --grep [ccda_samples]', function () {
-        var done = this.async();
-        require('child_process').exec('mocha test --recursive --grep ccda_samples', function (err, stdout) {
-            grunt.log.write(stdout);
-            done(err);
-        });
-    });
-
-    // Alias the `generator:ccda_samples` task to run `mocha test --recursive --grep generator` instead
-    grunt.registerTask('generator:ccda', 'mocha test --recursive --grep ccda', function () {
-        var done = this.async();
-        require('child_process').exec('mocha test --recursive --grep ccda', function (err, stdout) {
-            grunt.log.write(stdout);
-            done(err);
-        });
-    });
-
-    // Alias the `generator:ccda_samples` task to run `mocha test --recursive --grep generator` instead
-    grunt.registerTask('generator:sections', 'mocha test --recursive --grep sections', function () {
-        var done = this.async();
-        require('child_process').exec('mocha test --recursive --grep sections', function (err, stdout) {
-            grunt.log.writeln(stdout);
-            done(err);
+            var destPath = subdir ? path.join(dest, subdir, xmlFilename) : path.join(dest, xmlFilename);
+            grunt.file.write(destPath, xml);
         });
     });
 
     //JS beautifier
     grunt.registerTask('beautify', ['jsbeautifier:beautify']);
 
+    // generates xml files from source jsons.
+    grunt.registerTask('json-to-xml', ['mkdir-test-temp', 'json-to-xml-main:test/fixtures/json:test/fixtures/files/generated/json_to_xml']);
+    // generates xml files from generated jsons.
+    grunt.registerTask('re-json-to-xml', ['mkdir-test-temp', 'json-to-xml-main:test/fixtures/files/generated/xml_to_json:test/fixtures/files/generated/re_json_to_xml']);
+
+    // Default task.
+    grunt.registerTask('default', ['beautify', 'jshint', 'mkdir-test-temp', 'mochaTest', 'browser-test']);
+
+    grunt.registerTask('browser-test', ['browserify:require', 'browserify:tests', 'connect', 'mocha_phantomjs']);
+
+    grunt.registerTask('commit', ['jshint', 'mkdir-test-temp', 'mochaTest']);
+    grunt.registerTask('mocha', ['mkdir-test-temp', 'mochaTest']);
+    grunt.registerTask('timestamp', function () {
+        grunt.log.subhead(Date());
+    });
 };
