@@ -19,7 +19,7 @@ module.exports = function (grunt) {
     grunt.initConfig({
         pkg: grunt.file.readJSON('package.json'),
         jshint: {
-            files: ['*.js', './lib/*.js', './lib/**/*.js', './test/**/*.js'],
+            files: ['*.js', '*.json', './lib/*.js', './lib/**/*.js', './test/**/*.js'],
             options: {
                 browser: true,
                 smarttabs: true,
@@ -117,6 +117,7 @@ module.exports = function (grunt) {
                 src: ['<%=pkg.main%>'],
                 dest: 'browser/dist/<%=pkg.name%>.require.js',
                 options: {
+                    external: ['blue-button', 'blue-button-xml'],
                     alias: ["<%=pkg.main%>:<%=pkg.name%>"]
                 }
             },
@@ -124,7 +125,7 @@ module.exports = function (grunt) {
                 src: ['test/sample_runs/test-gen-parse-gen.js'],
                 dest: 'browser/dist/browserified_tests.js',
                 options: {
-                    external: ['blue-button', 'blue-button-generate', 'blue-button-cms'],
+                    external: ['blue-button', 'blue-button-xml'],
                     transform: ['brfs']
                 }
             }

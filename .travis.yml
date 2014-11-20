@@ -7,6 +7,8 @@ before_script:
     - npm install --quiet
     - npm install -g mocha
     - npm install -g istanbul
+    - npm install -g bower
+    - bower install
 
 script:
     - grunt

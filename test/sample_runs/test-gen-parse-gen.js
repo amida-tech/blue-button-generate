@@ -15,8 +15,8 @@ describe('parse generate parse generate', function () {
     });
 
     it('CCD_1 should still be same', function () {
-        var data = fs.readFileSync(__dirname + "/../fixtures/json/CCD_1.json").toString();
-        var result = JSON.parse(data);
+        var data = fs.readFileSync(__dirname + "/../fixtures/files/ccda_xml/CCD_1.xml").toString();
+        var result = bb.parseString(data);
 
         // check validation
         var val = bb.validator.validateDocumentModel(result);
@@ -40,8 +40,8 @@ describe('parse generate parse generate', function () {
     });
 
     it('Vitera_CCDA_SMART_Sample.xml should still be same', function () {
-        var data = fs.readFileSync(__dirname + "/../fixtures/json/Vitera_CCDA_SMART_Sample.json").toString();
-        var result = JSON.parse(data);
+        var data = fs.readFileSync(__dirname + "/../fixtures/files/ccda_xml/Vitera_CCDA_SMART_Sample.xml").toString();
+        var result = bb.parseString(data);
 
         // check validation
         var val = bb.validator.validateDocumentModel(result);
@@ -62,8 +62,8 @@ describe('parse generate parse generate', function () {
     });
 
     it('VA_CCD_Sample_File_Version_12_5_1.xml should still be same', function () {
-        var data = fs.readFileSync(__dirname + "/../fixtures/json/VA_CCD_Sample_File_Version_12_5_1.json").toString();
-        var result = JSON.parse(data);
+        var data = fs.readFileSync(__dirname + "/../fixtures/files/ccda_xml/VA_CCD_Sample_File_Version_12_5_1.xml").toString();
+        var result = bb.parseString(data);
         result.meta.sections.sort();
 
         // check validation
@@ -91,8 +91,8 @@ describe('parse generate parse generate', function () {
     });
 
     it('SampleCCDDocument.xml should still be same', function () {
-        var data = fs.readFileSync(__dirname + "/../fixtures/json/SampleCCDDocument.json").toString();
-        var result = JSON.parse(data);
+        var data = fs.readFileSync(__dirname + "/../fixtures/files/ccda_xml/SampleCCDDocument.xml").toString();
+        var result = bb.parseString(data);
         result.meta.sections.sort();
 
         // check validation
