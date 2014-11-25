@@ -85,16 +85,8 @@ var actionExecuter = {
         var attrNode = node.attr('value');
         if (attrNode) {
             var t = attrNode.value().toString();
-            if (t.length > 14) {
-                var index = t.indexOf('-');
-                if (index < 0) {
-                    index = t.indexOf('+');
-                }
-                if ((index > 12) && (index + 5) === t.length) {
-                    var newT = t.slice(0, index);
-                    attrNode.value(newT);
-                }
-            }
+            var newT = t.slice(0, 8); // Ignore time for now
+            attrNode.value(newT);
         }
     },
     "removeZeros": function (node) {

@@ -119,8 +119,8 @@ describe('parse generate parse generate', function () {
     });
 
     it('cms_sample.xml should not crash', function () {
-        var data = fs.readFileSync(__dirname + "/../fixtures/json/cms_sample.json").toString();
-        var result = JSON.parse(data);
+        var data = fs.readFileSync(__dirname + "/../fixtures/files/cms_txt/cms_sample.txt").toString();
+        var result = bb.parseText(data);
 
         // check validation
         var val = bb.validator.validateDocumentModel(result);

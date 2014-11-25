@@ -13,6 +13,7 @@ var xml2jsutil = require('../util/xml2jsutil');
 var bbParserMods = require('../xmlmods/bbParser');
 var bbParserPostMods = require('../xmlmods/bbParserPost');
 var bbGeneratorMods = require('../xmlmods/bbGenerator');
+var bbGeneratorPostMods = require('../xmlmods/bbGeneratorPost');
 var ccd1ParserMods = require('../xmlmods/ccd1Parser');
 var ccd1GeneratorMods = require('../xmlmods/ccd1Generator');
 var viteraParserMods = require('../xmlmods/viteraParser');
@@ -67,6 +68,7 @@ describe('xml vs parse generate xml ', function () {
                 if (addlGeneratorMods) {
                     mods = mods.concat(addlGeneratorMods);
                 }
+                mods = mods.concat(bbGeneratorPostMods);
                 xml2jsutil.modifyAndToObject(xmlGeneratedRaw, mods, function (err, result) {
                     xmlGeneratedObj = result;
                     done(err);
