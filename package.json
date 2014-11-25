@@ -53,7 +53,7 @@
     "grunt-mocha-test": "0.8.x",
     "mocha": "1.17.x",
     "mocha-lcov-reporter": "0.0.1",
-    "xml2js": "0.4.x"
+    "xml2js": "^0.4.4"
   },
   "repository": {
     "type": "git",

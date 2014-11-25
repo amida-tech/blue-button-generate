@@ -3,11 +3,14 @@
 var t = require("./templatePath");
 
 module.exports = [{
-    xpath: "//*[@nullFlavor]"
+    xpath: "//*[@nullFlavor]",
+    action: "removeNode"
 }, {
-    xpath: "//h:text"
+    xpath: "//h:text",
+    action: "removeNode"
 }, {
-    xpath: "//h:originalText"
+    xpath: "//h:originalText",
+    action: "removeNode"
 }, {
     xpath: t.payersSection + '/.//h:time',
     action: "removeNode"
