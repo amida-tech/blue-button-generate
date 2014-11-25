@@ -2,8 +2,6 @@
 
 var libxmljs = require('libxmljs');
 
-var jsonutil = require('./jsonutil');
-
 var ns = {
     "h": "urn:hl7-org:v3",
     "xsi": "http://www.w3.org/2001/XMLSchema-instance"
@@ -46,30 +44,25 @@ var pathConstructor = {
     }
 };
 
-var actionExecuter = {
-    "removeNode": function (node) {
+// The order of actions in this list is important.  There is a bug in 
+// libxmljs: if you access a node and later remove a parent or itself
+// you get segmentation faults. See https://github.com/polotek/libxmljs/pull/163
+var actions = [{
+    key: "removeNode",
+    implementation: function (node) {
         node.remove();
-    },
-    "removeAttribute": function (node, attr) {
+    }
+}, {
+    key: "removeAttribute",
+    implementation: function (node, attr) {
         var attrNode = node.attr(attr);
         if (attrNode) {
             attrNode.remove();
         }
-    },
-    addAttribute: function (node, params) {
-        node.attr(params);
-    },
-    "normalizeTelNumber": function (node) {
-        var attrNode = node.attr('value');
-        if (attrNode) {
-            var value = attrNode.value().toString();
-            if (value.substring(0, 4) !== 'tel:') {
-                var newValue = 'tel:' + value;
-                attrNode.value(newValue);
-            }
-        }
-    },
-    "flatten": function (node, tid) {
+    }
+}, {
+    key: "flatten",
+    implementation: function (node, tid) {
         var childrenPath = pathConstructor.localTemplate(tid);
         var newChildren = node.find(childrenPath, ns).map(function (v) {
             var newChild = v.clone();
@@ -80,16 +73,37 @@ var actionExecuter = {
         newChildren.forEach(function (newChild) {
             p.addChild(newChild);
         });
-    },
-    "removeTimezone": function (node) {
+    }
+}, {
+    key: "addAttribute",
+    implementation: function (node, params) {
+        node.attr(params);
+    }
+}, {
+    key: "normalizeTelNumber",
+    implementation: function (node) {
+        var attrNode = node.attr('value');
+        if (attrNode) {
+            var value = attrNode.value().toString();
+            if (value.substring(0, 4) !== 'tel:') {
+                var newValue = 'tel:' + value;
+                attrNode.value(newValue);
+            }
+        }
+    }
+}, {
+    key: "removeTimezone",
+    implementation: function (node) {
         var attrNode = node.attr('value');
         if (attrNode) {
             var t = attrNode.value().toString();
             var newT = t.slice(0, 8); // Ignore time for now
             attrNode.value(newT);
         }
-    },
-    "removeZeros": function (node) {
+    }
+}, {
+    key: "removeZeros",
+    implementation: function (node) {
         var attrNode = node.attr('value');
         if (attrNode) {
             var v = attrNode.value().toString();
@@ -105,47 +119,57 @@ var actionExecuter = {
                 attrNode.value('0');
             }
         }
-    },
-    replaceText: function (node, map) {
+    }
+}, {
+    key: "replaceText",
+    implementation: function (node, map) {
         var text = node.text();
         var replacementText = map[text];
         if (replacementText) {
             node.text(replacementText);
         }
     }
-};
+}];
 
-var sortModications = function (modifications) {
-    var grouped = modifications.reduce(function (r, mod) {
-        var action = mod.action;
-        var group = r[action];
-        if (!group) {
-            group = r[action] = [];
-        }
-        group.push(mod);
+var doModifications = (function () {
+    var sortModications = function (modifications) {
+        var grouped = modifications.reduce(function (r, mod) {
+            var action = mod.action;
+            var group = r[action];
+            if (!group) {
+                group = r[action] = [];
+            }
+            group.push(mod);
+            return r;
+        }, {});
+        return actions.reduce(function (r, action) {
+            var key = action.key;
+            var groupMods = grouped[key];
+            if (groupMods) {
+                r = r.concat(groupMods);
+            }
+            return r;
+        }, []);
+    };
+
+    var actionMap = actions.reduce(function (r, action) {
+        r[action.key] = action.implementation;
         return r;
     }, {});
-    return ['removeNode', 'removeAttribute', 'flatten', 'addAttribute', 'normalizeTelNumber', 'removeTimezone', 'removeZeros', 'replaceText'].reduce(function (r, name) {
-        var groupMods = grouped[name];
-        if (groupMods) {
-            r = r.concat(groupMods);
-        }
-        return r;
-    }, []);
-};
 
-var doModifications = function doModifications(xmlDoc, modifications) {
-    var sorted = sortModications(modifications);
-    sorted.forEach(function (modification) {
-        var pathType = modification.type || "normal";
-        var path = pathConstructor[pathType](modification.xpath);
-        var nodes = xmlDoc.find(path, ns);
-        nodes.forEach(function (node) {
-            var execType = modification.action;
-            actionExecuter[execType](node, modification.params);
+    return function doModifications(xmlDoc, modifications) {
+        var sorted = sortModications(modifications);
+        sorted.forEach(function (modification) {
+            var pathType = modification.type || "normal";
+            var path = pathConstructor[pathType](modification.xpath);
+            var nodes = xmlDoc.find(path, ns);
+            nodes.forEach(function (node) {
+                var actionKey = modification.action;
+                actionMap[actionKey](node, modification.params);
+            });
         });
-    });
-};
+    };
+})();
 
 exports.modifyXML = function (xml, modifications) {
     var xmlDoc = libxmljs.parseXmlString(xml, {
