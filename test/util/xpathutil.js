@@ -70,7 +70,7 @@ var actionExecuter = {
         }
     },
     "flatten": function (node, tid) {
-        var childrenPath = pathConstructor["localTemplate"](tid);
+        var childrenPath = pathConstructor.localTemplate(tid);
         var newChildren = node.find(childrenPath, ns).map(function (v) {
             var newChild = v.clone();
             v.remove();
@@ -115,13 +115,33 @@ var actionExecuter = {
     }
 };
 
+var sortModications = function (modifications) {
+    var grouped = modifications.reduce(function (r, mod) {
+        var action = mod.action;
+        var group = r[action];
+        if (!group) {
+            group = r[action] = [];
+        }
+        group.push(mod);
+        return r;
+    }, {});
+    return ['removeNode', 'removeAttribute', 'flatten', 'addAttribute', 'normalizeTelNumber', 'removeTimezone', 'removeZeros', 'replaceText'].reduce(function (r, name) {
+        var groupMods = grouped[name];
+        if (groupMods) {
+            r = r.concat(groupMods);
+        }
+        return r;
+    }, []);
+};
+
 var doModifications = function doModifications(xmlDoc, modifications) {
-    modifications.forEach(function (modification) {
+    var sorted = sortModications(modifications);
+    sorted.forEach(function (modification) {
         var pathType = modification.type || "normal";
         var path = pathConstructor[pathType](modification.xpath);
         var nodes = xmlDoc.find(path, ns);
         nodes.forEach(function (node) {
-            var execType = modification.action || "removeNode";
+            var execType = modification.action;
             actionExecuter[execType](node, modification.params);
         });
     });
