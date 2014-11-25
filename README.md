@@ -15,7 +15,7 @@ blue-button-generate is a module to generate CCDA files from JSON data.  Current
 ``` javascript
 var fs = require('fs');
 var bb = require('blue-button');
-bar bbg = require('blue-button-generate');
+var bbg = require('blue-button-generate');
 
 var xmlString = fs.readFileSync('test/fixtures/files/ccda_xml/CCD_1.xml', 'utf-8');
 var record = bb.parseString(xmlString);
