@@ -48,7 +48,7 @@ describe('xml vs parse generate xml ', function () {
                 }
                 var xmlModified = xpathutil.modifyXML(xmlRaw, mods);
 
-                xml2jsutil.modifyAndToObject(xmlModified, function (err, result) {
+                xml2jsutil.toOrderedJSON(xmlModified, function (err, result) {
                     xmlObj = result;
                     done(err);
                 });
@@ -70,48 +70,28 @@ describe('xml vs parse generate xml ', function () {
                 }
                 var xmlModified = xpathutil.modifyXML(xmlGeneratedRaw, mods);
 
-                xml2jsutil.modifyAndToObject(xmlModified, function (err, result) {
+                xml2jsutil.toOrderedJSON(xmlModified, function (err, result) {
                     xmlGeneratedObj = result;
                     done(err);
                 });
             });
 
             var compareSection = function (section, sectionGenerated, baseName) {
-                var orderedSection = jsonutil.orderByKeys(section);
-                var orderedGeneratedSection = jsonutil.orderByKeys(sectionGenerated);
+                jsonutil.JSONToFile(section, generatedDir, "o_" + baseName + ".json");
+                jsonutil.JSONToFile(sectionGenerated, generatedDir, "g_" + baseName + ".json");
 
-                jsonutil.JSONToFile(orderedSection, generatedDir, "o_" + baseName + ".json");
-                jsonutil.JSONToFile(orderedGeneratedSection, generatedDir, "g_" + baseName + ".json");
-
-                expect(orderedGeneratedSection).to.deep.equal(orderedSection);
-            };
-
-            var templateIdsForSection = {
-                'allergies': ["2.16.840.1.113883.10.20.22.2.6", "2.16.840.1.113883.10.20.22.2.6.1"],
-                'medications': ["2.16.840.1.113883.10.20.22.2.1", "2.16.840.1.113883.10.20.22.2.1.1"],
-                'immunizations': ["2.16.840.1.113883.10.20.22.2.2", "2.16.840.1.113883.10.20.22.2.2.1"],
-                'procedures': ["2.16.840.1.113883.10.20.22.2.7", "2.16.840.1.113883.10.20.22.2.7.1"],
-                'encounters': ["2.16.840.1.113883.10.20.22.2.22"],
-                'payers': ["2.16.840.1.113883.10.20.22.2.18"],
-                'plan_of_care': ["2.16.840.1.113883.10.20.22.2.10"],
-                'problems': ["2.16.840.1.113883.10.20.22.2.5", "2.16.840.1.113883.10.20.22.2.5.1"],
-                'social_history': ["2.16.840.1.113883.10.20.22.2.17"],
-                'vitals': ["2.16.840.1.113883.10.20.22.2.4", "2.16.840.1.113883.10.20.22.2.4.1"],
-                'results': ["2.16.840.1.113883.10.20.22.2.3", "2.16.840.1.113883.10.20.22.2.3.1"]
+                expect(sectionGenerated).to.deep.equal(section);
             };
 
             var findCompareSection = function (sectionName) {
-                var f = function (ccd, templateId) {
-                    var root = jsonutil.getDeepValue(ccd, 'ClinicalDocument.component.0.structuredBody.0.component');
-                    expect(root).to.exist;
-                    var result = xml2jsutil.findSection(root, templateId);
+                var f = function (ccd) {
+                    var result = xml2jsutil.findSection(ccd, sectionName);
                     expect(result).to.exist;
                     return result;
                 };
 
-                var templateIds = templateIdsForSection[sectionName];
-                var section = f(xmlObj, templateIds);
-                var sectionGenerated = f(xmlGeneratedObj, templateIds);
+                var section = f(xmlObj);
+                var sectionGenerated = f(xmlGeneratedObj);
 
                 compareSection(section, sectionGenerated, filename + '_' + sectionName);
             };
@@ -163,15 +143,7 @@ describe('xml vs parse generate xml ', function () {
             });
 
             it('demographics', function () {
-                var f = function (obj) {
-                    var result = jsonutil.getDeepValue(obj, 'ClinicalDocument.recordTarget.0.patientRole.0');
-                    expect(result).to.exist;
-                    return result;
-                };
-
-                var demographics = f(xmlObj);
-                var demographicsGenerated = f(xmlGeneratedObj);
-                compareSection(demographics, demographicsGenerated, filename + '_' + "demographics");
+                findCompareSection('demographics');
             });
 
         };
