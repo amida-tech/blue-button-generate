@@ -8,12 +8,11 @@ var bb = require('blue-button');
 var bbg = require('../../index');
 
 var jsonutil = require('../util/jsonutil');
+var xpathutil = require('../util/xpathutil');
 var xml2jsutil = require('../util/xml2jsutil');
 
 var bbParserMods = require('../xmlmods/bbParser');
-var bbParserPostMods = require('../xmlmods/bbParserPost');
 var bbGeneratorMods = require('../xmlmods/bbGenerator');
-var bbGeneratorPostMods = require('../xmlmods/bbGeneratorPost');
 var ccd1ParserMods = require('../xmlmods/ccd1Parser');
 var ccd1GeneratorMods = require('../xmlmods/ccd1Generator');
 var viteraParserMods = require('../xmlmods/viteraParser');
@@ -47,8 +46,9 @@ describe('xml vs parse generate xml ', function () {
                 if (addlParserMods) {
                     mods = mods.concat(addlParserMods);
                 }
-                mods = mods.concat(bbParserPostMods);
-                xml2jsutil.modifyAndToObject(xmlRaw, mods, function (err, result) {
+                var xmlModified = xpathutil.modifyXML(xmlRaw, mods);
+
+                xml2jsutil.modifyAndToObject(xmlModified, function (err, result) {
                     xmlObj = result;
                     done(err);
                 });
@@ -68,8 +68,9 @@ describe('xml vs parse generate xml ', function () {
                 if (addlGeneratorMods) {
                     mods = mods.concat(addlGeneratorMods);
                 }
-                mods = mods.concat(bbGeneratorPostMods);
-                xml2jsutil.modifyAndToObject(xmlGeneratedRaw, mods, function (err, result) {
+                var xmlModified = xpathutil.modifyXML(xmlGeneratedRaw, mods);
+
+                xml2jsutil.modifyAndToObject(xmlModified, function (err, result) {
                     xmlGeneratedObj = result;
                     done(err);
                 });

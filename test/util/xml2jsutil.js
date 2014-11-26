@@ -2,8 +2,6 @@
 
 var xml2js = require('xml2js');
 
-var xpathutil = require('./xpathutil');
-
 exports.findSection = function (sections, templateIds) {
     var n = sections.length;
     for (var i = 0; i < n; ++i) {
@@ -24,11 +22,10 @@ exports.findSection = function (sections, templateIds) {
     return null;
 };
 
-exports.modifyAndToObject = function (xml, modifications, callback) {
-    var xmlModified = xpathutil.modifyXML(xml, modifications);
+exports.modifyAndToObject = function (xml, callback) {
     var parser = new xml2js.Parser({
         async: false,
         normalize: true
     });
-    parser.parseString(xmlModified, callback);
+    parser.parseString(xml, callback);
 };
