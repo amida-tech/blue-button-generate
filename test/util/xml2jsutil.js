@@ -52,14 +52,14 @@ var normalizedCodeSystemNames = {
     "RxNorm": "RXNORM",
     "SNOMED-CT": "SNOMED CT",
     "SNOMED -CT": "SNOMED-CT",
-    "HL7 ActEncounterCode": "HL7ActCode",
+    "HL7 ActEncounterCode": "ActCode",
     "HL7 RoleClassRelationship": "HL7 RoleCode",
     "HL7 RoleCode": "HL7 Role",
     "HL7 Role code": "HL7 Role",
     "Race & Ethnicity - CDC": "Race and Ethnicity - CDC",
     "CPT-4": "CPT",
     "RoleCode": "HL7 Role",
-    "ActCode": "HL7ActCode",
+    "HL7ActCode": "ActCode",
     "RoleClassRelationshipFormal": "HL7 RoleCode",
     "ICD9CM": "ICD-9-CM"
 };
