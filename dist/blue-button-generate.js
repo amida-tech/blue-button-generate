@@ -3333,7 +3333,6 @@ var codeSystems = {
     "ActCode": ["2.16.840.1.113883.5.4"],
     "CPT-4": ["2.16.840.1.113883.6.12"],
     "CVX": ["2.16.840.1.113883.12.292"],
-    "HL7ActCode": ["2.16.840.1.113883.5.4"],
     "HL7 Role" : ["2.16.840.1.113883.5.111"],
     "HL7 RoleCode" : ["2.16.840.1.113883.5.110"],
     "UNII": ["2.16.840.1.113883.4.9"],
@@ -6281,7 +6280,7 @@ module.exports = OIDs = {
         uri: "http://purl.bioontology.org/ontology/CPT/"
     },
     "2.16.840.1.113883.5.4": {
-        name: "HL7ActCode",
+        name: "ActCode",
         uri: "http://hl7.org/actcode/"
     },
     "2.16.840.1.113883.4.9": {
