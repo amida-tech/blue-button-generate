@@ -8,8 +8,7 @@ var bb = require('blue-button');
 var bbg = require('../../index');
 
 var jsonutil = require('../util/jsonutil');
-var xpathutil = require('../util/xpathutil');
-var xml2jsutil = require('../util/xml2jsutil');
+var util = require('../util');
 
 var bbParserMods = require('../xmlmods/bbParser');
 var bbGeneratorMods = require('../xmlmods/bbGenerator');
@@ -46,31 +45,18 @@ describe('xml vs parse generate xml ', function () {
                 if (addlParserMods) {
                     mods = mods.concat(addlParserMods);
                 }
-                var xmlModified = xpathutil.modifyXML(xmlRaw, mods);
-
-                xml2jsutil.toOrderedJSON(xmlModified, function (err, result) {
+                util.toSectionJSONs(xmlRaw, mods, function (err, result) {
                     xmlObj = result;
                     done(err);
                 });
             });
 
             it('xml2js generated', function (done) {
-                var result = bb.parseString(xmlRaw);
-                if (validate) {
-                    var val = bb.validator.validateDocumentModel(result);
-                    expect(val).to.be.true;
-                }
-
-                // generate ccda
-                var xmlGeneratedRaw = bbg.generateCCD(result);
-
                 var mods = bbGeneratorMods;
                 if (addlGeneratorMods) {
                     mods = mods.concat(addlGeneratorMods);
                 }
-                var xmlModified = xpathutil.modifyXML(xmlGeneratedRaw, mods);
-
-                xml2jsutil.toOrderedJSON(xmlModified, function (err, result) {
+                util.toBBSectionJSONs(xmlRaw, validate, mods, function (err, result) {
                     xmlGeneratedObj = result;
                     done(err);
                 });
@@ -84,14 +70,8 @@ describe('xml vs parse generate xml ', function () {
             };
 
             var findCompareSection = function (sectionName) {
-                var f = function (ccd) {
-                    var result = xml2jsutil.findSection(ccd, sectionName);
-                    expect(result).to.exist;
-                    return result;
-                };
-
-                var section = f(xmlObj);
-                var sectionGenerated = f(xmlGeneratedObj);
+                var section = xmlObj[sectionName];
+                var sectionGenerated = xmlGeneratedObj[sectionName];
 
                 compareSection(section, sectionGenerated, filename + '_' + sectionName);
             };

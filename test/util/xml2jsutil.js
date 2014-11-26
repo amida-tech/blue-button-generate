@@ -3,7 +3,7 @@
 var xml2js = require('xml2js');
 var jsonutil = require('../util/jsonutil');
 
-exports.findSection = (function () {
+var findSection = exports.findSection = (function () {
     var templateIdsForSection = {
         'allergies': ["2.16.840.1.113883.10.20.22.2.6", "2.16.840.1.113883.10.20.22.2.6.1"],
         'medications': ["2.16.840.1.113883.10.20.22.2.1", "2.16.840.1.113883.10.20.22.2.1.1"],
@@ -56,7 +56,7 @@ exports.findSection = (function () {
     };
 })();
 
-exports.toOrderedJSON = function (xml, callback) {
+var toOrderedJSON = exports.toOrderedJSON = function (xml, callback) {
     var parser = new xml2js.Parser({
         async: false,
         normalize: true
@@ -67,6 +67,23 @@ exports.toOrderedJSON = function (xml, callback) {
         } else {
             var orderedResult = jsonutil.orderByKeys(result);
             callback(err, orderedResult);
+        }
+    });
+};
+
+var sectionNames = ['demographics', 'allergies', 'medications', 'immunizations', 'procedures', 'encounters', 'payers', 'plan_of_care', 'problems', 'social_history', 'vitals', 'results'];
+
+exports.toOrderedSectionJSONs = function (xml, callback) {
+    toOrderedJSON(xml, function (err, result) {
+        if (err) {
+            callback(err);
+        } else {
+            var resultSectionized = sectionNames.reduce(function (r, name) {
+                var sectionJSON = findSection(result, name);
+                r[name] = sectionJSON;
+                return r;
+            }, {});
+            callback(null, resultSectionized);
         }
     });
 };
