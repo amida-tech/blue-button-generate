@@ -33,6 +33,19 @@ var normalizedCodeSystemNames = {
     "Race & Ethnicity - CDC": "Race and Ethnicity - CDC"
 };
 
+var normalizedDisplayNames = {
+    "HISTORY OF MEDICATION USE": "History of medication use",
+    "History of immunizations": "Immunizations",
+    "Patient Objection": "Patient objection",
+    "HISTORY OF PROCEDURES": "History of Procedures",
+    "History of encounters": "Encounters",
+    "Payer": "Payers",
+    "Treatment plan": "Plan of Care",
+    "PROBLEM LIST": "Problem List",
+    "VITAL SIGNS": "Vital Signs",
+    "RESULTS": "Relevant diagnostic tests and/or laboratory data"
+};
+
 module.exports = [{
     xpath: "//h:title",
     action: "replaceText",
@@ -60,6 +73,15 @@ module.exports = [{
         attr: "codeSystemName",
         srcAttr: "codeSystem",
         map: normalizedCodeSystemNames
+    },
+    comment: 'blue-button parser normalization'
+}, {
+    xpath: "//*[@codeSystem][@displayName][@code]",
+    action: "normalize",
+    params: {
+        attr: "displayName",
+        srcAttr: "code",
+        map: normalizedDisplayNames
     },
     comment: 'blue-button parser normalization'
 }];

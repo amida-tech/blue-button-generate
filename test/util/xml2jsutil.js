@@ -24,24 +24,6 @@ exports.findSection = function (sections, templateIds) {
     return null;
 };
 
-var normalizedDisplayNames = {
-    "History of immunizations": 'Immunizations',
-    "History of encounters": 'Encounters',
-    "Patient Objection": "Patient objection",
-    "HISTORY OF PROCEDURES": "History of Procedures",
-    "HISTORY OF IMMUNIZATIONS": "Immunizations",
-    "HISTORY OF MEDICATION USE": "History of medication use",
-    "Payer": "Payers",
-    "Treatment plan": "Plan of Care",
-    "RESULTS": "Relevant diagnostic tests and/or laboratory data",
-    "history of prior surgery   [For Hx of Tx, use H prefix]": "history of prior surgery [For Hx of Tx, use H prefix]",
-    "TREATMENT PLAN": "Plan of Care",
-    "PAYMENT SOURCES": "Payment sources",
-    "VITAL SIGNS": "Vital Signs",
-    "Problem list": "Problem List",
-    "PROBLEM LIST": "Problem List"
-};
-
 exports.processIntroducedCodeAttrs = function processIntroducedCodeAttrs(original, generated) {
     Object.keys(generated).forEach(function (key) {
         if ((key === '$') && original[key]) {
@@ -52,11 +34,6 @@ exports.processIntroducedCodeAttrs = function processIntroducedCodeAttrs(origina
                     delete generatedAttrs[attr];
                 }
             });
-            if (originalAttrs.displayName && (originalAttrs.displayName !== generatedAttrs.displayName)) {
-                if (normalizedDisplayNames[originalAttrs.displayName]) {
-                    originalAttrs.displayName = normalizedDisplayNames[originalAttrs.displayName];
-                }
-            }
         } else if (original[key] && (typeof original[key] === 'object') && (typeof generated[key] === 'object')) {
             processIntroducedCodeAttrs(original[key], generated[key]);
         }

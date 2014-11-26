@@ -22,6 +22,19 @@ var normalizedCodeSystemNames = {
     "MaritalStatus": "HL7 Marital Status"
 };
 
+var normalizedDisplayNames = {
+    "HISTORY OF MEDICATION USE": "History of medication use",
+    "HISTORY OF IMMUNIZATIONS": "Immunizations",
+    "HISTORY OF PROCEDURES": "History of Procedures",
+    "history of prior surgery   [For Hx of Tx, use H prefix]": "history of prior surgery [For Hx of Tx, use H prefix]",
+    "History of encounters": "Encounters",
+    "PAYMENT SOURCES": "Payment sources",
+    "TREATMENT PLAN": "Plan of Care",
+    "Problem list": "Problem List",
+    "VITAL SIGNS": "Vital Signs",
+    "RESULTS": "Relevant diagnostic tests and/or laboratory data"
+};
+
 module.exports = [{
     xpath: "//h:recordTarget/h:patientRole/h:patient/h:raceCode",
     action: "removeNode",
@@ -357,6 +370,15 @@ module.exports = [{
     params: {
         attr: "codeSystemName",
         map: normalizedCodeSystemNames
+    },
+    comment: 'blue-button parser normalization'
+}, {
+    xpath: "//*[@codeSystem][@displayName][@code]",
+    action: "normalize",
+    params: {
+        attr: "displayName",
+        srcAttr: "code",
+        map: normalizedDisplayNames
     },
     comment: 'blue-button parser normalization'
 }];
