@@ -129,6 +129,16 @@ var actions = [{
             node.text(replacementText);
         }
     }
+}, {
+    key: "replaceAttribute",
+    implementation: function (node, params) {
+        // var attrNode = node.attr(params.attr);
+        // var value = attrNode.value();
+        // var replacementValue = params.map[value];
+        // if (replacementValue) {
+        //     attrNode.value(replacementValue);
+        // }
+    }
 }];
 
 var doModifications = (function () {

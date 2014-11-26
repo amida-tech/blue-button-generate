@@ -16,6 +16,21 @@ var titleMap = {
     "RESULTS": "Relevant diagnostic tests and/or laboratory data"
 };
 
+var normalizedCodeSystemNames = {
+    "RxNorm": "RXNORM",
+    "SNOMED-CT": "SNOMED CT",
+    "NCI Thesaurus": "Medication Route FDA",
+    "National Cancer Institute (NCI) Thesaurus": "Medication Route FDA",
+    "HL7 ActNoImmunizationReason": "Act Reason",
+    "HL7 ActEncounterCode": "HL7ActCode",
+    "HL7 RoleClassRelationship": "HL7 RoleCode",
+    //"HL7 Role":  "HL7 RoleCode",
+    "HL7 Role code": "HL7 Role",
+    //"HL7 RoleCode": "HL7 Role",
+    "MaritalStatusCode": "HL7 Marital Status",
+    "Race & Ethnicity - CDC": "Race and Ethnicity - CDC"
+};
+
 module.exports = [{
     xpath: "//h:title",
     action: "replaceText",
@@ -36,4 +51,12 @@ module.exports = [{
     xpath: t.medSection + '/.//h:effectiveTime[@xsi:type="IVL_TS"]',
     action: "removeAttribute",
     params: "type"
+}, {
+    xpath: "//*[@codeSystem][@codeSystemName]",
+    action: "replaceAttribute",
+    params: {
+        attr: "codeSystemName",
+        map: normalizedCodeSystemNames
+    },
+    comment: 'blue-button parser normalization'
 }];
