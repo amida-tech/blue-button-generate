@@ -80,6 +80,17 @@ var actions = [{
         node.attr(params);
     }
 }, {
+    key: "addAttributeWhenEmpty",
+    implementation: function (node, params) {
+        var allEmpty = Object.keys(params).every(function (param) {
+            var attrNode = node.attr(param);
+            return !attrNode;
+        });
+        if (allEmpty) {
+            node.attr(params);
+        }
+    }
+}, {
     key: "normalizeTelNumber",
     implementation: function (node) {
         var attrNode = node.attr('value');
@@ -127,6 +138,27 @@ var actions = [{
         var replacementText = map[text];
         if (replacementText) {
             node.text(replacementText);
+        }
+    }
+}, {
+    key: "normalize",
+    implementation: function (node, params) {
+        var attrNode = node.attr(params.attr);
+        var value = attrNode.value();
+        var replacementInfo = params.map[value];
+        if (replacementInfo) {
+            var replacementValue;
+            if (typeof replacementInfo === 'object') {
+                var srcAttrValue = node.attr(params.srcAttr).value();
+                if (srcAttrValue === replacementInfo.src) {
+                    replacementValue = replacementInfo.value;
+                }
+            } else {
+                replacementValue = replacementInfo;
+            }
+            if (replacementValue) {
+                attrNode.value(replacementValue);
+            }
         }
     }
 }];

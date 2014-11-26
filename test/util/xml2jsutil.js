@@ -1,100 +1,89 @@
 "use strict";
 
 var xml2js = require('xml2js');
+var jsonutil = require('../util/jsonutil');
 
-var xpathutil = require('./xpathutil');
+var findSection = exports.findSection = (function () {
+    var templateIdsForSection = {
+        'allergies': ["2.16.840.1.113883.10.20.22.2.6", "2.16.840.1.113883.10.20.22.2.6.1"],
+        'medications': ["2.16.840.1.113883.10.20.22.2.1", "2.16.840.1.113883.10.20.22.2.1.1"],
+        'immunizations': ["2.16.840.1.113883.10.20.22.2.2", "2.16.840.1.113883.10.20.22.2.2.1"],
+        'procedures': ["2.16.840.1.113883.10.20.22.2.7", "2.16.840.1.113883.10.20.22.2.7.1"],
+        'encounters': ["2.16.840.1.113883.10.20.22.2.22"],
+        'payers': ["2.16.840.1.113883.10.20.22.2.18"],
+        'plan_of_care': ["2.16.840.1.113883.10.20.22.2.10"],
+        'problems': ["2.16.840.1.113883.10.20.22.2.5", "2.16.840.1.113883.10.20.22.2.5.1"],
+        'social_history': ["2.16.840.1.113883.10.20.22.2.17"],
+        'vitals': ["2.16.840.1.113883.10.20.22.2.4", "2.16.840.1.113883.10.20.22.2.4.1"],
+        'results': ["2.16.840.1.113883.10.20.22.2.3", "2.16.840.1.113883.10.20.22.2.3.1"]
+    };
 
-exports.findSection = function (sections, templateIds) {
-    var n = sections.length;
-    for (var i = 0; i < n; ++i) {
-        var sectionInfo = sections[i].section[0];
-        var ids = sectionInfo.templateId;
-        if (ids) {
-            for (var j = 0; j < ids.length; ++j) {
-                var id = ids[j];
-                for (var k = 0; k < templateIds.length; ++k) {
-                    var templateId = templateIds[k];
-                    if (id['$'].root === templateId) {
-                        return sections[i].section[0];
+    var findNormalSection = function (ccd, sectionName) {
+        var root = jsonutil.getDeepValue(ccd, 'ClinicalDocument.component.0.structuredBody.0.component');
+        if (root) {
+            var n = root.length;
+            var templateIds = templateIdsForSection[sectionName];
+            for (var i = 0; i < n; ++i) {
+                var sectionInfo = root[i].section[0];
+                var ids = sectionInfo.templateId;
+                if (ids) {
+                    for (var j = 0; j < ids.length; ++j) {
+                        var id = ids[j];
+                        for (var k = 0; k < templateIds.length; ++k) {
+                            var templateId = templateIds[k];
+                            if (id['$'].root === templateId) {
+                                return root[i].section[0];
+                            }
+                        }
                     }
                 }
             }
         }
-    }
-    return null;
-};
+        return null;
+    };
 
-var normalizedDisplayNames = {
-    "History of immunizations": 'Immunizations',
-    "History of encounters": 'Encounters',
-    "Patient Objection": "Patient objection",
-    "HISTORY OF PROCEDURES": "History of Procedures",
-    "HISTORY OF IMMUNIZATIONS": "Immunizations",
-    "HISTORY OF MEDICATION USE": "History of medication use",
-    "Payer": "Payers",
-    "Treatment plan": "Plan of Care",
-    "RESULTS": "Relevant diagnostic tests and/or laboratory data",
-    "history of prior surgery   [For Hx of Tx, use H prefix]": "history of prior surgery [For Hx of Tx, use H prefix]",
-    "TREATMENT PLAN": "Plan of Care",
-    "PAYMENT SOURCES": "Payment sources",
-    "VITAL SIGNS": "Vital Signs",
-    "Problem list": "Problem List",
-    "PROBLEM LIST": "Problem List"
-};
+    var findDemographics = function (ccd) {
+        var result = jsonutil.getDeepValue(ccd, 'ClinicalDocument.recordTarget.0.patientRole.0');
+        return result;
+    };
 
-var normalizedCodeSystemNames = {
-    "National Cancer Institute (NCI) Thesaurus": "Medication Route FDA",
-    "NCI Thesaurus": "Medication Route FDA",
-    "HL7 ActNoImmunizationReason": "Act Reason",
-    "AdministrativeGender": "HL7 AdministrativeGender",
-    "MaritalStatus": "HL7 Marital Status",
-    "MaritalStatusCode": "HL7 Marital Status",
-    "RxNorm": "RXNORM",
-    "SNOMED-CT": "SNOMED CT",
-    "SNOMED -CT": "SNOMED-CT",
-    "HL7 ActEncounterCode": "ActCode",
-    "HL7 RoleClassRelationship": "HL7 RoleCode",
-    "HL7 RoleCode": "HL7 Role",
-    "HL7 Role code": "HL7 Role",
-    "Race & Ethnicity - CDC": "Race and Ethnicity - CDC",
-    "CPT-4": "CPT",
-    "RoleCode": "HL7 Role",
-    "HL7ActCode": "ActCode",
-    "RoleClassRelationshipFormal": "HL7 RoleCode",
-    "ICD9CM": "ICD-9-CM"
-};
-
-exports.processIntroducedCodeAttrs = function processIntroducedCodeAttrs(original, generated) {
-    Object.keys(generated).forEach(function (key) {
-        if ((key === '$') && original[key]) {
-            var originalAttrs = original[key];
-            var generatedAttrs = generated[key];
-            ['codeSystem', 'codeSystemName', 'displayName'].forEach(function (attr) {
-                if (generatedAttrs[attr] && !originalAttrs[attr]) {
-                    delete generatedAttrs[attr];
-                }
-            });
-            if (originalAttrs.codeSystemName && (originalAttrs.codeSystemName !== generatedAttrs.codeSystemName)) {
-                if (normalizedCodeSystemNames[originalAttrs.codeSystemName]) {
-                    originalAttrs.codeSystemName = normalizedCodeSystemNames[originalAttrs.codeSystemName];
-                }
-            }
-            if (originalAttrs.displayName && (originalAttrs.displayName !== generatedAttrs.displayName)) {
-                if (normalizedDisplayNames[originalAttrs.displayName]) {
-                    originalAttrs.displayName = normalizedDisplayNames[originalAttrs.displayName];
-                }
-            }
-        } else if (original[key] && (typeof original[key] === 'object') && (typeof generated[key] === 'object')) {
-            processIntroducedCodeAttrs(original[key], generated[key]);
+    return function (ccd, sectionName) {
+        if (sectionName === 'demographics') {
+            return findDemographics(ccd);
+        } else {
+            return findNormalSection(ccd, sectionName);
         }
-    });
-};
+    };
+})();
 
-exports.modifyAndToObject = function (xml, modifications, callback) {
-    var xmlModified = xpathutil.modifyXML(xml, modifications);
+var toOrderedJSON = exports.toOrderedJSON = function (xml, callback) {
     var parser = new xml2js.Parser({
         async: false,
         normalize: true
     });
-    parser.parseString(xmlModified, callback);
+    parser.parseString(xml, function (err, result) {
+        if (err) {
+            callback(err);
+        } else {
+            var orderedResult = jsonutil.orderByKeys(result);
+            callback(err, orderedResult);
+        }
+    });
+};
+
+var sectionNames = ['demographics', 'allergies', 'medications', 'immunizations', 'procedures', 'encounters', 'payers', 'plan_of_care', 'problems', 'social_history', 'vitals', 'results'];
+
+exports.toOrderedSectionJSONs = function (xml, callback) {
+    toOrderedJSON(xml, function (err, result) {
+        if (err) {
+            callback(err);
+        } else {
+            var resultSectionized = sectionNames.reduce(function (r, name) {
+                var sectionJSON = findSection(result, name);
+                r[name] = sectionJSON;
+                return r;
+            }, {});
+            callback(null, resultSectionized);
+        }
+    });
 };
