@@ -80,6 +80,17 @@ var actions = [{
         node.attr(params);
     }
 }, {
+    key: "addAttributeWhenEmpty",
+    implementation: function (node, params) {
+        var allEmpty = Object.keys(params).every(function (param) {
+            var attrNode = node.attr(param);
+            return !attrNode;
+        });
+        if (allEmpty) {
+            node.attr(params);
+        }
+    }
+}, {
     key: "normalizeTelNumber",
     implementation: function (node) {
         var attrNode = node.attr('value');

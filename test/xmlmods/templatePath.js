@@ -21,6 +21,7 @@ var procSection = exports.procSection = '//h:templateId[@root="2.16.840.1.113883
 var procActProc = exports.procActProc = procSection + '/.//h:templateId[@root="2.16.840.1.113883.10.20.22.4.14"]/..';
 exports.procActProcUnknown = procActProc + '/.//h:templateId[@root="2.16.840.1.113883.10.20.22.4.4"]/../..';
 exports.procProductInstance = procActProc + '/.//h:templateId[@root="2.16.840.1.113883.10.20.22.4.37"]/../..';
+exports.procActEither = procSection + '/.//h:templateId[@root="2.16.840.1.113883.10.20.22.4.12" or @root="2.16.840.1.113883.10.20.22.4.13" or @root="2.16.840.1.113883.10.20.22.4.14"]/..';
 
 var payersSection = exports.payersSection = '//h:templateId[@root="2.16.840.1.113883.10.20.22.2.18"]/..';
 var coverageAct = exports.coverageAct = payersSection + '/.//h:templateId[@root="2.16.840.1.113883.10.20.22.4.60"]/..';
@@ -51,3 +52,6 @@ exports.resultsCommentAct = resultsSection + '/.//h:templateId[@root="2.16.840.1
 
 var vitalsSection = exports.vitalsSection = '//h:templateId[@root="2.16.840.1.113883.10.20.22.2.4" or @root="2.16.840.1.113883.10.20.22.2.4.1"]/..';
 var vitalsObs = exports.vitalsObs = vitalsSection + '/.//h:templateId[@root="2.16.840.1.113883.10.20.22.4.27"]/..';
+
+var socialHistorySection = '//h:templateId[@root="2.16.840.1.113883.10.20.22.2.17"]/..';
+exports.socHistObs = socialHistorySection + '/.//h:templateId[@root="2.16.840.1.113883.10.20.22.4.78"]/..';

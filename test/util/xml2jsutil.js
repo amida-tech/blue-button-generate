@@ -24,22 +24,6 @@ exports.findSection = function (sections, templateIds) {
     return null;
 };
 
-exports.processIntroducedCodeAttrs = function processIntroducedCodeAttrs(original, generated) {
-    Object.keys(generated).forEach(function (key) {
-        if ((key === '$') && original[key]) {
-            var originalAttrs = original[key];
-            var generatedAttrs = generated[key];
-            ['codeSystem', 'codeSystemName', 'displayName'].forEach(function (attr) {
-                if (generatedAttrs[attr] && !originalAttrs[attr]) {
-                    delete generatedAttrs[attr];
-                }
-            });
-        } else if (original[key] && (typeof original[key] === 'object') && (typeof generated[key] === 'object')) {
-            processIntroducedCodeAttrs(original[key], generated[key]);
-        }
-    });
-};
-
 exports.modifyAndToObject = function (xml, modifications, callback) {
     var xmlModified = xpathutil.modifyXML(xml, modifications);
     var parser = new xml2js.Parser({

@@ -76,8 +76,6 @@ describe('xml vs parse generate xml ', function () {
             });
 
             var compareSection = function (section, sectionGenerated, baseName) {
-                xml2jsutil.processIntroducedCodeAttrs(section, sectionGenerated);
-
                 var orderedSection = jsonutil.orderByKeys(section);
                 var orderedGeneratedSection = jsonutil.orderByKeys(sectionGenerated);
 

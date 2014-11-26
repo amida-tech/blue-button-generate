@@ -83,4 +83,22 @@ module.exports = [{
 }, {
     xpath: '//h:recordTarget/h:patientRole/h:providerOrganization',
     action: 'removeNode'
+}, {
+    xpath: t.procActEither + "/h:statusCode[@code=\"completed\"]",
+    action: "addAttribute",
+    params: {
+        "codeSystem": "2.16.840.1.113883.11.20.9.22",
+        "codeSystemName": "ActStatus",
+        "displayName": "Completed"
+    },
+    comment: "generator fills full code information"
+}, {
+    xpath: t.procActEither + "/h:statusCode[@code=\"aborted\"]",
+    action: "addAttribute",
+    params: {
+        "codeSystem": "2.16.840.1.113883.11.20.9.22",
+        "codeSystemName": "ActStatus",
+        "displayName": "Aborted"
+    },
+    comment: "generator fills full code information"
 }];

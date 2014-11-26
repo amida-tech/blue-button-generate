@@ -84,4 +84,74 @@ module.exports = [{
         map: normalizedDisplayNames
     },
     comment: 'blue-button parser normalization'
+}, {
+    xpath: "//*[@codeSystem=\"2.16.840.1.113883.5.1\"]",
+    action: "addAttributeWhenEmpty",
+    params: {
+        "codeSystemName": "HL7 AdministrativeGender"
+    }
+}, {
+    xpath: "//*[@codeSystem=\"2.16.840.1.113883.6.96\"]",
+    action: "addAttributeWhenEmpty",
+    params: {
+        "codeSystemName": "SNOMED CT"
+    }
+}, {
+    xpath: "//*[@codeSystem=\"2.16.840.1.113883.6.1\"]",
+    action: "addAttributeWhenEmpty",
+    params: {
+        "codeSystemName": "LOINC"
+    }
+}, {
+    xpath: "//*[@codeSystem=\"2.16.840.1.113883.6.88\"]",
+    action: "addAttributeWhenEmpty",
+    params: {
+        "codeSystemName": "RXNORM"
+    }
+}, {
+    xpath: "//*[@codeSystem=\"2.16.840.1.113883.5.6\"]",
+    action: "addAttributeWhenEmpty",
+    params: {
+        "codeSystemName": "HL7ActClass"
+    }
+}, {
+    xpath: "//*[@codeSystem=\"2.16.840.1.113883.5.111\"]",
+    action: "addAttributeWhenEmpty",
+    params: {
+        "codeSystemName": "HL7 Role"
+    }
+}, {
+    xpath: "//*[@codeSystem=\"2.16.840.1.113883.5.83\"][@code=\"N\"]",
+    action: "addAttributeWhenEmpty",
+    params: {
+        "codeSystemName": "ObservationInterpretation",
+        "displayName": "Normal"
+    }
+}, {
+    xpath: "//*[@codeSystem=\"2.16.840.1.113883.5.83\"][@code=\"L\"]",
+    action: "addAttributeWhenEmpty",
+    params: {
+        "codeSystemName": "ObservationInterpretation",
+        "displayName": "Low"
+    }
+}, {
+    xpath: t.allergyObs + "/h:code[@codeSystem=\"2.16.840.1.113883.5.4\"][@code=\"ASSERTION\"]",
+    action: "addAttributeWhenEmpty",
+    params: {
+        "codeSystemName": "ActCode",
+        "displayName": "Assertion"
+    }
+}, {
+    xpath: t.socHistObs + "/h:code[@codeSystem=\"2.16.840.1.113883.5.4\"][@code=\"ASSERTION\"]",
+    action: "addAttributeWhenEmpty",
+    params: {
+        "codeSystemName": "ActCode",
+        "displayName": "Assertion"
+    }
+}, {
+    xpath: t.allergiesSection + "/h:code[@code=\"48765-2\"]",
+    action: "addAttributeWhenEmpty",
+    params: {
+        "displayName": "Allergies, adverse reactions, alerts"
+    }
 }];
