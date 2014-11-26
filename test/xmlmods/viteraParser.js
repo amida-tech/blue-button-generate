@@ -14,20 +14,12 @@ var titleMap = {
 
 var normalizedCodeSystemNames = {
     "RxNorm": "RXNORM",
-    // "SNOMED-CT": "SNOMED CT",
-    // "NCI Thesaurus": "Medication Route FDA",
-    // "National Cancer Institute (NCI) Thesaurus": "Medication Route FDA",
-    // "HL7 ActNoImmunizationReason": "Act Reason",
-    // "HL7 ActEncounterCode": "HL7ActCode",
     "CPT-4": "CPT",
-    //"HL7ActCode": "ActCode",
-    "ActCode": "HL7ActCode",
     "RoleClassRelationshipFormal": "HL7 RoleCode",
     "RoleCode": "HL7 Role",
     "ICD9CM": "ICD-9-CM",
     "AdministrativeGender": "HL7 AdministrativeGender",
     "MaritalStatus": "HL7 Marital Status"
-        // "Race & Ethnicity - CDC": "Race and Ethnicity - CDC"
 };
 
 module.exports = [{
@@ -361,7 +353,7 @@ module.exports = [{
     comment: "parser does read @use and generator assumes it is always 'L'"
 }, {
     xpath: "//*[@codeSystem][@codeSystemName]",
-    action: "replaceAttribute",
+    action: "normalize",
     params: {
         attr: "codeSystemName",
         map: normalizedCodeSystemNames

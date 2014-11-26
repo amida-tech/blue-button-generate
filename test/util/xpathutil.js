@@ -130,14 +130,25 @@ var actions = [{
         }
     }
 }, {
-    key: "replaceAttribute",
+    key: "normalize",
     implementation: function (node, params) {
-        // var attrNode = node.attr(params.attr);
-        // var value = attrNode.value();
-        // var replacementValue = params.map[value];
-        // if (replacementValue) {
-        //     attrNode.value(replacementValue);
-        // }
+        var attrNode = node.attr(params.attr);
+        var value = attrNode.value();
+        var replacementInfo = params.map[value];
+        if (replacementInfo) {
+            var replacementValue;
+            if (typeof replacementInfo === 'object') {
+                var srcAttrValue = node.attr(params.srcAttr).value();
+                if (srcAttrValue === replacementInfo.src) {
+                    replacementValue = replacementInfo.value;
+                }
+            } else {
+                replacementValue = replacementInfo;
+            }
+            if (replacementValue) {
+                attrNode.value(replacementValue);
+            }
+        }
     }
 }];
 

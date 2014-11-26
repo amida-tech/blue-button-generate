@@ -22,11 +22,13 @@ var normalizedCodeSystemNames = {
     "NCI Thesaurus": "Medication Route FDA",
     "National Cancer Institute (NCI) Thesaurus": "Medication Route FDA",
     "HL7 ActNoImmunizationReason": "Act Reason",
-    "HL7 ActEncounterCode": "HL7ActCode",
+    "HL7 ActEncounterCode": "ActCode",
     "HL7 RoleClassRelationship": "HL7 RoleCode",
-    //"HL7 Role":  "HL7 RoleCode",
     "HL7 Role code": "HL7 Role",
-    //"HL7 RoleCode": "HL7 Role",
+    "HL7 RoleCode": {
+        src: "2.16.840.1.113883.5.111",
+        value: "HL7 Role"
+    },
     "MaritalStatusCode": "HL7 Marital Status",
     "Race & Ethnicity - CDC": "Race and Ethnicity - CDC"
 };
@@ -53,9 +55,10 @@ module.exports = [{
     params: "type"
 }, {
     xpath: "//*[@codeSystem][@codeSystemName]",
-    action: "replaceAttribute",
+    action: "normalize",
     params: {
         attr: "codeSystemName",
+        srcAttr: "codeSystem",
         map: normalizedCodeSystemNames
     },
     comment: 'blue-button parser normalization'

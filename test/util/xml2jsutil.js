@@ -42,28 +42,6 @@ var normalizedDisplayNames = {
     "PROBLEM LIST": "Problem List"
 };
 
-var normalizedCodeSystemNames = {
-    "National Cancer Institute (NCI) Thesaurus": "Medication Route FDA",
-    "NCI Thesaurus": "Medication Route FDA",
-    "HL7 ActNoImmunizationReason": "Act Reason",
-    "AdministrativeGender": "HL7 AdministrativeGender",
-    "MaritalStatus": "HL7 Marital Status",
-    "MaritalStatusCode": "HL7 Marital Status",
-    "RxNorm": "RXNORM",
-    "SNOMED-CT": "SNOMED CT",
-    "SNOMED -CT": "SNOMED-CT",
-    "HL7 ActEncounterCode": "ActCode",
-    "HL7 RoleClassRelationship": "HL7 RoleCode",
-    "HL7 RoleCode": "HL7 Role",
-    "HL7 Role code": "HL7 Role",
-    "Race & Ethnicity - CDC": "Race and Ethnicity - CDC",
-    "CPT-4": "CPT",
-    "RoleCode": "HL7 Role",
-    "HL7ActCode": "ActCode",
-    "RoleClassRelationshipFormal": "HL7 RoleCode",
-    "ICD9CM": "ICD-9-CM"
-};
-
 exports.processIntroducedCodeAttrs = function processIntroducedCodeAttrs(original, generated) {
     Object.keys(generated).forEach(function (key) {
         if ((key === '$') && original[key]) {
@@ -74,11 +52,6 @@ exports.processIntroducedCodeAttrs = function processIntroducedCodeAttrs(origina
                     delete generatedAttrs[attr];
                 }
             });
-            if (originalAttrs.codeSystemName && (originalAttrs.codeSystemName !== generatedAttrs.codeSystemName)) {
-                if (normalizedCodeSystemNames[originalAttrs.codeSystemName]) {
-                    originalAttrs.codeSystemName = normalizedCodeSystemNames[originalAttrs.codeSystemName];
-                }
-            }
             if (originalAttrs.displayName && (originalAttrs.displayName !== generatedAttrs.displayName)) {
                 if (normalizedDisplayNames[originalAttrs.displayName]) {
                     originalAttrs.displayName = normalizedDisplayNames[originalAttrs.displayName];
