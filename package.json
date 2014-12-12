@@ -1,6 +1,6 @@
 {
   "name": "blue-button-generate",
-  "version": "1.3.0-beta.6",
+  "version": "1.3.0",
   "description": "Blue Button CCDA Generator.",
   "main": "./index.js",
   "browser": {
@@ -30,30 +30,30 @@
     "node": ">= 0.10.0"
   },
   "dependencies": {
-    "blue-button-meta": "^1.3.0",
-    "libxmljs": "^0.12.0",
-    "moment": "^2.8.4"
+    "blue-button-meta": "~1.3.0",
+    "libxmljs": "~0.12.0",
+    "moment": "~2.8.4"
   },
   "devDependencies": {
-    "blue-button": "^1.3.0",
-    "brfs": "^1.2.0",
-    "chai": "^1.10.0",
+    "blue-button": "~1.3.0",
+    "brfs": "~1.2.0",
+    "chai": "~1.10.0",
     "coveralls": "~2.10.0",
-    "grunt": "0.4.x",
-    "grunt-blue-button": "^1.3.0",
-    "grunt-browserify": "^3.2.0",
-    "grunt-contrib-connect": "^0.9.0",
+    "grunt": "^0.4.5",
+    "grunt-blue-button": "~1.3.0",
+    "grunt-browserify": "~3.2.0",
+    "grunt-contrib-connect": "~0.9.0",
     "grunt-contrib-jshint": "0.8.x",
     "grunt-contrib-watch": "0.6.x",
-    "grunt-coveralls": "*",
+    "grunt-coveralls": "~1.0.0",
     "grunt-express-server": "0.4.x",
-    "grunt-istanbul-coverage": "*",
-    "grunt-jsbeautifier": "^0.2.7",
-    "grunt-mocha-phantomjs": "^0.6.0",
+    "grunt-istanbul-coverage": "~0.1.0",
+    "grunt-jsbeautifier": "~0.2.7",
+    "grunt-mocha-phantomjs": "~0.6.0",
     "grunt-mocha-test": "0.8.x",
     "mocha": "1.17.x",
     "mocha-lcov-reporter": "0.0.1",
-    "xml2js": "^0.4.4"
+    "xml2js": "~0.4.4"
   },
   "repository": {
     "type": "git",

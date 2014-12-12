@@ -37,6 +37,49 @@ exports.serializeToString = function (xmlDoc) {
 },{}],2:[function(require,module,exports){
 "use strict";
 
+/*
+This script converts CCDA data in JSON format (originally generated from a Continuity of Care Document (CCD) in 
+standard XML/CCDA format) back to XML/CCDA format.
+*/
+
+var engine = require('./lib/engine');
+var documentLevel = require('./lib/documentLevel');
+
+var createContext = (function () {
+    var base = {
+        nextReference: function (referenceKey) {
+            var index = this.references[referenceKey] || 0;
+            ++index;
+            this.references[referenceKey] = index;
+            return "#" + referenceKey + index;
+        },
+        sameReference: function (referenceKey) {
+            var index = this.references[referenceKey] || 0;
+            return "#" + referenceKey + index;
+        }
+    };
+
+    return function () {
+        var result = Object.create(base);
+        result.references = {};
+        return result;
+    };
+})();
+
+var generate = exports.generate = function (template, input) {
+    var context = createContext();
+    return engine.create(documentLevel.ccd, input, context);
+};
+
+exports.generateCCD = function (input) {
+    var data = input.data ? input.data : input;
+    data.identifiers = input.meta && input.meta.identifiers;
+    return generate(documentLevel.ccd, data);
+};
+
+},{"./lib/documentLevel":5,"./lib/engine":6}],3:[function(require,module,exports){
+"use strict";
+
 exports.keyExists = function (key) {
     return function (input) {
         return input.hasOwnProperty(key);
@@ -59,7 +102,7 @@ exports.propertyEquals = function (property, value) {
     };
 };
 
-},{}],3:[function(require,module,exports){
+},{}],4:[function(require,module,exports){
 "use strict";
 
 exports.key = function (overrideKeyValue) {
@@ -78,7 +121,7 @@ exports.dataKey = function (overrideKeyValue) {
     };
 };
 
-},{}],4:[function(require,module,exports){
+},{}],5:[function(require,module,exports){
 "use strict";
 
 var headerLevel = require('./headerLevel');
@@ -173,7 +216,7 @@ exports.ccd = {
     ]
 };
 
-},{"./contentModifier":3,"./fieldLevel":19,"./headerLevel":20,"./sectionLevel":22}],5:[function(require,module,exports){
+},{"./contentModifier":4,"./fieldLevel":20,"./headerLevel":21,"./sectionLevel":23}],6:[function(require,module,exports){
 "use strict";
 
 var xmlutil = require('./xmlutil');
@@ -310,7 +353,7 @@ exports.create = function (template, input, context) {
     return result;
 };
 
-},{"./xmlutil":1}],6:[function(require,module,exports){
+},{"./xmlutil":1}],7:[function(require,module,exports){
 "use strict";
 
 var fieldLevel = require('../fieldLevel');
@@ -476,7 +519,7 @@ var allergyProblemAct = exports.allergyProblemAct = {
     warning: "statusCode is not constant in spec"
 };
 
-},{"../condition":2,"../contentModifier":3,"../fieldLevel":19,"../leafLevel":21,"./sharedEntryLevel":16}],7:[function(require,module,exports){
+},{"../condition":3,"../contentModifier":4,"../fieldLevel":20,"../leafLevel":22,"./sharedEntryLevel":17}],8:[function(require,module,exports){
 "use strict";
 
 var fieldLevel = require('../fieldLevel');
@@ -555,7 +598,7 @@ exports.encounterActivities = {
     ]
 };
 
-},{"../contentModifier":3,"../fieldLevel":19,"../leafLevel":21,"./sharedEntryLevel":16}],8:[function(require,module,exports){
+},{"../contentModifier":4,"../fieldLevel":20,"../leafLevel":22,"./sharedEntryLevel":17}],9:[function(require,module,exports){
 "use strict";
 
 var fieldLevel = require('../fieldLevel');
@@ -729,7 +772,7 @@ exports.immunizationActivity = {
     ]
 };
 
-},{"../condition":2,"../contentModifier":3,"../fieldLevel":19,"../leafLevel":21,"./sharedEntryLevel":16}],9:[function(require,module,exports){
+},{"../condition":3,"../contentModifier":4,"../fieldLevel":20,"../leafLevel":22,"./sharedEntryLevel":17}],10:[function(require,module,exports){
 "use strict";
 
 var allergyEntryLevel = require("./allergyEntryLevel");
@@ -775,7 +818,7 @@ exports.resultOrganizer = resultEntryLevel.resultOrganizer;
 exports.socialHistoryObservation = socialHistoryEntryLevel.socialHistoryObservation;
 exports.smokingStatusObservation = socialHistoryEntryLevel.smokingStatusObservation;
 
-},{"./allergyEntryLevel":6,"./encounterEntryLevel":7,"./immunizationEntryLevel":8,"./medicationEntryLevel":10,"./payerEntryLevel":11,"./planOfCareEntryLevel":12,"./problemEntryLevel":13,"./procedureEntryLevel":14,"./resultEntryLevel":15,"./socialHistoryEntryLevel":17,"./vitalSignEntryLevel":18}],10:[function(require,module,exports){
+},{"./allergyEntryLevel":7,"./encounterEntryLevel":8,"./immunizationEntryLevel":9,"./medicationEntryLevel":11,"./payerEntryLevel":12,"./planOfCareEntryLevel":13,"./problemEntryLevel":14,"./procedureEntryLevel":15,"./resultEntryLevel":16,"./socialHistoryEntryLevel":18,"./vitalSignEntryLevel":19}],11:[function(require,module,exports){
 "use strict";
 
 var fieldLevel = require('../fieldLevel');
@@ -1031,7 +1074,7 @@ exports.medicationActivity = {
     ]
 };
 
-},{"../condition":2,"../contentModifier":3,"../fieldLevel":19,"../leafLevel":21,"./sharedEntryLevel":16}],11:[function(require,module,exports){
+},{"../condition":3,"../contentModifier":4,"../fieldLevel":20,"../leafLevel":22,"./sharedEntryLevel":17}],12:[function(require,module,exports){
 "use strict";
 
 var fieldLevel = require('../fieldLevel');
@@ -1196,7 +1239,7 @@ exports.coverageActivity = {
     ]
 };
 
-},{"../condition":2,"../contentModifier":3,"../fieldLevel":19,"../leafLevel":21}],12:[function(require,module,exports){
+},{"../condition":3,"../contentModifier":4,"../fieldLevel":20,"../leafLevel":22}],13:[function(require,module,exports){
 "use strict";
 
 var fieldLevel = require('../fieldLevel');
@@ -1355,7 +1398,7 @@ exports.planOfCareActivityInstructions = {
     }
 };
 
-},{"../condition":2,"../contentModifier":3,"../fieldLevel":19,"../leafLevel":21}],13:[function(require,module,exports){
+},{"../condition":3,"../contentModifier":4,"../fieldLevel":20,"../leafLevel":22}],14:[function(require,module,exports){
 "use strict";
 
 var fieldLevel = require('../fieldLevel');
@@ -1518,7 +1561,7 @@ exports.problemConcernAct = {
     ]
 };
 
-},{"../condition":2,"../contentModifier":3,"../fieldLevel":19,"../leafLevel":21,"./sharedEntryLevel":16}],14:[function(require,module,exports){
+},{"../condition":3,"../contentModifier":4,"../fieldLevel":20,"../leafLevel":22,"./sharedEntryLevel":17}],15:[function(require,module,exports){
 "use strict";
 
 var fieldLevel = require('../fieldLevel');
@@ -1736,7 +1779,7 @@ exports.procedureActivityObservation = {
     ]
 };
 
-},{"../condition":2,"../contentModifier":3,"../fieldLevel":19,"../leafLevel":21,"./sharedEntryLevel":16}],15:[function(require,module,exports){
+},{"../condition":3,"../contentModifier":4,"../fieldLevel":20,"../leafLevel":22,"./sharedEntryLevel":17}],16:[function(require,module,exports){
 "use strict";
 
 var fieldLevel = require('../fieldLevel');
@@ -1859,7 +1902,7 @@ exports.resultOrganizer = {
     ]
 };
 
-},{"../condition":2,"../contentModifier":3,"../fieldLevel":19,"../leafLevel":21}],16:[function(require,module,exports){
+},{"../condition":3,"../contentModifier":4,"../fieldLevel":20,"../leafLevel":22}],17:[function(require,module,exports){
 "use strict";
 
 var fieldLevel = require('../fieldLevel');
@@ -2087,7 +2130,7 @@ exports.instructions = {
     ]
 };
 
-},{"../condition":2,"../fieldLevel":19,"../leafLevel":21}],17:[function(require,module,exports){
+},{"../condition":3,"../fieldLevel":20,"../leafLevel":22}],18:[function(require,module,exports){
 "use strict";
 
 var fieldLevel = require('../fieldLevel');
@@ -2164,7 +2207,7 @@ exports.smokingStatusObservation = {
     }
 };
 
-},{"../contentModifier":3,"../fieldLevel":19,"../leafLevel":21}],18:[function(require,module,exports){
+},{"../contentModifier":4,"../fieldLevel":20,"../leafLevel":22}],19:[function(require,module,exports){
 "use strict";
 
 var fieldLevel = require('../fieldLevel');
@@ -2256,7 +2299,7 @@ exports.vitalSignsOrganizer = {
     ]
 };
 
-},{"../condition":2,"../contentModifier":3,"../fieldLevel":19,"../leafLevel":21}],19:[function(require,module,exports){
+},{"../condition":3,"../contentModifier":4,"../fieldLevel":20,"../leafLevel":22}],20:[function(require,module,exports){
 "use strict";
 
 var bbm = require("blue-button-meta");
@@ -2497,7 +2540,7 @@ exports.performer = {
     dataKey: "performer"
 };
 
-},{"./condition":2,"./contentModifier":3,"./leafLevel":21,"./translate":23,"blue-button-meta":24}],20:[function(require,module,exports){
+},{"./condition":3,"./contentModifier":4,"./leafLevel":22,"./translate":24,"blue-button-meta":25}],21:[function(require,module,exports){
 "use strict";
 
 var fieldLevel = require('./fieldLevel');
@@ -2641,7 +2684,7 @@ var recordTarget = exports.recordTarget = {
     dataKey: "demographics"
 };
 
-},{"./condition":2,"./contentModifier":3,"./fieldLevel":19,"./leafLevel":21}],21:[function(require,module,exports){
+},{"./condition":3,"./contentModifier":4,"./fieldLevel":20,"./leafLevel":22}],22:[function(require,module,exports){
 "use strict";
 
 var translate = require('./translate');
@@ -2714,7 +2757,7 @@ exports.sameReference = function (referenceKey) {
     };
 };
 
-},{"./translate":23}],22:[function(require,module,exports){
+},{"./translate":24}],23:[function(require,module,exports){
 "use strict";
 
 var fieldLevel = require("./fieldLevel");
@@ -3019,7 +3062,7 @@ exports.vitalSignsSectionEntriesOptional = {
     }]
 };
 
-},{"./contentModifier":3,"./entryLevel":9,"./fieldLevel":19}],23:[function(require,module,exports){
+},{"./contentModifier":4,"./entryLevel":10,"./fieldLevel":20}],24:[function(require,module,exports){
 "use strict";
 
 var moment = require("moment");
@@ -3167,7 +3210,7 @@ exports.name = function (input) {
     }
 };
 
-},{"blue-button-meta":24,"moment":34}],24:[function(require,module,exports){
+},{"blue-button-meta":25,"moment":35}],25:[function(require,module,exports){
 var CCDA = require("./lib/CCDA/index.js");
 
 //CCDA metadata stuff
@@ -3196,7 +3239,7 @@ meta.code_systems = require("./lib/code-systems");
 
 module.exports = exports = meta;
 
-},{"./lib/CCDA/index.js":27,"./lib/code-systems":32}],25:[function(require,module,exports){
+},{"./lib/CCDA/index.js":28,"./lib/code-systems":33}],26:[function(require,module,exports){
 var clinicalstatements = {
     "AdmissionMedication": "2.16.840.1.113883.10.20.22.4.36",
     "AdvanceDirectiveObservation": "2.16.840.1.113883.10.20.22.4.48",
@@ -3326,7 +3369,7 @@ var clinicalstatements_r1 = {
 module.exports.clinicalstatements = clinicalstatements;
 module.exports.clinicalstatements_r1 = clinicalstatements_r1;
 
-},{}],26:[function(require,module,exports){
+},{}],27:[function(require,module,exports){
 var codeSystems = {
     "LOINC": ["2.16.840.1.113883.6.1", "8716-3"],
     "SNOMED CT": ["2.16.840.1.113883.6.96", "46680005"],
@@ -4108,7 +4151,7 @@ var sections_entries_codes = {
 module.exports.codeSystems = codeSystems;
 module.exports.sections_entries_codes = sections_entries_codes;
 
-},{}],27:[function(require,module,exports){
+},{}],28:[function(require,module,exports){
 var templates = require("./templates.js");
 var sections = require("./sections.js");
 var statements = require("./clinicalstatements.js");
@@ -4213,7 +4256,7 @@ var CCDA = {
 //and http://cdatools.org/ClinicalStatementMatrix.html
 
 module.exports = exports = CCDA;
-},{"./clinicalstatements.js":25,"./code-systems.js":26,"./sections-constraints.js":28,"./sections.js":29,"./templates-constraints.js":30,"./templates.js":31}],28:[function(require,module,exports){
+},{"./clinicalstatements.js":26,"./code-systems.js":27,"./sections-constraints.js":29,"./sections.js":30,"./templates-constraints.js":31,"./templates.js":32}],29:[function(require,module,exports){
 var sectionsconstraints = {
     "VitalSignsSection": {
         "full": {
@@ -5211,7 +5254,7 @@ var sectionsconstraints = {
 module.exports = exports = sectionsconstraints;
 
 
-},{}],29:[function(require,module,exports){
+},{}],30:[function(require,module,exports){
 var sections = {
     "AdvanceDirectivesSection": "2.16.840.1.113883.10.20.22.2.21.1",
     "AdvanceDirectivesSectionEntriesOptional": "2.16.840.1.113883.10.20.22.2.21",
@@ -5307,7 +5350,7 @@ var sections_r1 = {
 module.exports.sections = sections;
 module.exports.sections_r1 = sections_r1;
 
-},{}],30:[function(require,module,exports){
+},{}],31:[function(require,module,exports){
 var templatesconstraints = {
     "ContinuityOfCareDocument": {
         "may": {
@@ -6095,7 +6138,7 @@ var templatesconstraints = {
 module.exports = exports = templatesconstraints;
 
 
-},{}],31:[function(require,module,exports){
+},{}],32:[function(require,module,exports){
 var templates = {
     "ConsultationNote": "2.16.840.1.113883.10.20.22.1.4",
     "ContinuityOfCareDocument": "2.16.840.1.113883.10.20.22.1.2",
@@ -6111,7 +6154,7 @@ var templates = {
 module.exports = exports = templates;
 
 
-},{}],32:[function(require,module,exports){
+},{}],33:[function(require,module,exports){
 "use strict";
 
 var oids = require("./oids");
@@ -6184,7 +6227,7 @@ exports.findFromName = (function() {
     };
 })();
 
-},{"./oids":33}],33:[function(require,module,exports){
+},{"./oids":34}],34:[function(require,module,exports){
 module.exports = OIDs = {
     "2.16.840.1.113883.11.20.9.19": {
         name: "Problem Status",
@@ -7647,7 +7690,7 @@ module.exports = OIDs = {
     }
 };
 
-},{}],34:[function(require,module,exports){
+},{}],35:[function(require,module,exports){
 (function (global){
 //! moment.js
 //! version : 2.8.4
@@ -10587,47 +10630,4 @@ module.exports = OIDs = {
 }).call(this);
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{}],"blue-button-generate":[function(require,module,exports){
-"use strict";
-
-/*
-This script converts CCDA data in JSON format (originally generated from a Continuity of Care Document (CCD) in 
-standard XML/CCDA format) back to XML/CCDA format.
-*/
-
-var engine = require('./lib/engine');
-var documentLevel = require('./lib/documentLevel');
-
-var createContext = (function () {
-    var base = {
-        nextReference: function (referenceKey) {
-            var index = this.references[referenceKey] || 0;
-            ++index;
-            this.references[referenceKey] = index;
-            return "#" + referenceKey + index;
-        },
-        sameReference: function (referenceKey) {
-            var index = this.references[referenceKey] || 0;
-            return "#" + referenceKey + index;
-        }
-    };
-
-    return function () {
-        var result = Object.create(base);
-        result.references = {};
-        return result;
-    };
-})();
-
-var generate = exports.generate = function (template, input) {
-    var context = createContext();
-    return engine.create(documentLevel.ccd, input, context);
-};
-
-exports.generateCCD = function (input) {
-    var data = input.data ? input.data : input;
-    data.identifiers = input.meta && input.meta.identifiers;
-    return generate(documentLevel.ccd, data);
-};
-
-},{"./lib/documentLevel":4,"./lib/engine":5}]},{},["blue-button-generate"]);
+},{}]},{},[2]);
