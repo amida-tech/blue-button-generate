@@ -3377,8 +3377,8 @@ var codeSystems = {
     "ActCode": ["2.16.840.1.113883.5.4"],
     "CPT-4": ["2.16.840.1.113883.6.12"],
     "CVX": ["2.16.840.1.113883.12.292"],
-    "HL7 Role" : ["2.16.840.1.113883.5.111"],
-    "HL7 RoleCode" : ["2.16.840.1.113883.5.110"],
+    "HL7 Role": ["2.16.840.1.113883.5.111"],
+    "HL7 RoleCode": ["2.16.840.1.113883.5.110"],
     "UNII": ["2.16.840.1.113883.4.9"],
     "Observation Interpretation": ["2.16.840.1.113883.1.11.78"],
     "CPT": ["2.16.840.1.113883.6.12"],
@@ -4162,100 +4162,101 @@ var codeSystems = require("./code-systems.js");
 
 //General Header Constraints
 var CCDA = {
-	"document" : {
-		"name": "CCDA",
-		"templateId":"2.16.840.1.113883.10.20.22.1.1"
-		},
-	"templates":templates,
-	"sections":sections.sections,
-	"sections_r1": sections.sections_r1,
-	"statements":statements.clinicalstatements,
-	"statements_r1":statements.clinicalstatements_r1,
-	"constraints": {
-		"sections": sectionsconstraints,
-		"templates": templatesconstraints
-	},
-	"codeSystems": codeSystems.codeSystems,
-	"sections_entries_codes": codeSystems.sections_entries_codes
+    "document": {
+        "name": "CCDA",
+        "templateId": "2.16.840.1.113883.10.20.22.1.1"
+    },
+    "templates": templates,
+    "sections": sections.sections,
+    "sections_r1": sections.sections_r1,
+    "statements": statements.clinicalstatements,
+    "statements_r1": statements.clinicalstatements_r1,
+    "constraints": {
+        "sections": sectionsconstraints,
+        "templates": templatesconstraints
+    },
+    "codeSystems": codeSystems.codeSystems,
+    "sections_entries_codes": codeSystems.sections_entries_codes
 
-/*
-	,
-//DOCUMENT-LEVEL TEMPLATES
-"templates":[
-	{
-		"name":"Consultation Note",
-		"templateId":"2.16.840.1.113883.10.20.22.1.4"
-	},
-	{
-		"name":"Continuity Of Care Document",
-		"templateId":"2.16.840.1.113883.10.20.22.1.2"
-	},
-	{
-		"name":"Diagnostic Imaging Report",
-		"templateId":"2.16.840.1.113883.10.20.22.1.5"
-	},
-	{
-		"name":"Discharge Summary",
-		"templateId":"2.16.840.1.113883.10.20.22.1.8"
-	},
-	{
-		"name":"History And Physical Note",
-		"templateId":"2.16.840.1.113883.10.20.22.1.3"
-	},
-	{
-		"name":"Operative Note",
-		"templateId":"2.16.840.1.113883.10.20.22.1.7"
-	},
-	{
-		"name":"Procedure Note",
-		"templateId":"2.16.840.1.113883.10.20.22.1.6"
-	},
-	{
-		"name":"Progress Note",
-		"templateId":"2.16.840.1.113883.10.20.22.1.9"
-	},
-	{
-		"name":"Unstructured Document",
-		"templateId":"2.16.840.1.113883.10.20.21.1.10"
-	},
-],
-//Sections
-"sections":[
-	{"name": "Allergies",
-		"templateIds": ['2.16.840.1.113883.10.20.22.2.6', '2.16.840.1.113883.10.20.22.2.6.1']
-	},
-	{"name": "Encounters",
-		"templateIds": ['2.16.840.1.113883.10.20.22.2.22', '2.16.840.1.113883.10.20.22.2.22.1']
-	},
-	{"name": "Immunizations",
-		"templateIds": ["2.16.840.1.113883.10.20.22.2.2", "2.16.840.1.113883.10.20.22.2.2.1"]
-	},
-	{"name": "Medications",
-		"templateIds": ["2.16.840.1.113883.10.20.22.2.1", "2.16.840.1.113883.10.20.22.2.1.1"]
-	},
-	{"name": "Problems",
-		"templateIds": ["2.16.840.1.113883.10.20.22.2.5.1"]
-	},
-	{"name": "Procedures",
-		"templateIds": ['2.16.840.1.113883.10.20.22.2.7', '2.16.840.1.113883.10.20.22.2.7.1']
-	},
-	{"name": "Results",
-		"templateIds": ['2.16.840.1.113883.10.20.22.2.3', '2.16.840.1.113883.10.20.22.2.3.1']
-	},
-	{"name": "Vital Signs",
-		"templateIds": ["2.16.840.1.113883.10.20.22.2.4","2.16.840.1.113883.10.20.22.2.4.1"]
-	},
-	{"name": "Social History",
-		"templateIds": ["2.16.840.1.113883.10.20.22.2.17"]
-	}		
-]
-*/
+    /*
+		,
+    //DOCUMENT-LEVEL TEMPLATES
+    "templates":[
+		{
+			"name":"Consultation Note",
+			"templateId":"2.16.840.1.113883.10.20.22.1.4"
+		},
+		{
+			"name":"Continuity Of Care Document",
+			"templateId":"2.16.840.1.113883.10.20.22.1.2"
+		},
+		{
+			"name":"Diagnostic Imaging Report",
+			"templateId":"2.16.840.1.113883.10.20.22.1.5"
+		},
+		{
+			"name":"Discharge Summary",
+			"templateId":"2.16.840.1.113883.10.20.22.1.8"
+		},
+		{
+			"name":"History And Physical Note",
+			"templateId":"2.16.840.1.113883.10.20.22.1.3"
+		},
+		{
+			"name":"Operative Note",
+			"templateId":"2.16.840.1.113883.10.20.22.1.7"
+		},
+		{
+			"name":"Procedure Note",
+			"templateId":"2.16.840.1.113883.10.20.22.1.6"
+		},
+		{
+			"name":"Progress Note",
+			"templateId":"2.16.840.1.113883.10.20.22.1.9"
+		},
+		{
+			"name":"Unstructured Document",
+			"templateId":"2.16.840.1.113883.10.20.21.1.10"
+		},
+    ],
+    //Sections
+    "sections":[
+		{"name": "Allergies",
+			"templateIds": ['2.16.840.1.113883.10.20.22.2.6', '2.16.840.1.113883.10.20.22.2.6.1']
+		},
+		{"name": "Encounters",
+			"templateIds": ['2.16.840.1.113883.10.20.22.2.22', '2.16.840.1.113883.10.20.22.2.22.1']
+		},
+		{"name": "Immunizations",
+			"templateIds": ["2.16.840.1.113883.10.20.22.2.2", "2.16.840.1.113883.10.20.22.2.2.1"]
+		},
+		{"name": "Medications",
+			"templateIds": ["2.16.840.1.113883.10.20.22.2.1", "2.16.840.1.113883.10.20.22.2.1.1"]
+		},
+		{"name": "Problems",
+			"templateIds": ["2.16.840.1.113883.10.20.22.2.5.1"]
+		},
+		{"name": "Procedures",
+			"templateIds": ['2.16.840.1.113883.10.20.22.2.7', '2.16.840.1.113883.10.20.22.2.7.1']
+		},
+		{"name": "Results",
+			"templateIds": ['2.16.840.1.113883.10.20.22.2.3', '2.16.840.1.113883.10.20.22.2.3.1']
+		},
+		{"name": "Vital Signs",
+			"templateIds": ["2.16.840.1.113883.10.20.22.2.4","2.16.840.1.113883.10.20.22.2.4.1"]
+		},
+		{"name": "Social History",
+			"templateIds": ["2.16.840.1.113883.10.20.22.2.17"]
+		}		
+    ]
+    */
 };
 
 //Good source http://cdatools.org/SectionMatrix.html
 //and http://cdatools.org/ClinicalStatementMatrix.html
 
 module.exports = exports = CCDA;
+
 },{"./clinicalstatements.js":26,"./code-systems.js":27,"./sections-constraints.js":29,"./sections.js":30,"./templates-constraints.js":31,"./templates.js":32}],29:[function(require,module,exports){
 var sectionsconstraints = {
     "VitalSignsSection": {
@@ -5253,7 +5254,6 @@ var sectionsconstraints = {
 
 module.exports = exports = sectionsconstraints;
 
-
 },{}],30:[function(require,module,exports){
 var sections = {
     "AdvanceDirectivesSection": "2.16.840.1.113883.10.20.22.2.21.1",
@@ -5329,22 +5329,22 @@ var sections = {
 };
 
 var sections_r1 = {
-    "AdvanceDirectivesSection":"2.16.840.1.113883.10.20.1.1",
-    "AlertsSection":"2.16.840.1.113883.10.20.1.2",
-    "EncountersSection":"2.16.840.1.113883.10.20.1.3",
-    "FamilyHistorySection":"2.16.840.1.113883.10.20.1.4",
-    "FunctionalStatusSection":"2.16.840.1.113883.10.20.1.5",
-    "ImmunizationsSection":"2.16.840.1.113883.10.20.1.6",
-    "MedicalEquipmentSection":"2.16.840.1.113883.10.20.1.7",
-    "MedicationsSection":"2.16.840.1.113883.10.20.1.8",
-    "PayersSection":"2.16.840.1.113883.10.20.1.9",
-    "PlanOfCareSection":"2.16.840.1.113883.10.20.1.10",
-    "ProblemSection":"2.16.840.1.113883.10.20.1.11",
-    "ProceduresSection":"2.16.840.1.113883.10.20.1.12",
-    "PurposeSection":"2.16.840.1.113883.10.20.1.13",
-    "ResultsSection":"2.16.840.1.113883.10.20.1.14",
-    "SocialHistorySection":"2.16.840.1.113883.10.20.1.15",
-    "VitalSignsSection":"2.16.840.1.113883.10.20.1.16"
+    "AdvanceDirectivesSection": "2.16.840.1.113883.10.20.1.1",
+    "AlertsSection": "2.16.840.1.113883.10.20.1.2",
+    "EncountersSection": "2.16.840.1.113883.10.20.1.3",
+    "FamilyHistorySection": "2.16.840.1.113883.10.20.1.4",
+    "FunctionalStatusSection": "2.16.840.1.113883.10.20.1.5",
+    "ImmunizationsSection": "2.16.840.1.113883.10.20.1.6",
+    "MedicalEquipmentSection": "2.16.840.1.113883.10.20.1.7",
+    "MedicationsSection": "2.16.840.1.113883.10.20.1.8",
+    "PayersSection": "2.16.840.1.113883.10.20.1.9",
+    "PlanOfCareSection": "2.16.840.1.113883.10.20.1.10",
+    "ProblemSection": "2.16.840.1.113883.10.20.1.11",
+    "ProceduresSection": "2.16.840.1.113883.10.20.1.12",
+    "PurposeSection": "2.16.840.1.113883.10.20.1.13",
+    "ResultsSection": "2.16.840.1.113883.10.20.1.14",
+    "SocialHistorySection": "2.16.840.1.113883.10.20.1.15",
+    "VitalSignsSection": "2.16.840.1.113883.10.20.1.16"
 };
 
 module.exports.sections = sections;
@@ -6137,7 +6137,6 @@ var templatesconstraints = {
 
 module.exports = exports = templatesconstraints;
 
-
 },{}],32:[function(require,module,exports){
 var templates = {
     "ConsultationNote": "2.16.840.1.113883.10.20.22.1.4",
@@ -6153,7 +6152,6 @@ var templates = {
 
 module.exports = exports = templates;
 
-
 },{}],33:[function(require,module,exports){
 "use strict";
 
@@ -6163,15 +6161,15 @@ var codeSystem = {
     codeDisplayName: function (code) {
         return this.cs.table && this.cs.table[code];
     },
-    displayNameCode: (function() {
+    displayNameCode: (function () {
         var reverseTables = {};
 
-        return function(name) {
+        return function (name) {
             var oid = this.oid;
             var reverseTable = reverseTables[oid];
-            if (! reverseTable) {
-                var table  = this.cs.table || {};
-                reverseTable = Object.keys(table).reduce(function(r, code) {
+            if (!reverseTable) {
+                var table = this.cs.table || {};
+                reverseTable = Object.keys(table).reduce(function (r, code) {
                     var name = table[code];
                     r[name] = code;
                     return r;
@@ -6184,7 +6182,7 @@ var codeSystem = {
     name: function () {
         return this.cs.name;
     },
-    systemId: function() {
+    systemId: function () {
         var systemOID = this.cs.code_system;
         if (systemOID) {
             return {
@@ -6212,12 +6210,12 @@ exports.find = function (oid) {
     }
 };
 
-exports.findFromName = (function() {
+exports.findFromName = (function () {
     var nameIndex;
 
-    return function(name) {
-        if (! nameIndex) {
-            nameIndex = Object.keys(oids).reduce(function(r, oid) {
+    return function (name) {
+        if (!nameIndex) {
+            nameIndex = Object.keys(oids).reduce(function (r, oid) {
                 var n = oids[oid].name;
                 r[n] = oid;
                 return r;
@@ -6251,10 +6249,6 @@ module.exports = OIDs = {
             "VACSAF": "Vaccine safety concerns"
         }
     },
-    "2.16.840.1.113883.6.14": {
-        name: "HCFA Procedure Codes (HCPCS)",
-        uri: "http://www.cms.gov/Medicare/Coding/MedHCPCSGenInfo/index.html?redirect=/medhcpcsgeninfo/"
-    },
     "2.16.840.1.113883.6.103": {
         name: "ICD-9-CM",
         uri: "http://www.cms.gov/medicare-coverage-database/staticpages/icd-9-code-lookup.aspx"
@@ -6282,10 +6276,6 @@ module.exports = OIDs = {
         name: "multum-drug-id",
         uri: "http://multum-drug-id-look-me-up#"
     },
-    "2.16.840.1.113883.3.26.1.1": {
-        name: "NCI Thesaurus",
-        uri: "http://nci-thesaurus-look-me-up#"
-    },
     "2.16.840.1.113883.6.59": {
         name: "CVX Vaccine",
         uri: "http://www2a.cdc.gov/vaccines/iis/iisstandards/vaccines.asp?rpt=cvx&code="
@@ -6293,10 +6283,6 @@ module.exports = OIDs = {
     "2.16.840.1.113883.5.112": {
         name: "Route Code",
         uri: "http://hl7.org/codes/RouteCode#"
-    },
-    "2.16.840.1.113883.6.238": {
-        name: "Race and Ethnicity - CDC",
-        uri: "http://phinvads.cdc.gov/vads/ViewCodeSystemConcept.action?oid=2.16.840.1.113883.6.238&code="
     },
     "2.16.840.1.113883.6.255.1336": {
         name: "InsuranceType Code"
@@ -6605,6 +6591,7 @@ module.exports = OIDs = {
     },
     "2.16.840.1.113883.6.238": {
         name: "Race and Ethnicity - CDC",
+        uri: "http://phinvads.cdc.gov/vads/ViewCodeSystemConcept.action?oid=2.16.840.1.113883.6.238&code=",
         table: {
             "1002-5": "American Indian or Alaska Native",
             "2028-9": "Asian",
@@ -7532,6 +7519,7 @@ module.exports = OIDs = {
     },
     "2.16.840.1.113883.3.26.1.1": {
         name: "Medication Route FDA",
+        uri: "http://nci-thesaurus-look-me-up#",
         table: {
             "C38192": "AURICULAR (OTIC)",
             "C38193": "BUCCAL",
@@ -7680,7 +7668,7 @@ module.exports = OIDs = {
     },
     "2.16.840.1.113883.6.14": {
         name: "HCPCS",
-        uri: ""
+        uri: "http://www.cms.gov/Medicare/Coding/MedHCPCSGenInfo/index.html?redirect=/medhcpcsgeninfo/"
     },
     "2.16.840.1.113883.3.88.12.3221.8.9": {
         name: "Body Site Value Set"
