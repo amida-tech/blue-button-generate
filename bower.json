@@ -4,6 +4,6 @@
     "license": "Apache-2.0",
     "ignore": ["**/*", "!dist/*", "!bower.json", "!package.json", "!LICENSE"],
     "devDependencies": {
-        "blue-button": "~1.3.0"
+        "blue-button": "~1.3.1"
     }
 }
