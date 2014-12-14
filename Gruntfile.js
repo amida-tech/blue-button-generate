@@ -118,7 +118,7 @@ module.exports = function (grunt) {
                 dest: 'dist/<%=pkg.name%>.js',
                 options: {
                     external: ['blue-button', 'blue-button-xml'],
-                    alias: ["<%=pkg.main%>:<%=pkg.name%>"]
+                    alias: [__dirname + "/index.js:<%=pkg.name%>"]
                 }
             },
             tests: {
