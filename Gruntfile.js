@@ -134,6 +134,9 @@ module.exports = function (grunt) {
             "gen-json": {
                 "src": ['test/fixtures/files/ccda_xml/*', 'test/fixtures/files/cms_txt/*'],
                 "dest": 'test/fixtures/json',
+                options: {
+                    validate: true
+                }
             },
             "re-gen-json": {
                 "src": ['test/fixtures/files/generated/json_to_xml/*'],
