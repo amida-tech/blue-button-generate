@@ -2525,7 +2525,8 @@ exports.author = {
                 id, {
                     key: "assignedPerson",
                     content: usRealmName
-                }
+                },
+                representedOrganization
             ]
         }
     ],
