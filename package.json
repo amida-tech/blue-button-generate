@@ -1,6 +1,6 @@
 {
   "name": "blue-button-generate",
-  "version": "1.4.0-beta.5",
+  "version": "1.4.0-beta.6",
   "description": "Blue Button CCDA Generator.",
   "main": "./index.js",
   "browser": {
@@ -11,7 +11,6 @@
     "lib": "lib"
   },
   "scripts": {
-    "prepublish": "echo \"Prepublish Build script should go here.\"",
     "test": "grunt test"
   },
   "author": "Dmitry Kachaev <dmitry@amida-tech.com>",
