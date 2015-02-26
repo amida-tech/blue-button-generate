@@ -1,6 +1,6 @@
 {
   "name": "blue-button-generate",
-  "version": "1.4.0-beta.1",
+  "version": "1.4.0-beta.5",
   "description": "Blue Button CCDA Generator.",
   "main": "./index.js",
   "browser": {

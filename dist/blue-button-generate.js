@@ -145,7 +145,8 @@ exports.ccd = {
                 value: "1"
             }
         },
-        headerLevel.recordTarget, {
+        headerLevel.recordTarget,
+        headerLevel.providers, {
             key: "component",
             content: {
                 key: "structuredBody",
@@ -2629,6 +2630,46 @@ var patient = exports.patient = {
     ]
 };
 
+var provider = exports.provider = {
+    key: "performer",
+    attributes: {
+        typeCode: "PRF"
+    },
+    content: {
+        key: "assignedEntity",
+        content: [{
+                key: "code",
+                attributes: leafLevel.code,
+                dataKey: "type"
+            },
+            [fieldLevel.effectiveTime, key("time"), dataKey("date_time")], {
+                key: "assignedPerson",
+                content: [{
+                    key: "name",
+                    content: [{
+                        key: "given",
+                        text: leafLevel.inputProperty("first")
+                    }, {
+                        key: "family",
+                        text: leafLevel.inputProperty("last")
+                    }],
+                    dataKey: "name"
+                }, {
+                    key: "telecom",
+                    attributes: [{
+                        use: "WP",
+                        value: function (input) {
+                            return input.value.number;
+                        }
+                    }],
+                    dataKey: "phone"
+                }]
+            }
+        ]
+    },
+    dataKey: "providers"
+};
+
 var recordTarget = exports.recordTarget = {
     key: "recordTarget",
     content: {
@@ -2637,6 +2678,23 @@ var recordTarget = exports.recordTarget = {
             fieldLevel.id, [fieldLevel.usRealmAddress, dataKey("addresses")],
             fieldLevel.telecom,
             patient
+        ]
+    },
+    dataKey: "demographics"
+};
+
+var providers = exports.providers = {
+    key: "documentationOf",
+    attributes: {
+        typeCode: "DOC"
+    },
+    content: {
+        key: "serviceEvent",
+        attributes: {
+            classCode: "PCPR"
+        },
+        content: [
+            provider
         ]
     },
     dataKey: "demographics"
