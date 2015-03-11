@@ -34,7 +34,7 @@
     "moment": "~2.8.4"
   },
   "devDependencies": {
-    "blue-button": "^1.4.0",
+    "blue-button": "git://github.com/amida-tech/blue-button.git#v1.4.1",
     "brfs": "~1.2.0",
     "chai": "~1.10.0",
     "coveralls": "~2.10.0",

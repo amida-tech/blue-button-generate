@@ -330,9 +330,6 @@ module.exports = [{
     xpath: t.resultObs + '/h:performer',
     action: "removeNode"
 }, {
-    xpath: t.resultObs + '/h:value[@xsi:type="ST"]',
-    action: "removeNode"
-}, {
     xpath: t.resultObs + '/h:value[@value]',
     action: "removeZeros"
 }, {

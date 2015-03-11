@@ -88,7 +88,7 @@ exports.keyExists = function (key) {
 
 exports.eitherKeyExists = function (key0, key1, key2, key3) {
     return function (input) {
-        return input[key0] || input[key1] || input[key2] || input[key3];
+        return input.hasOwnProperty(key0) || input.hasOwnProperty(key1) || input.hasOwnProperty(key2) || input.hasOwnProperty(key3);
     };
 };
 
@@ -1809,11 +1809,14 @@ var resultObservation = {
         fieldLevel.statusCodeCompleted, [fieldLevel.effectiveTime, required], {
             key: "value",
             attributes: {
-                "xsi:type": "PQ",
+                "xsi:type": function (input) {
+                    return input.text ? "ST" : "PQ";
+                },
                 value: leafLevel.inputProperty("value"),
                 unit: leafLevel.inputProperty("unit")
             },
-            existsWhen: condition.keyExists("value"),
+            text: leafLevel.inputProperty("text"),
+            existsWhen: condition.eitherKeyExists("value", "text"),
             required: true
         }, {
             key: "interpretationCode",
@@ -16973,11 +16976,6 @@ describe('parse generate parse generate', function () {
 
         delete result.errors;
         delete result2.errors;
-        result.data.results.forEach(function (entry) {
-            entry.results.forEach(function (r) {
-                delete r.text;
-            });
-        });
 
         assert.deepEqual(result2, result);
     });
