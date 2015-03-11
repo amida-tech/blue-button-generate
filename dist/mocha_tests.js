@@ -554,6 +554,7 @@ exports.encounterActivities = {
     },
     content: [
         fieldLevel.templateId("2.16.840.1.113883.10.20.22.4.49"),
+        fieldLevel.uniqueId,
         fieldLevel.id, {
             key: "code",
             attributes: leafLevel.code,
@@ -724,6 +725,7 @@ exports.immunizationActivity = {
     }, immunizationActivityAttributes],
     content: [
         fieldLevel.templateId("2.16.840.1.113883.10.20.22.4.52"),
+        fieldLevel.uniqueId,
         fieldLevel.id,
         fieldLevel.text(leafLevel.nextReference("immunization")),
         fieldLevel.statusCodeCompleted, [fieldLevel.effectiveTime, required], {
@@ -982,6 +984,7 @@ exports.medicationActivity = {
     },
     content: [
         fieldLevel.templateId("2.16.840.1.113883.10.20.22.4.16"),
+        fieldLevel.uniqueId,
         fieldLevel.id, {
             key: "text",
             text: leafLevel.input,
@@ -1238,6 +1241,7 @@ exports.coverageActivity = {
     },
     content: [
         fieldLevel.templateId("2.16.840.1.113883.10.20.22.4.60"),
+        fieldLevel.uniqueId,
         fieldLevel.id,
         fieldLevel.templateCode("CoverageActivity"),
         fieldLevel.statusCodeCompleted, {
@@ -1273,6 +1277,7 @@ exports.planOfCareActivityAct = {
     },
     content: [
         fieldLevel.templateId("2.16.840.1.113883.10.20.22.4.39"),
+        fieldLevel.uniqueId,
         fieldLevel.id, {
             key: "code",
             attributes: leafLevel.code,
@@ -1294,6 +1299,7 @@ exports.planOfCareActivityObservation = {
     },
     content: [
         fieldLevel.templateId("2.16.840.1.113883.10.20.22.4.44"),
+        fieldLevel.uniqueId,
         fieldLevel.id, {
             key: "code",
             attributes: leafLevel.code,
@@ -1315,6 +1321,7 @@ exports.planOfCareActivityProcedure = {
     },
     content: [
         fieldLevel.templateId("2.16.840.1.113883.10.20.22.4.41"),
+        fieldLevel.uniqueId,
         fieldLevel.id, {
             key: "code",
             attributes: leafLevel.code,
@@ -1336,6 +1343,7 @@ exports.planOfCareActivityEncounter = {
     },
     content: [
         fieldLevel.templateId("2.16.840.1.113883.10.20.22.4.40"),
+        fieldLevel.uniqueId,
         fieldLevel.id, {
             key: "code",
             attributes: leafLevel.code,
@@ -1357,6 +1365,7 @@ exports.planOfCareActivitySubstanceAdministration = {
     },
     content: [
         fieldLevel.templateId("2.16.840.1.113883.10.20.22.4.42"),
+        fieldLevel.uniqueId,
         fieldLevel.id, {
             key: "code",
             attributes: leafLevel.code,
@@ -1378,6 +1387,7 @@ exports.planOfCareActivitySupply = {
     },
     content: [
         fieldLevel.templateId("2.16.840.1.113883.10.20.22.4.43"),
+        fieldLevel.uniqueId,
         fieldLevel.id, {
             key: "code",
             attributes: leafLevel.code,
@@ -1399,6 +1409,7 @@ exports.planOfCareActivityInstructions = {
     },
     content: [
         fieldLevel.templateId("2.16.840.1.113883.10.20.22.4.20"),
+        fieldLevel.uniqueId,
         fieldLevel.id, {
             key: "code",
             attributes: leafLevel.code,
@@ -1552,7 +1563,8 @@ exports.problemConcernAct = {
     },
     content: [
         fieldLevel.templateId("2.16.840.1.113883.10.20.22.4.3"),
-        fieldLevel.templateCode("ProblemConcernAct"), {
+        fieldLevel.templateCode("ProblemConcernAct"),
+        fieldLevel.uniqueId, {
             key: "id",
             attributes: {
                 root: leafLevel.inputProperty("identifier"),
@@ -1597,6 +1609,7 @@ exports.procedureActivityAct = {
     },
     content: [
         fieldLevel.templateId("2.16.840.1.113883.10.20.22.4.12"),
+        fieldLevel.uniqueId,
         fieldLevel.id, {
             key: "code",
             attributes: leafLevel.code,
@@ -1654,6 +1667,7 @@ exports.procedureActivityProcedure = {
     },
     content: [
         fieldLevel.templateId("2.16.840.1.113883.10.20.22.4.14"),
+        fieldLevel.uniqueId,
         fieldLevel.id, {
             key: "code",
             attributes: leafLevel.code,
@@ -1738,6 +1752,7 @@ exports.procedureActivityObservation = {
     },
     content: [
         fieldLevel.templateId("2.16.840.1.113883.10.20.22.4.13"),
+        fieldLevel.uniqueId,
         fieldLevel.id, {
             key: "code",
             attributes: leafLevel.code,
@@ -1893,6 +1908,7 @@ exports.resultOrganizer = {
     },
     content: [
         fieldLevel.templateId("2.16.840.1.113883.10.20.22.4.1"),
+        fieldLevel.uniqueId,
         fieldLevel.id, {
             key: "code",
             attributes: leafLevel.code,
@@ -2165,6 +2181,7 @@ exports.socialHistoryObservation = {
     },
     content: [
         fieldLevel.templateId("2.16.840.1.113883.10.20.22.4.38"),
+        fieldLevel.uniqueId,
         fieldLevel.id, {
             key: "code",
             attributes: leafLevel.code,
@@ -2206,6 +2223,7 @@ exports.smokingStatusObservation = {
     },
     content: [
         fieldLevel.templateId("2.16.840.1.113883.10.20.22.4.78"),
+        fieldLevel.uniqueId,
         fieldLevel.id,
         fieldLevel.templateCode("SmokingStatusObservation"),
         fieldLevel.statusCodeCompleted, [fieldLevel.effectiveTime, required], {
@@ -2298,6 +2316,7 @@ exports.vitalSignsOrganizer = {
     },
     content: [
         fieldLevel.templateId("2.16.840.1.113883.10.20.22.4.26"),
+        fieldLevel.uniqueId,
         fieldLevel.id,
         fieldLevel.templateCode("VitalSignsOrganizer"), {
             key: "statusCode",
