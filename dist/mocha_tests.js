@@ -2882,12 +2882,76 @@ exports.deepInputProperty = function (deepProperty, defaultValue) {
 },{"./translate":24,"blue-button-util":35}],23:[function(require,module,exports){
 "use strict";
 
+var bbu = require("blue-button-util");
+
 var fieldLevel = require("./fieldLevel");
 var entryLevel = require("./entryLevel");
 var leafLevel = require('./leafLevel');
 var contentModifier = require("./contentModifier");
 
 var required = contentModifier.required;
+var bbud = bbu.datetime;
+var bbuo = bbu.object;
+
+var getText = function (topArrayKey, headers, values) {
+    var result = {
+        key: "text",
+        content: [{
+            key: "table",
+            attributes: {
+                border: "1",
+                width: "100%"
+            },
+            content: [{
+                key: "thead",
+                content: [{
+                    key: "tr",
+                    content: []
+                }]
+            }, {
+                key: "tbody",
+                content: [{
+                    key: "tr",
+                    content: [],
+                    dataKey: topArrayKey
+                }]
+            }]
+        }]
+    };
+    var headerTarget = result.content[0].content[0].content[0].content;
+    headers.forEach(function (header) {
+        var element = {
+            key: "th",
+            text: header
+        };
+        headerTarget.push(element);
+    });
+    var valueTarget = result.content[0].content[1].content[0].content;
+    values.forEach(function (value) {
+        var data;
+        if (typeof value !== 'function') {
+            data = leafLevel.deepInputProperty(value, "");
+        } else {
+            data = value;
+        }
+
+        var element = {
+            key: "td",
+            text: data
+        };
+        valueTarget.push(element);
+    });
+    return result;
+};
+
+var alllergiesTextHeaders = ["Substance", "Overall Severity", "Reaction", "Reaction Severity", "Status"];
+var allergiesTextRow = [
+    "observation.allergen.name",
+    "observation.severity.code.name",
+    "observation.reactions.0.reaction.name",
+    "observation.reactions.0.severity.code.name",
+    "observation.status.name"
+];
 
 exports.allergiesSectionEntriesRequired = {
     key: "component",
@@ -2897,60 +2961,8 @@ exports.allergiesSectionEntriesRequired = {
             fieldLevel.templateId("2.16.840.1.113883.10.20.22.2.6"),
             fieldLevel.templateId("2.16.840.1.113883.10.20.22.2.6.1"),
             fieldLevel.templateCode("AllergiesSection"),
-            fieldLevel.templateTitle("AllergiesSection"), {
-                key: "text",
-                content: [{
-                    key: "table",
-                    attributes: {
-                        border: "1",
-                        width: "100%"
-                    },
-                    content: [{
-                        key: "thead",
-                        content: [{
-                            key: "tr",
-                            content: [{
-                                key: "th",
-                                text: "Substance"
-                            }, {
-                                key: "th",
-                                text: "Overall Severity"
-                            }, {
-                                key: "th",
-                                text: "Reaction"
-                            }, {
-                                key: "th",
-                                text: "Reaction Severity",
-                            }, {
-                                key: "th",
-                                text: "Status"
-                            }]
-                        }]
-                    }, {
-                        key: "tbody",
-                        content: [{
-                            key: "tr",
-                            content: [{
-                                key: "td",
-                                text: leafLevel.deepInputProperty("observation.allergen.name", "")
-                            }, {
-                                key: "td",
-                                text: leafLevel.deepInputProperty("xobservation.severity.code.name", "")
-                            }, {
-                                key: "td",
-                                text: leafLevel.deepInputProperty("observation.reactions.0.reaction.name", "")
-                            }, {
-                                key: "td",
-                                text: leafLevel.deepInputProperty("observation.reactions.0.severity.code.name", "")
-                            }, {
-                                key: "td",
-                                text: leafLevel.deepInputProperty("observation.status.name", "")
-                            }],
-                            dataKey: "allergies"
-                        }]
-                    }]
-                }]
-            }, {
+            fieldLevel.templateTitle("AllergiesSection"),
+            getText('allergies', alllergiesTextHeaders, allergiesTextRow), {
                 key: "entry",
                 attributes: {
                     "typeCode": "DRIV"
@@ -2965,6 +2977,35 @@ exports.allergiesSectionEntriesRequired = {
     }]
 };
 
+var medicationsTextHeaders = ["Medication Class", "# fills", "Last fill date"]; // Just putting name for medication class
+var medicationsTextRow = [
+    function (input) {
+        var value = bbuo.deepValue(input, 'product.product.name');
+        if (!bbuo.exists(value)) {
+            value = bbuo.deepValue(input, 'product.unencoded_name');
+        }
+        if (!bbuo.exists(value)) {
+            return "";
+        } else {
+            return value;
+        }
+    },
+    "supply.repeatNumber",
+    function (input) {
+        var value = bbuo.deepValue(input, 'supply.date_time.low');
+        if (!bbuo.exists(value)) {
+            return "";
+        } else {
+            value = bbud.modelToDate(value);
+            if (bbuo.exists(value)) {
+                return value;
+            } else {
+                return "";
+            }
+        }
+    }
+];
+
 exports.medicationsSectionEntriesRequired = {
     key: "component",
     content: [{
@@ -2973,10 +3014,8 @@ exports.medicationsSectionEntriesRequired = {
             fieldLevel.templateId("2.16.840.1.113883.10.20.22.2.1"),
             fieldLevel.templateId("2.16.840.1.113883.10.20.22.2.1.1"),
             fieldLevel.templateCode("MedicationsSection"),
-            fieldLevel.templateTitle("MedicationsSection"), {
-                key: "text",
-                text: ""
-            }, {
+            fieldLevel.templateTitle("MedicationsSection"),
+            getText('medications', medicationsTextHeaders, medicationsTextRow), {
                 key: "entry",
                 attributes: {
                     "typeCode": "DRIV"
@@ -3235,7 +3274,7 @@ exports.vitalSignsSectionEntriesOptional = {
     }]
 };
 
-},{"./contentModifier":4,"./entryLevel":10,"./fieldLevel":20,"./leafLevel":22}],24:[function(require,module,exports){
+},{"./contentModifier":4,"./entryLevel":10,"./fieldLevel":20,"./leafLevel":22,"blue-button-util":35}],24:[function(require,module,exports){
 "use strict";
 
 var moment = require("moment");
