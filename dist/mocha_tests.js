@@ -325,7 +325,30 @@ var transformInput = function (input, template) {
     if (inputKey) {
         var pieces = inputKey.split('.');
         pieces.forEach(function (piece) {
-            input = input && input[piece];
+            if (Array.isArray(input) && (piece !== "0")) {
+                var nextInputs = [];
+                input.forEach(function (inputElement) {
+                    var nextInput = inputElement[piece];
+                    if (nextInput) {
+                        if (Array.isArray(nextInput)) {
+                            nextInput.forEach(function (nextInputElement) {
+                                if (nextInputElement) {
+                                    nextInputs.push(nextInputElement);
+                                }
+                            });
+                        } else {
+                            nextInputs.push(nextInput);
+                        }
+                    }
+                });
+                if (nextInputs.length === 0) {
+                    input = null;
+                } else {
+                    input = nextInputs;
+                }
+            } else {
+                input = input && input[piece];
+            }
         });
     }
     if (input) {
@@ -2876,6 +2899,9 @@ exports.deepInputProperty = function (deepProperty, defaultValue) {
     return function (input) {
         var value = bbuo.deepValue(input, deepProperty);
         value = bbuo.exists(value) ? value : defaultValue;
+        if (typeof value !== 'string') {
+            value = value.toString();
+        }
         return value;
     };
 };
@@ -2966,11 +2992,11 @@ var getText = function (topArrayKey, headers, values) {
 
 var alllergiesTextHeaders = ["Substance", "Overall Severity", "Reaction", "Reaction Severity", "Status"];
 var allergiesTextRow = [
-    "observation.allergen.name",
-    "observation.severity.code.name",
-    "observation.reactions.0.reaction.name",
-    "observation.reactions.0.severity.code.name",
-    "observation.status.name"
+    leafLevel.deepInputProperty("observation.allergen.name", ""),
+    leafLevel.deepInputProperty("observation.severity.code.name", ""),
+    leafLevel.deepInputProperty("observation.reactions.0.reaction.name", ""),
+    leafLevel.deepInputProperty("observation.reactions.0.severity.code.name", ""),
+    leafLevel.deepInputProperty("observation.status.name", "")
 ];
 
 exports.allergiesSectionEntriesRequired = {
@@ -3010,7 +3036,7 @@ var medicationsTextRow = [ // Name, did not find class in the medication blue-bu
             return value;
         }
     },
-    "supply.repeatNumber",
+    leafLevel.deepInputProperty("supply.repeatNumber", ""),
     leafLevel.deepInputDate('supply.date_time.low', "")
 ];
 
@@ -3096,6 +3122,16 @@ exports.proceduresSectionEntriesRequired = {
     ]
 };
 
+var resultsTextHeaders = ["Test", "Result", "Units", "Ref low", "Ref high", "Date"];
+var resultsTextRow = [
+    leafLevel.deepInputProperty("result.name", ""),
+    leafLevel.deepInputProperty("value", ""),
+    leafLevel.deepInputProperty("unit", ""),
+    leafLevel.deepInputProperty("reference_range.low", ""),
+    leafLevel.deepInputProperty("reference_range.high", ""),
+    leafLevel.deepInputDate("date_time.point", ""),
+];
+
 exports.resultsSectionEntriesRequired = {
     key: "component",
     content: [{
@@ -3104,10 +3140,8 @@ exports.resultsSectionEntriesRequired = {
             fieldLevel.templateId("2.16.840.1.113883.10.20.22.2.3"),
             fieldLevel.templateId("2.16.840.1.113883.10.20.22.2.3.1"),
             fieldLevel.templateCode("ResultsSection"),
-            fieldLevel.templateTitle("ResultsSection"), {
-                key: "text",
-                text: ""
-            }, {
+            fieldLevel.templateTitle("ResultsSection"),
+            getText('results.results', resultsTextHeaders, resultsTextRow), {
                 key: "entry",
                 attributes: {
                     typeCode: "DRIV"
@@ -3124,7 +3158,7 @@ exports.resultsSectionEntriesRequired = {
 
 var encountersTextHeaders = ["Facility", "Date of Service", "Diagnosis/Complaint"];
 var encountersTextRow = [
-    "locations.0.name",
+    leafLevel.deepInputProperty("locations.0.name", ""),
     leafLevel.deepInputDate("date_time.point", ""),
     leafLevel.deepInputProperty("findings.0.value.name", "")
 ];
