@@ -2802,6 +2802,7 @@ var bbu = require("blue-button-util");
 var translate = require('./translate');
 
 var bbuo = bbu.object;
+var bbud = bbu.datetime;
 
 exports.input = function (input) {
     return input;
@@ -2876,6 +2877,25 @@ exports.deepInputProperty = function (deepProperty, defaultValue) {
         var value = bbuo.deepValue(input, deepProperty);
         value = bbuo.exists(value) ? value : defaultValue;
         return value;
+    };
+};
+
+exports.deepInputDate = function (deepProperty, defaultValue) {
+    return function (input) {
+        var value = bbuo.deepValue(input, deepProperty);
+        if (!bbuo.exists(value)) {
+            return defaultValue;
+        } else {
+            value = bbud.modelToDate({
+                date: value.date,
+                precision: value.precision // workaround a bug in bbud.  Changes precision.
+            });
+            if (bbuo.exists(value)) {
+                return value;
+            } else {
+                return defaultValue;
+            }
+        }
     };
 };
 
@@ -2977,8 +2997,8 @@ exports.allergiesSectionEntriesRequired = {
     }]
 };
 
-var medicationsTextHeaders = ["Medication Class", "# fills", "Last fill date"]; // Just putting name for medication class
-var medicationsTextRow = [
+var medicationsTextHeaders = ["Medication Class", "# fills", "Last fill date"];
+var medicationsTextRow = [ // Name, did not find class in the medication blue-button-data
     function (input) {
         var value = bbuo.deepValue(input, 'product.product.name');
         if (!bbuo.exists(value)) {
@@ -2991,19 +3011,7 @@ var medicationsTextRow = [
         }
     },
     "supply.repeatNumber",
-    function (input) {
-        var value = bbuo.deepValue(input, 'supply.date_time.low');
-        if (!bbuo.exists(value)) {
-            return "";
-        } else {
-            value = bbud.modelToDate(value);
-            if (bbuo.exists(value)) {
-                return value;
-            } else {
-                return "";
-            }
-        }
-    }
+    leafLevel.deepInputDate('supply.date_time.low', "")
 ];
 
 exports.medicationsSectionEntriesRequired = {
@@ -3114,6 +3122,13 @@ exports.resultsSectionEntriesRequired = {
     }]
 };
 
+var encountersTextHeaders = ["Facility", "Date of Service", "Diagnosis/Complaint"];
+var encountersTextRow = [
+    "locations.0.name",
+    leafLevel.deepInputDate("date_time.point", ""),
+    leafLevel.deepInputProperty("findings.0.value.name", "")
+];
+
 exports.encountersSectionEntriesOptional = {
     key: "component",
     content: [{
@@ -3122,10 +3137,8 @@ exports.encountersSectionEntriesOptional = {
             fieldLevel.templateId("2.16.840.1.113883.10.20.22.2.22"),
             fieldLevel.templateId("2.16.840.1.113883.10.20.22.2.22.1"),
             fieldLevel.templateCode("EncountersSection"),
-            fieldLevel.templateTitle("EncountersSection"), {
-                key: "text",
-                text: ""
-            }, {
+            fieldLevel.templateTitle("EncountersSection"),
+            getText('encounters', encountersTextHeaders, encountersTextRow), {
                 key: "entry",
                 attributes: {
                     "typeCode": "DRIV"
