@@ -3209,13 +3209,6 @@ exports.resultsSectionEntriesRequired = {
     }]
 };
 
-var encountersTextHeaders = ["Facility", "Date of Service", "Diagnosis/Complaint"];
-var encountersTextRow = [
-    leafLevel.deepInputProperty("locations.0.name", ""),
-    leafLevel.deepInputDate("date_time.point", ""),
-    leafLevel.deepInputProperty("findings.0.value.name", "")
-];
-
 exports.encountersSectionEntriesOptional = {
     key: "component",
     content: [{
@@ -3224,8 +3217,59 @@ exports.encountersSectionEntriesOptional = {
             fieldLevel.templateId("2.16.840.1.113883.10.20.22.2.22"),
             fieldLevel.templateId("2.16.840.1.113883.10.20.22.2.22.1"),
             fieldLevel.templateCode("EncountersSection"),
-            fieldLevel.templateTitle("EncountersSection"),
-            getText('encounters', encountersTextHeaders, encountersTextRow), {
+            fieldLevel.templateTitle("EncountersSection"), {
+                key: "text",
+                content: [{
+                    key: "table",
+                    content: [{
+                        key: "caption",
+                        text: "Emergency Room Visits"
+                    }, {
+                        key: "thead",
+                        content: [{
+                            key: "tr",
+                            content: [{
+                                key: "th",
+                                text: leafLevel.input,
+                                dataTransform: function () {
+                                    return ['Facility', 'Date of Service', 'Diagnosis/Complaint'];
+                                }
+                            }]
+                        }]
+                    }, {
+                        key: "tbody",
+                        content: [{
+                            key: "tr",
+                            content: [{
+                                key: "td",
+                                text: leafLevel.deepInputProperty("locations.0.name", nda)
+                            }, {
+                                key: "td",
+                                text: function (input) {
+                                    var value = bbuo.deepValue(input, "date_time.point");
+                                    if (value) {
+                                        value = bbud.modelToDate({
+                                            date: value.date,
+                                            precision: value.precision // workaround a bug in bbud.  Changes precision.
+                                        });
+                                        if (value) {
+                                            var vps = value.split('-');
+                                            if (vps.length === 3) {
+                                                return [vps[1], vps[2], vps[0]].join('/');
+                                            }
+                                        }
+                                    }
+                                    return nda;
+                                }
+                            }, {
+                                key: "td",
+                                text: leafLevel.deepInputProperty("findings.0.value.name", nda)
+                            }],
+                        }],
+                        dataKey: 'encounters'
+                    }]
+                }]
+            }, {
                 key: "entry",
                 attributes: {
                     "typeCode": "DRIV"
