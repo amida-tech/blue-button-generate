@@ -81,11 +81,6 @@ describe('parse generate parse generate', function () {
 
         delete result.errors;
         delete result2.errors;
-        result.data.results.forEach(function (entry) {
-            entry.results.forEach(function (r) {
-                delete r.text;
-            });
-        });
 
         assert.deepEqual(result2, result);
     });
