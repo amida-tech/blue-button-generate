@@ -1,5 +1,12 @@
 # blue-button-generate.js Release Notes
 
+# v.1.4.0 - March 25, 2105
+- Results of xsi:type ST are now supported
+- Medication supply organization is now supported
+- Text fields are added for results, encounters, medications, allergies
+- Providers are added to the CCDA header
+- Each entry can be given a unique id based on an option
+
 # v.1.3.0 - December 12, 2014
 - Seperated from blue-button repository.'
 - Rewritten using a new infrastructure with JSON templates.
