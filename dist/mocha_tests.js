@@ -2666,17 +2666,11 @@ var patient = exports.patient = {
         }, {
             key: "ethnicGroupCode",
             attributes: leafLevel.codeFromName("2.16.840.1.113883.6.238"),
-            dataKey: "race_ethnicity",
-            existsWhen: function (input) {
-                return input === "Hispanic or Latino";
-            }
+            dataKey: "ethnicity"
         }, {
             key: "raceCode",
             attributes: leafLevel.codeFromName("2.16.840.1.113883.6.238"),
-            dataKey: "race_ethnicity",
-            existsWhen: function (input) {
-                return input !== "Hispanic or Latino";
-            }
+            dataKey: "race"
         }, {
             key: "guardian",
             content: [{
@@ -7872,7 +7866,8 @@ module.exports = OIDs = {
             "1834-1": "Wrangell",
             "1835-8": "Yakutat",
             "1838-2": "Metlakatla",
-            "2135-2": "Hispanic or Latino"
+            "2135-2": "Hispanic or Latino",
+            "2186-5": "Not Hispanic or Latino"
         }
     },
     "2.16.840.1.113883.3.26.1.1": {

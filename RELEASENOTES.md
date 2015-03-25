@@ -1,5 +1,8 @@
 # blue-button-generate.js Release Notes
 
+# v.1.5.0 - TBD
+- Seperate race and ethnicity from blue-button is now supported. 
+
 # v.1.4.0 - March 25, 2105
 - Results of xsi:type ST are now supported
 - Medication supply organization is now supported
