@@ -83,10 +83,13 @@ exports.dataKey = function (overrideKeyValue) {
 
 var headerLevel = require('./headerLevel');
 var fieldLevel = require('./fieldLevel');
+var leafLevel = require('./leafLevel');
 var sectionLevel = require('./sectionLevel');
 var contentModifier = require("./contentModifier");
+var condition = require("./condition");
 
 var required = contentModifier.required;
+var dataKey = contentModifier.dataKey;
 
 exports.ccd = {
     key: "ClinicalDocument",
@@ -109,8 +112,7 @@ exports.ccd = {
             }
         },
         fieldLevel.templateId("2.16.840.1.113883.10.20.22.1.1"),
-        fieldLevel.templateId("2.16.840.1.113883.10.20.22.1.2"),
-        fieldLevel.id, {
+        fieldLevel.templateId("2.16.840.1.113883.10.20.22.1.2"), [fieldLevel.id, dataKey("meta.identifiers")], {
             key: "code",
             attributes: {
                 codeSystem: "2.16.840.1.113883.6.1",
@@ -124,10 +126,8 @@ exports.ccd = {
         },
         [fieldLevel.effectiveTime, required], {
             key: "confidentialityCode",
-            attributes: {
-                code: "N",
-                codeSystem: "2.16.840.1.113883.5.25"
-            }
+            attributes: leafLevel.codeFromName("2.16.840.1.113883.5.25"),
+            dataKey: "meta.confidentiality"
         }, {
             key: "languageCode",
             attributes: {
@@ -136,9 +136,11 @@ exports.ccd = {
         }, {
             key: "setId",
             attributes: {
-                extension: "sTT988",
-                root: "2.16.840.1.113883.19.5.99999.19"
-            }
+                root: leafLevel.inputProperty("identifier"),
+                extension: leafLevel.inputProperty("extension")
+            },
+            dataKey: 'meta.set_id',
+            existsWhen: condition.keyExists('identifier')
         }, {
             key: "versionNumber",
             attributes: {
@@ -169,12 +171,13 @@ exports.ccd = {
                     "functionalStatusSection",
                     "medicalEquipmentSection",
                 ]
-            }
+            },
+            dataKey: 'data'
         }
     ]
 };
 
-},{"./contentModifier":3,"./fieldLevel":19,"./headerLevel":20,"./sectionLevel":22}],5:[function(require,module,exports){
+},{"./condition":2,"./contentModifier":3,"./fieldLevel":19,"./headerLevel":20,"./leafLevel":21,"./sectionLevel":22}],5:[function(require,module,exports){
 "use strict";
 
 var xmlutil = require('./xmlutil');
@@ -2736,7 +2739,7 @@ var recordTarget = exports.recordTarget = {
             patient
         ]
     },
-    dataKey: "demographics"
+    dataKey: "data.demographics"
 };
 
 var providers = exports.providers = {
@@ -2753,7 +2756,7 @@ var providers = exports.providers = {
             provider
         ]
     },
-    dataKey: "demographics"
+    dataKey: "data.demographics"
 };
 
 },{"./condition":2,"./contentModifier":3,"./fieldLevel":19,"./leafLevel":21}],21:[function(require,module,exports){
@@ -6643,6 +6646,15 @@ module.exports = OIDs = {
     "2.16.840.1.113883.5.2": {
         name: "HL7 Marital Status",
         uri: "http://hl7.org/codes/MaritalStatus#"
+    },
+    "2.16.840.1.113883.5.25": {
+        name: "Confidentiality Code",
+        table: {
+            "N": "Normal",
+            "R": "Restricted",
+            "V": "Very Restricted",
+            "U": "Unrestricted"
+        }
     },
     "2.16.840.1.113883.5.83": {
         name: "HL7 Result Interpretation",
@@ -18224,10 +18236,8 @@ var generate = exports.generate = function (template, input, options) {
 
 exports.generateCCD = function (input, options) {
     options = options || {};
-    var data = input.data ? input.data : input;
-    data.identifiers = input.meta && input.meta.identifiers;
     options.meta = input.meta;
-    return generate(documentLevel.ccd, data, options);
+    return generate(documentLevel.ccd, input, options);
 };
 
 },{"./lib/documentLevel":4,"./lib/engine":5,"blue-button-util":34}]},{},["blue-button-generate"]);
