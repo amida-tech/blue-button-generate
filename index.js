@@ -46,8 +46,6 @@ var generate = exports.generate = function (template, input, options) {
 
 exports.generateCCD = function (input, options) {
     options = options || {};
-    var data = input.data ? input.data : input;
-    data.identifiers = input.meta && input.meta.identifiers;
     options.meta = input.meta;
-    return generate(documentLevel.ccd, data, options);
+    return generate(documentLevel.ccd, input, options);
 };

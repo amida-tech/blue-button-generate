@@ -19,7 +19,8 @@ var normalizedCodeSystemNames = {
     "RoleCode": "HL7 Role",
     "ICD9CM": "ICD-9-CM",
     "AdministrativeGender": "HL7 AdministrativeGender",
-    "MaritalStatus": "HL7 Marital Status"
+    "MaritalStatus": "HL7 Marital Status",
+    "CDC Race and Ethnicity": "Race and Ethnicity - CDC"
 };
 
 var normalizedDisplayNames = {
@@ -36,10 +37,6 @@ var normalizedDisplayNames = {
 };
 
 module.exports = [{
-    xpath: "//h:recordTarget/h:patientRole/h:patient/h:raceCode",
-    action: "removeNode",
-    comment: "due to parser merging raceCode and ethnicGroupCode this is generated as ethnicGroupCode (#173)",
-}, {
     xpath: "//h:name[not(h:family)][not(text())]",
     action: "removeNode",
     comment: "bunch of empty names to be investigated"

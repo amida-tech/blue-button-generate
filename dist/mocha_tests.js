@@ -83,10 +83,8 @@ var generate = exports.generate = function (template, input, options) {
 
 exports.generateCCD = function (input, options) {
     options = options || {};
-    var data = input.data ? input.data : input;
-    data.identifiers = input.meta && input.meta.identifiers;
     options.meta = input.meta;
-    return generate(documentLevel.ccd, data, options);
+    return generate(documentLevel.ccd, input, options);
 };
 
 },{"./lib/documentLevel":5,"./lib/engine":6,"blue-button-util":35}],3:[function(require,module,exports){
@@ -138,10 +136,13 @@ exports.dataKey = function (overrideKeyValue) {
 
 var headerLevel = require('./headerLevel');
 var fieldLevel = require('./fieldLevel');
+var leafLevel = require('./leafLevel');
 var sectionLevel = require('./sectionLevel');
 var contentModifier = require("./contentModifier");
+var condition = require("./condition");
 
 var required = contentModifier.required;
+var dataKey = contentModifier.dataKey;
 
 exports.ccd = {
     key: "ClinicalDocument",
@@ -164,8 +165,7 @@ exports.ccd = {
             }
         },
         fieldLevel.templateId("2.16.840.1.113883.10.20.22.1.1"),
-        fieldLevel.templateId("2.16.840.1.113883.10.20.22.1.2"),
-        fieldLevel.id, {
+        fieldLevel.templateId("2.16.840.1.113883.10.20.22.1.2"), [fieldLevel.id, dataKey("meta.identifiers")], {
             key: "code",
             attributes: {
                 codeSystem: "2.16.840.1.113883.6.1",
@@ -179,10 +179,8 @@ exports.ccd = {
         },
         [fieldLevel.effectiveTime, required], {
             key: "confidentialityCode",
-            attributes: {
-                code: "N",
-                codeSystem: "2.16.840.1.113883.5.25"
-            }
+            attributes: leafLevel.codeFromName("2.16.840.1.113883.5.25"),
+            dataKey: "meta.confidentiality"
         }, {
             key: "languageCode",
             attributes: {
@@ -191,9 +189,11 @@ exports.ccd = {
         }, {
             key: "setId",
             attributes: {
-                extension: "sTT988",
-                root: "2.16.840.1.113883.19.5.99999.19"
-            }
+                root: leafLevel.inputProperty("identifier"),
+                extension: leafLevel.inputProperty("extension")
+            },
+            dataKey: 'meta.set_id',
+            existsWhen: condition.keyExists('identifier')
         }, {
             key: "versionNumber",
             attributes: {
@@ -224,12 +224,13 @@ exports.ccd = {
                     "functionalStatusSection",
                     "medicalEquipmentSection",
                 ]
-            }
+            },
+            dataKey: 'data'
         }
     ]
 };
 
-},{"./contentModifier":4,"./fieldLevel":20,"./headerLevel":21,"./sectionLevel":23}],6:[function(require,module,exports){
+},{"./condition":3,"./contentModifier":4,"./fieldLevel":20,"./headerLevel":21,"./leafLevel":22,"./sectionLevel":23}],6:[function(require,module,exports){
 "use strict";
 
 var xmlutil = require('./xmlutil');
@@ -2666,17 +2667,11 @@ var patient = exports.patient = {
         }, {
             key: "ethnicGroupCode",
             attributes: leafLevel.codeFromName("2.16.840.1.113883.6.238"),
-            dataKey: "race_ethnicity",
-            existsWhen: function (input) {
-                return input === "Hispanic or Latino";
-            }
+            dataKey: "ethnicity"
         }, {
             key: "raceCode",
             attributes: leafLevel.codeFromName("2.16.840.1.113883.6.238"),
-            dataKey: "race_ethnicity",
-            existsWhen: function (input) {
-                return input !== "Hispanic or Latino";
-            }
+            dataKey: "race"
         }, {
             key: "guardian",
             content: [{
@@ -2797,7 +2792,7 @@ var recordTarget = exports.recordTarget = {
             patient
         ]
     },
-    dataKey: "demographics"
+    dataKey: "data.demographics"
 };
 
 var providers = exports.providers = {
@@ -2814,7 +2809,7 @@ var providers = exports.providers = {
             provider
         ]
     },
-    dataKey: "demographics"
+    dataKey: "data.demographics"
 };
 
 },{"./condition":3,"./contentModifier":4,"./fieldLevel":20,"./leafLevel":22}],22:[function(require,module,exports){
@@ -6705,6 +6700,15 @@ module.exports = OIDs = {
         name: "HL7 Marital Status",
         uri: "http://hl7.org/codes/MaritalStatus#"
     },
+    "2.16.840.1.113883.5.25": {
+        name: "Confidentiality Code",
+        table: {
+            "N": "Normal",
+            "R": "Restricted",
+            "V": "Very Restricted",
+            "U": "Unrestricted"
+        }
+    },
     "2.16.840.1.113883.5.83": {
         name: "HL7 Result Interpretation",
         uri: "http://hl7.org/codes/ResultInterpretation#",
@@ -7872,7 +7876,8 @@ module.exports = OIDs = {
             "1834-1": "Wrangell",
             "1835-8": "Yakutat",
             "1838-2": "Metlakatla",
-            "2135-2": "Hispanic or Latino"
+            "2135-2": "Hispanic or Latino",
+            "2186-5": "Not Hispanic or Latino"
         }
     },
     "2.16.840.1.113883.3.26.1.1": {
@@ -24604,8 +24609,11 @@ describe('parse generate parse generate', function () {
 
         // generate ccda
 
-        //console.log(result.demographics);
-        var xml = bbg.generateCCD(result);
+        delete result.errors;
+        var input = {
+            data: result
+        };
+        var xml = bbg.generateCCD(input);
 
         // parse generated ccda
         var result2 = bb.parseString(xml);
@@ -24613,10 +24621,8 @@ describe('parse generate parse generate', function () {
         // re-generate
         var xml2 = bbg.generateCCD(result2);
 
-        delete result.errors;
         delete result2.errors;
-
-        //assert.deepEqual(result2, result);
+        //assert.deepEqual(result2.data, result);
     });
 });
 

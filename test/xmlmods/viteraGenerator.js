@@ -3,10 +3,6 @@
 var t = require("./templatePath");
 
 module.exports = [{
-    xpath: "//h:recordTarget/h:patientRole/h:patient/h:ethnicGroupCode",
-    action: "removeNode",
-    comment: "due to parser merging raceCode and ethnicGroupCode original raceCode is converted to ethnicGroupCode (#173)"
-}, {
     xpath: t.allergiesSection + '/.//h:effectiveTime[not(@value | h:low | h:high)]',
     action: "removeNode"
 }, {

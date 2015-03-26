@@ -154,8 +154,11 @@ describe('parse generate parse generate', function () {
 
         // generate ccda
 
-        //console.log(result.demographics);
-        var xml = bbg.generateCCD(result);
+        delete result.errors;
+        var input = {
+            data: result
+        };
+        var xml = bbg.generateCCD(input);
 
         // parse generated ccda
         var result2 = bb.parseString(xml);
@@ -163,9 +166,7 @@ describe('parse generate parse generate', function () {
         // re-generate
         var xml2 = bbg.generateCCD(result2);
 
-        delete result.errors;
         delete result2.errors;
-
-        //assert.deepEqual(result2, result);
+        //assert.deepEqual(result2.data, result);
     });
 });
