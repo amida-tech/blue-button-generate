@@ -146,7 +146,7 @@ describe('parse generate parse generate', function () {
 
         var data = fs.readFileSync(__dirname + "/../fixtures/json/sample.JSON");
 
-        //convert string into JSON 
+        //convert string into JSON
         var result = JSON.parse(data);
 
         // check validation
@@ -156,6 +156,7 @@ describe('parse generate parse generate', function () {
 
         //console.log(result.demographics);
         var xml = bbg.generateCCD(result);
+        fs.writeFileSync(__dirname + '/../../severity.xml', xml);
 
         // parse generated ccda
         var result2 = bb.parseString(xml);

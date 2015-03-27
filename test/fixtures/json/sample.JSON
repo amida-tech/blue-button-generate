@@ -537,6 +537,10 @@
                                                   "code_system_name": "SNOMED CT",
                                                   "code": "195967001",
                                                   "name": "Asthma"
+                                        },
+                                        "severity": {
+                                                  "code": "L",
+                                                  "name": "Low"
                                         }
                               },
                               "negation_indicator": false,
