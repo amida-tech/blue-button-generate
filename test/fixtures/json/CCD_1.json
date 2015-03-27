@@ -1323,10 +1323,6 @@
               "date": "2008-01-03T00:00:00.000Z",
               "precision": "day"
             }
-          },
-          "severity": {
-              "code": "L",
-              "name": "Low"
           }
         },
         "onset_age": "57",
