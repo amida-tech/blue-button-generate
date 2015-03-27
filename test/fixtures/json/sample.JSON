@@ -539,8 +539,10 @@
                                                   "name": "Asthma"
                                         },
                                         "severity": {
-                                                  "code": "L",
-                                                  "name": "Low"
+                                                  "code": {
+                                                            "code": "L",
+                                                            "name": "Low"
+                                                  }
                                         }
                               },
                               "negation_indicator": false,

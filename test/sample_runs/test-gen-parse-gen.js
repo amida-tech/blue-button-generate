@@ -156,7 +156,6 @@ describe('parse generate parse generate', function () {
 
         //console.log(result.demographics);
         var xml = bbg.generateCCD(result);
-        fs.writeFileSync(__dirname + '/../../severity.xml', xml);
 
         // parse generated ccda
         var result2 = bb.parseString(xml);
