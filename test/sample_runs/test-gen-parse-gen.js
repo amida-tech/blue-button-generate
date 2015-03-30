@@ -146,7 +146,7 @@ describe('parse generate parse generate', function () {
 
         var data = fs.readFileSync(__dirname + "/../fixtures/json/sample.JSON");
 
-        //convert string into JSON 
+        //convert string into JSON
         var result = JSON.parse(data);
 
         // check validation

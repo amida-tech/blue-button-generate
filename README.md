@@ -81,8 +81,8 @@ This approach is an alternative to direct programming or text based templates su
 * Required elements are specified in the template and get `nullFlavor` automatically when no data exists.
 * No coding required to add new templates.
 * It is also a step in the right direction for the possible future directions
- * Factoring out data model dependencies so that blue-button](https://github.com/amida-tech/blue-button) data model changes or other data models can be accomodated more easily 
- * Automatic generation of templates from [blue-button](https://github.com/amida-tech/blue-button) like CCDA parsers. 
+ * Factoring out data model dependencies so that blue-button](https://github.com/amida-tech/blue-button) data model changes or other data models can be accomodated more easily
+ * Automatic generation of templates from [blue-button](https://github.com/amida-tech/blue-button) like CCDA parsers.
 
 ### Template Structure
 
@@ -91,7 +91,7 @@ The following are the properties of the templates
 * `attributes`: This describes the attributes of the element.  `attributes` can be an object of with `key` and `value` pairs for each attribute or it can be an array of such objects.  Each attribute object or can be a function with `input` argument that returns attributes.
 * `text`: This is a function with `input` attribute that returns text value of the element.
 * `content`: This is an array of other templates that describe the children of the element.  For a single child an object can be used.
-* `dataKey`: This is the property of `input` that serves as the date for the template.
+* `dataKey`: This is the property of `input` that serves as the data for the template.
 * `required`: This identifies if template is required or not.  If template is required and there is not value in the `input` a `nullFlavor` node is created.
 * `dataTransform`: This is a function to transform the input.
 * `existWhen`: This is a boolean function with `input` argument to describe it the elements should exists or not.
