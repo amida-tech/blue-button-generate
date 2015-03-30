@@ -78,9 +78,6 @@ module.exports = [{
     xpath: t.vitalsSection + '/h:entry',
     action: 'removeNode'
 }, {
-    xpath: '//h:recordTarget/h:patientRole/h:patient/h:ethnicGroupCode',
-    action: 'removeNode'
-}, {
     xpath: '//h:recordTarget/h:patientRole/h:providerOrganization',
     action: 'removeNode'
 }, {

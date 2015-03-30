@@ -1,5 +1,10 @@
 # blue-button-generate.js Release Notes
 
+# v.1.5.0 - TBD
+- Separate race and ethnicity from blue-button is now supported.
+- Support for input data only is removed.  Your input now must have both data and meta components.
+- Set Identifier and Confidentiality Code are now read from  CCDA JSON meta properties.
+
 # v.1.4.0 - March 25, 2105
 - Results of xsi:type ST are now supported
 - Medication supply organization is now supported
