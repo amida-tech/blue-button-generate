@@ -1519,6 +1519,17 @@ var problemObservation = {
                 [healthStatusObservation, required]
             ],
             existsWhen: condition.keyExists("patient_status")
+        }, {
+            key: "entryRelationship",
+            attributes: {
+                "typeCode": "SUBJ",
+                "inversionInd": "true"
+            },
+            content: [
+                [sharedEntryLevel.severityObservation]
+            ],
+            dataKey: "problem",
+            existsWhen: condition.keyExists("severity")
         }
     ],
     notImplemented: [
@@ -18774,7 +18785,7 @@ module.exports = uuid;
 "use strict";
 
 /*
-This script converts CCDA data in JSON format (originally generated from a Continuity of Care Document (CCD) in 
+This script converts CCDA data in JSON format (originally generated from a Continuity of Care Document (CCD) in
 standard XML/CCDA format) back to XML/CCDA format.
 */
 
@@ -18807,6 +18818,7 @@ var createContext = (function () {
         } else {
             result.rootId = null;
         }
+        result.preventNullFlavor = options.preventNullFlavor;
 
         return result;
     };
