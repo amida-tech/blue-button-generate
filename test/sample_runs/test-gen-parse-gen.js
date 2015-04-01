@@ -158,7 +158,9 @@ describe('parse generate parse generate', function () {
         var input = {
             data: result
         };
-        var xml = bbg.generateCCD(input);
+        var xml = bbg.generateCCD(input, {
+            preventNullFlavor: true
+        });
 
         // parse generated ccda
         var result2 = bb.parseString(xml);
