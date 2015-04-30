@@ -33,14 +33,14 @@
     "node": ">= 0.10.0"
   },
   "dependencies": {
-    "blue-button-meta": "amida-tech/blue-button-meta#martz-npi",
+    "blue-button-meta": "1.5.0-beta.4",
     "blue-button-util": "~1.5.0-beta",
     "libxmljs": "~0.14.0",
     "moment": "~2.10.2",
     "uuid": "^2.0.1"
   },
   "devDependencies": {
-    "blue-button": "amida-tech/blue-button#martz-npi",
+    "blue-button": "~1.5.0-beta.5",
     "brfs": "~1.4.0",
     "chai": "~2.3.0",
     "coveralls": "~2.11.2",
