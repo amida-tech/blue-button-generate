@@ -7,6 +7,7 @@ var bb = require('blue-button');
 var bbg = require('../../index');
 
 describe('parse generate parse generate', function () {
+    this.timeout(10000);
     var generatedDir = null;
 
     before(function () {
