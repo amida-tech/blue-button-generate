@@ -7,6 +7,7 @@ Blue Button CCDA Generator
 
 [![Build Status](https://travis-ci.org/amida-tech/blue-button-generate.svg)](https://travis-ci.org/amida-tech/blue-button-generate)
 [![Coverage Status](https://coveralls.io/repos/amida-tech/blue-button-generate/badge.png)](https://coveralls.io/r/amida-tech/blue-button-generate)
+[![Dependency Status](https://david-dm.org/amida-tech/blue-button-generate.svg)](https://david-dm.org/amida-tech/blue-button-generate)
 
 blue-button-generate is a module to generate CCDA files from JSON data.  Currently it only supports [blue-button](https://github.com/amida-tech/blue-button) JSON data model.
 

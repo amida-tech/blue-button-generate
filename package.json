@@ -1,6 +1,6 @@
 {
   "name": "blue-button-generate",
-  "version": "1.5.0-beta.2",
+  "version": "1.5.0-beta.3",
   "description": "Blue Button CCDA Generator.",
   "main": "./index.js",
   "browser": {
@@ -22,6 +22,10 @@
     {
       "name": "Afsin Ustundag",
       "email": "afsin.ustundag@us.pwc.com"
+    },
+    {
+      "name": "Matt Martz",
+      "email": "matt.martz@amida-tech.com"
     }
   ],
   "license": "Apache-2.0",
@@ -29,32 +33,32 @@
     "node": ">= 0.10.0"
   },
   "dependencies": {
-    "blue-button-meta": "~1.5.0-beta",
-    "blue-button-util": "~1.4.1",
-    "libxmljs": "~0.12.0",
-    "moment": "~2.8.4",
+    "blue-button-meta": "1.5.0-beta.4",
+    "blue-button-util": "~1.5.0-beta",
+    "libxmljs": "~0.14.0",
+    "moment": "~2.10.2",
     "uuid": "^2.0.1"
   },
   "devDependencies": {
-    "blue-button": "~1.5.0-beta",
-    "brfs": "~1.2.0",
-    "chai": "~1.10.0",
-    "coveralls": "~2.10.0",
+    "blue-button": "~1.5.0-beta.5",
+    "brfs": "~1.4.0",
+    "chai": "~2.3.0",
+    "coveralls": "~2.11.2",
     "grunt": "^0.4.5",
-    "grunt-blue-button": "~1.3.0",
-    "grunt-browserify": "~3.2.0",
-    "grunt-contrib-connect": "~0.9.0",
-    "grunt-contrib-jshint": "0.8.x",
+    "grunt-blue-button": "~1.4.0-beta",
+    "grunt-browserify": "~3.7.0",
+    "grunt-contrib-connect": "~0.10.1",
+    "grunt-contrib-jshint": "0.11.x",
     "grunt-contrib-watch": "0.6.x",
     "grunt-coveralls": "~1.0.0",
-    "grunt-express-server": "0.4.x",
-    "grunt-istanbul-coverage": "~0.1.0",
-    "grunt-jsbeautifier": "~0.2.7",
-    "grunt-mocha-phantomjs": "~0.6.0",
-    "grunt-mocha-test": "0.8.x",
-    "mocha": "1.17.x",
-    "mocha-lcov-reporter": "0.0.1",
-    "xml2js": "~0.4.4"
+    "grunt-express-server": "0.5.x",
+    "grunt-istanbul-coverage": "~0.1.1",
+    "grunt-jsbeautifier": "~0.2.10",
+    "grunt-mocha-phantomjs": "~0.6.1",
+    "grunt-mocha-test": "0.12.x",
+    "mocha": "2.2.x",
+    "mocha-lcov-reporter": "0.0.2",
+    "xml2js": "~0.4.8"
   },
   "repository": {
     "type": "git",
