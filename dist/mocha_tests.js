@@ -201,6 +201,9 @@ exports.ccd = {
                 value: "1"
             }
         },
+        headerLevel.headerAuthor,
+        headerLevel.headerInformant,
+        headerLevel.headerCustodian,
         headerLevel.recordTarget,
         headerLevel.providers, {
             key: "component",
@@ -1426,6 +1429,34 @@ exports.planOfCareActivitySupply = {
     }
 };
 
+var goal = {
+
+    key: "code",
+    attributes: {
+        "code": leafLevel.deepInputProperty("code"),
+        "displayName": "Goal"
+    },
+    content: [{
+        key: "originalText",
+        text: leafLevel.deepInputProperty("name")
+    }],
+    dataKey: "goal"
+};
+
+var intervention = {
+
+    key: "code",
+    attributes: {
+        "code": leafLevel.deepInputProperty("code"),
+        "displayName": "Intervention"
+    },
+    content: [{
+        key: "originalText",
+        text: leafLevel.deepInputProperty("name")
+    }],
+    dataKey: "intervention"
+};
+
 exports.planOfCareActivityInstructions = {
     key: "instructions",
     attributes: {
@@ -1440,8 +1471,50 @@ exports.planOfCareActivityInstructions = {
             attributes: leafLevel.code,
             dataKey: "plan"
         },
-        fieldLevel.statusCodeNew,
-        fieldLevel.effectiveTime
+        fieldLevel.statusCodeNew, {
+            key: "priorityCode",
+            attributes: {
+                "code": leafLevel.deepInputProperty("code"),
+                "displayName": "Severity Code"
+            },
+            content: [{
+                key: "originalText",
+                text: leafLevel.deepInputProperty("name")
+            }],
+            dataKey: "severity"
+        },
+        fieldLevel.effectiveTime, {
+            key: "entryRelationship",
+            attributes: {
+                typeCode: "COMP"
+            },
+            content: [{
+                key: "observation",
+                attributes: {
+                    classCode: "OBS",
+                    moodCode: "GOL"
+                },
+                content: [fieldLevel.effectiveTime, goal, {
+                    key: "act",
+                    attributes: {
+                        classCode: "ACT",
+                        moodCode: "INT"
+                    },
+
+                    content: [{
+                        key: "entryRelationship",
+                        attributes: {
+                            typeCode: "REFR"
+                        },
+                        content: [intervention],
+                        dataKey: "interventions"
+                    }]
+                }],
+                dataKey: "goals"
+
+            }],
+            required: true
+        }
     ],
     existsWhen: function (input) {
         return input.type === "instructions";
@@ -2805,6 +2878,73 @@ var recordTarget = exports.recordTarget = {
         ]
     },
     dataKey: "data.demographics"
+};
+
+var headerAuthor = exports.headerAuthor = {
+    key: "author",
+    content: {
+        key: "assignedAuthor",
+        //attributes: {id:}
+        content: [{
+            key: "representedOrganization",
+            content: [{
+                key: "id",
+                attributes: {
+                    root: leafLevel.inputProperty("id")
+                },
+                content: [{
+                    key: "name",
+                    text: leafLevel.inputProperty("name")
+                }],
+                dataKey: "author"
+            }]
+        }]
+    },
+    dataKey: "meta.ccda_header"
+};
+var headerInformant = exports.headerInformant = {
+    key: "informant",
+    content: {
+        key: "assignedEntity",
+        //attributes: {id:}
+        content: [{
+            key: "representedOrganization",
+            content: [{
+                key: "id",
+                attributes: {
+                    root: leafLevel.inputProperty("id")
+                },
+                content: [{
+                    key: "name",
+                    text: leafLevel.inputProperty("name")
+                }],
+                dataKey: "informant"
+            }]
+        }]
+    },
+    dataKey: "meta.ccda_header"
+};
+var headerCustodian = exports.headerCustodian = {
+    key: "custodian",
+    content: {
+        key: "assignedCustodian",
+        //attributes: {id:}
+        content: [{
+            key: "representedCustodianOrganization",
+            content: [{
+                key: "id",
+                attributes: {
+                    root: leafLevel.inputProperty("id")
+                },
+                content: [{
+                    key: "name",
+                    text: leafLevel.inputProperty("name")
+                }],
+                dataKey: "custodian"
+            }]
+        }]
+    },
+    dataKey: "meta.ccda_header"
 };
 
 var providers = exports.providers = {
@@ -25924,7 +26064,7 @@ module.exports = function(arr, obj){
 };
 },{}],86:[function(require,module,exports){
 //! moment.js
-//! version : 2.10.2
+//! version : 2.10.3
 //! authors : Tim Wood, Iskren Chernev, Moment.js contributors
 //! license : MIT
 //! momentjs.com
@@ -25947,28 +26087,12 @@ module.exports = function(arr, obj){
         hookCallback = callback;
     }
 
-    function defaultParsingFlags() {
-        // We need to deep clone this object.
-        return {
-            empty           : false,
-            unusedTokens    : [],
-            unusedInput     : [],
-            overflow        : -2,
-            charsLeftOver   : 0,
-            nullInput       : false,
-            invalidMonth    : null,
-            invalidFormat   : false,
-            userInvalidated : false,
-            iso             : false
-        };
-    }
-
     function isArray(input) {
         return Object.prototype.toString.call(input) === '[object Array]';
     }
 
     function isDate(input) {
-        return Object.prototype.toString.call(input) === '[object Date]' || input instanceof Date;
+        return input instanceof Date || Object.prototype.toString.call(input) === '[object Date]';
     }
 
     function map(arr, fn) {
@@ -26005,21 +26129,45 @@ module.exports = function(arr, obj){
         return createLocalOrUTC(input, format, locale, strict, true).utc();
     }
 
+    function defaultParsingFlags() {
+        // We need to deep clone this object.
+        return {
+            empty           : false,
+            unusedTokens    : [],
+            unusedInput     : [],
+            overflow        : -2,
+            charsLeftOver   : 0,
+            nullInput       : false,
+            invalidMonth    : null,
+            invalidFormat   : false,
+            userInvalidated : false,
+            iso             : false
+        };
+    }
+
+    function getParsingFlags(m) {
+        if (m._pf == null) {
+            m._pf = defaultParsingFlags();
+        }
+        return m._pf;
+    }
+
     function valid__isValid(m) {
         if (m._isValid == null) {
+            var flags = getParsingFlags(m);
             m._isValid = !isNaN(m._d.getTime()) &&
-                m._pf.overflow < 0 &&
-                !m._pf.empty &&
-                !m._pf.invalidMonth &&
-                !m._pf.nullInput &&
-                !m._pf.invalidFormat &&
-                !m._pf.userInvalidated;
+                flags.overflow < 0 &&
+                !flags.empty &&
+                !flags.invalidMonth &&
+                !flags.nullInput &&
+                !flags.invalidFormat &&
+                !flags.userInvalidated;
 
             if (m._strict) {
                 m._isValid = m._isValid &&
-                    m._pf.charsLeftOver === 0 &&
-                    m._pf.unusedTokens.length === 0 &&
-                    m._pf.bigHour === undefined;
+                    flags.charsLeftOver === 0 &&
+                    flags.unusedTokens.length === 0 &&
+                    flags.bigHour === undefined;
             }
         }
         return m._isValid;
@@ -26028,10 +26176,10 @@ module.exports = function(arr, obj){
     function valid__createInvalid (flags) {
         var m = create_utc__createUTC(NaN);
         if (flags != null) {
-            extend(m._pf, flags);
+            extend(getParsingFlags(m), flags);
         }
         else {
-            m._pf.userInvalidated = true;
+            getParsingFlags(m).userInvalidated = true;
         }
 
         return m;
@@ -26067,7 +26215,7 @@ module.exports = function(arr, obj){
             to._offset = from._offset;
         }
         if (typeof from._pf !== 'undefined') {
-            to._pf = from._pf;
+            to._pf = getParsingFlags(from);
         }
         if (typeof from._locale !== 'undefined') {
             to._locale = from._locale;
@@ -26102,7 +26250,7 @@ module.exports = function(arr, obj){
     }
 
     function isMoment (obj) {
-        return obj instanceof Moment || (obj != null && hasOwnProp(obj, '_isAMomentObject'));
+        return obj instanceof Moment || (obj != null && obj._isAMomentObject != null);
     }
 
     function toInt(argumentForCoercion) {
@@ -26540,7 +26688,7 @@ module.exports = function(arr, obj){
         if (month != null) {
             array[MONTH] = month;
         } else {
-            config._pf.invalidMonth = input;
+            getParsingFlags(config).invalidMonth = input;
         }
     });
 
@@ -26624,7 +26772,7 @@ module.exports = function(arr, obj){
         var overflow;
         var a = m._a;
 
-        if (a && m._pf.overflow === -2) {
+        if (a && getParsingFlags(m).overflow === -2) {
             overflow =
                 a[MONTH]       < 0 || a[MONTH]       > 11  ? MONTH :
                 a[DATE]        < 1 || a[DATE]        > daysInMonth(a[YEAR], a[MONTH]) ? DATE :
@@ -26634,11 +26782,11 @@ module.exports = function(arr, obj){
                 a[MILLISECOND] < 0 || a[MILLISECOND] > 999 ? MILLISECOND :
                 -1;
 
-            if (m._pf._overflowDayOfYear && (overflow < YEAR || overflow > DATE)) {
+            if (getParsingFlags(m)._overflowDayOfYear && (overflow < YEAR || overflow > DATE)) {
                 overflow = DATE;
             }
 
-            m._pf.overflow = overflow;
+            getParsingFlags(m).overflow = overflow;
         }
 
         return m;
@@ -26651,10 +26799,12 @@ module.exports = function(arr, obj){
     }
 
     function deprecate(msg, fn) {
-        var firstTime = true;
+        var firstTime = true,
+            msgWithStack = msg + '\n' + (new Error()).stack;
+
         return extend(function () {
             if (firstTime) {
-                warn(msg);
+                warn(msgWithStack);
                 firstTime = false;
             }
             return fn.apply(this, arguments);
@@ -26699,7 +26849,7 @@ module.exports = function(arr, obj){
             match = from_string__isoRegex.exec(string);
 
         if (match) {
-            config._pf.iso = true;
+            getParsingFlags(config).iso = true;
             for (i = 0, l = isoDates.length; i < l; i++) {
                 if (isoDates[i][1].exec(string)) {
                     // match[5] should be 'T' or undefined
@@ -26979,7 +27129,7 @@ module.exports = function(arr, obj){
             yearToUse = defaults(config._a[YEAR], currentDate[YEAR]);
 
             if (config._dayOfYear > daysInYear(yearToUse)) {
-                config._pf._overflowDayOfYear = true;
+                getParsingFlags(config)._overflowDayOfYear = true;
             }
 
             date = createUTCDate(yearToUse, 0, config._dayOfYear);
@@ -27075,7 +27225,7 @@ module.exports = function(arr, obj){
         }
 
         config._a = [];
-        config._pf.empty = true;
+        getParsingFlags(config).empty = true;
 
         // This array is used to make a Date, either with `new Date` or `Date.UTC`
         var string = '' + config._i,
@@ -27091,7 +27241,7 @@ module.exports = function(arr, obj){
             if (parsedInput) {
                 skipped = string.substr(0, string.indexOf(parsedInput));
                 if (skipped.length > 0) {
-                    config._pf.unusedInput.push(skipped);
+                    getParsingFlags(config).unusedInput.push(skipped);
                 }
                 string = string.slice(string.indexOf(parsedInput) + parsedInput.length);
                 totalParsedInputLength += parsedInput.length;
@@ -27099,27 +27249,29 @@ module.exports = function(arr, obj){
             // don't parse if it's not a known token
             if (formatTokenFunctions[token]) {
                 if (parsedInput) {
-                    config._pf.empty = false;
+                    getParsingFlags(config).empty = false;
                 }
                 else {
-                    config._pf.unusedTokens.push(token);
+                    getParsingFlags(config).unusedTokens.push(token);
                 }
                 addTimeToArrayFromToken(token, parsedInput, config);
             }
             else if (config._strict && !parsedInput) {
-                config._pf.unusedTokens.push(token);
+                getParsingFlags(config).unusedTokens.push(token);
             }
         }
 
         // add remaining unparsed input length to the string
-        config._pf.charsLeftOver = stringLength - totalParsedInputLength;
+        getParsingFlags(config).charsLeftOver = stringLength - totalParsedInputLength;
         if (string.length > 0) {
-            config._pf.unusedInput.push(string);
+            getParsingFlags(config).unusedInput.push(string);
         }
 
         // clear _12h flag if hour is <= 12
-        if (config._pf.bigHour === true && config._a[HOUR] <= 12) {
-            config._pf.bigHour = undefined;
+        if (getParsingFlags(config).bigHour === true &&
+                config._a[HOUR] <= 12 &&
+                config._a[HOUR] > 0) {
+            getParsingFlags(config).bigHour = undefined;
         }
         // handle meridiem
         config._a[HOUR] = meridiemFixWrap(config._locale, config._a[HOUR], config._meridiem);
@@ -27163,7 +27315,7 @@ module.exports = function(arr, obj){
             currentScore;
 
         if (config._f.length === 0) {
-            config._pf.invalidFormat = true;
+            getParsingFlags(config).invalidFormat = true;
             config._d = new Date(NaN);
             return;
         }
@@ -27174,7 +27326,6 @@ module.exports = function(arr, obj){
             if (config._useUTC != null) {
                 tempConfig._useUTC = config._useUTC;
             }
-            tempConfig._pf = defaultParsingFlags();
             tempConfig._f = config._f[i];
             configFromStringAndFormat(tempConfig);
 
@@ -27183,12 +27334,12 @@ module.exports = function(arr, obj){
             }
 
             // if there is any input that was not parsed add a penalty for that format
-            currentScore += tempConfig._pf.charsLeftOver;
+            currentScore += getParsingFlags(tempConfig).charsLeftOver;
 
             //or tokens
-            currentScore += tempConfig._pf.unusedTokens.length * 10;
+            currentScore += getParsingFlags(tempConfig).unusedTokens.length * 10;
 
-            tempConfig._pf.score = currentScore;
+            getParsingFlags(tempConfig).score = currentScore;
 
             if (scoreToBeat == null || currentScore < scoreToBeat) {
                 scoreToBeat = currentScore;
@@ -27231,6 +27382,8 @@ module.exports = function(arr, obj){
             configFromStringAndArray(config);
         } else if (format) {
             configFromStringAndFormat(config);
+        } else if (isDate(input)) {
+            config._d = input;
         } else {
             configFromInput(config);
         }
@@ -27283,7 +27436,6 @@ module.exports = function(arr, obj){
         c._i = input;
         c._f = format;
         c._strict = strict;
-        c._pf = defaultParsingFlags();
 
         return createFromConfig(c);
     }
@@ -27857,11 +28009,25 @@ module.exports = function(arr, obj){
     }
 
     function from (time, withoutSuffix) {
+        if (!this.isValid()) {
+            return this.localeData().invalidDate();
+        }
         return create__createDuration({to: this, from: time}).locale(this.locale()).humanize(!withoutSuffix);
     }
 
     function fromNow (withoutSuffix) {
         return this.from(local__createLocal(), withoutSuffix);
+    }
+
+    function to (time, withoutSuffix) {
+        if (!this.isValid()) {
+            return this.localeData().invalidDate();
+        }
+        return create__createDuration({from: this, to: time}).locale(this.locale()).humanize(!withoutSuffix);
+    }
+
+    function toNow (withoutSuffix) {
+        return this.to(local__createLocal(), withoutSuffix);
     }
 
     function locale (key) {
@@ -27966,11 +28132,11 @@ module.exports = function(arr, obj){
     }
 
     function parsingFlags () {
-        return extend({}, this._pf);
+        return extend({}, getParsingFlags(this));
     }
 
     function invalidAt () {
-        return this._pf.overflow;
+        return getParsingFlags(this).overflow;
     }
 
     addFormatToken(0, ['gg', 2], 0, function () {
@@ -28121,7 +28287,7 @@ module.exports = function(arr, obj){
         if (weekday != null) {
             week.d = weekday;
         } else {
-            config._pf.invalidWeekday = input;
+            getParsingFlags(config).invalidWeekday = input;
         }
     });
 
@@ -28246,7 +28412,7 @@ module.exports = function(arr, obj){
     });
     addParseToken(['h', 'hh'], function (input, array, config) {
         array[HOUR] = toInt(input);
-        config._pf.bigHour = true;
+        getParsingFlags(config).bigHour = true;
     });
 
     // LOCALES
@@ -28363,6 +28529,8 @@ module.exports = function(arr, obj){
     momentPrototype__proto.format       = format;
     momentPrototype__proto.from         = from;
     momentPrototype__proto.fromNow      = fromNow;
+    momentPrototype__proto.to           = to;
+    momentPrototype__proto.toNow        = toNow;
     momentPrototype__proto.get          = getSet;
     momentPrototype__proto.invalidAt    = invalidAt;
     momentPrototype__proto.isAfter      = isAfter;
@@ -28551,7 +28719,7 @@ module.exports = function(arr, obj){
         }
         // Lenient ordinal parsing accepts just a number in addition to
         // number + (possibly) stuff coming from _ordinalParseLenient.
-        this._ordinalParseLenient = new RegExp(this._ordinalParse.source + '|' + /\d{1,2}/.source);
+        this._ordinalParseLenient = new RegExp(this._ordinalParse.source + '|' + (/\d{1,2}/).source);
     }
 
     var prototype__proto = Locale.prototype;
@@ -28768,13 +28936,13 @@ module.exports = function(arr, obj){
             // handle milliseconds separately because of floating point math errors (issue #1867)
             days = this._days + Math.round(yearsToDays(this._months / 12));
             switch (units) {
-                case 'week'   : return days / 7            + milliseconds / 6048e5;
-                case 'day'    : return days                + milliseconds / 864e5;
-                case 'hour'   : return days * 24           + milliseconds / 36e5;
-                case 'minute' : return days * 24 * 60      + milliseconds / 6e4;
-                case 'second' : return days * 24 * 60 * 60 + milliseconds / 1000;
+                case 'week'   : return days / 7     + milliseconds / 6048e5;
+                case 'day'    : return days         + milliseconds / 864e5;
+                case 'hour'   : return days * 24    + milliseconds / 36e5;
+                case 'minute' : return days * 1440  + milliseconds / 6e4;
+                case 'second' : return days * 86400 + milliseconds / 1000;
                 // Math.floor prevents floating point math errors here
-                case 'millisecond': return Math.floor(days * 24 * 60 * 60 * 1000) + milliseconds;
+                case 'millisecond': return Math.floor(days * 864e5) + milliseconds;
                 default: throw new Error('Unknown unit ' + units);
             }
         }
@@ -28975,7 +29143,7 @@ module.exports = function(arr, obj){
     // Side effect imports
 
 
-    utils_hooks__hooks.version = '2.10.2';
+    utils_hooks__hooks.version = '2.10.3';
 
     setHookCallback(local__createLocal);
 
@@ -29237,6 +29405,7 @@ var bb = require('blue-button');
 var bbg = require('../../index');
 
 describe('parse generate parse generate', function () {
+    this.timeout(10000);
     var generatedDir = null;
 
     before(function () {
