@@ -122,9 +122,10 @@ exports.ccd = {
             }
         }, {
             key: "title",
-            text: "Community Health and Hospitals: Health Summary"
+            text: leafLevel.inputProperty("title"),
+            dataKey: "meta.ccda_header"
         },
-        [fieldLevel.effectiveTime, required], {
+        [fieldLevel.effectiveTimeNow, required], {
             key: "confidentialityCode",
             attributes: leafLevel.codeFromName("2.16.840.1.113883.5.25"),
             dataKey: "meta.confidentiality"
@@ -2406,6 +2407,8 @@ var templateCodes = bbm.CCDA.sections_entries_codes.codes;
 var key = contentModifier.key;
 var required = contentModifier.required;
 
+var moment = require('moment');
+
 exports.templateId = function (id) {
     return {
         key: "templateId",
@@ -2482,6 +2485,13 @@ exports.statusCodeNew = {
     key: "statusCode",
     attributes: {
         code: 'new'
+    }
+};
+
+var effectiveTimeNow = exports.effectiveTimeNow = {
+    key: "effectiveTime",
+    attributes: {
+        "value": moment().format("YYYYMMDDHHMMSS"),
     }
 };
 
@@ -2648,7 +2658,7 @@ exports.performer = {
     dataKey: "performer"
 };
 
-},{"./condition":2,"./contentModifier":3,"./leafLevel":21,"./translate":23,"blue-button-meta":24,"uuid":47}],20:[function(require,module,exports){
+},{"./condition":2,"./contentModifier":3,"./leafLevel":21,"./translate":23,"blue-button-meta":24,"moment":45,"uuid":47}],20:[function(require,module,exports){
 "use strict";
 
 var fieldLevel = require('./fieldLevel');
