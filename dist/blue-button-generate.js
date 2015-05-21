@@ -3465,7 +3465,7 @@ exports.encountersSectionEntriesOptional = {
                     key: "table",
                     content: [{
                         key: "caption",
-                        text: "Emergency Room Visits"
+                        text: "Encounters"
                     }, {
                         key: "thead",
                         content: [{
@@ -3474,7 +3474,7 @@ exports.encountersSectionEntriesOptional = {
                                 key: "th",
                                 text: leafLevel.input,
                                 dataTransform: function () {
-                                    return ['Facility', 'Date of Service', 'Diagnosis/Complaint'];
+                                    return ['Type', 'Facility', 'Date of Service', 'Diagnosis/Complaint'];
                                 }
                             }]
                         }]
@@ -3483,6 +3483,9 @@ exports.encountersSectionEntriesOptional = {
                         content: [{
                             key: "tr",
                             content: [{
+                                key: "td",
+                                text: leafLevel.deepInputProperty("encounter.name", nda)
+                            }, {
                                 key: "td",
                                 text: leafLevel.deepInputProperty("locations.0.name", nda)
                             }, {
