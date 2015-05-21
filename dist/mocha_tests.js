@@ -202,10 +202,10 @@ exports.ccd = {
                 value: "1"
             }
         },
+        headerLevel.recordTarget,
         headerLevel.headerAuthor,
         headerLevel.headerInformant,
         headerLevel.headerCustodian,
-        headerLevel.recordTarget,
         headerLevel.providers, {
             key: "component",
             content: {
@@ -2549,6 +2549,13 @@ var effectiveTimeNow = exports.effectiveTimeNow = {
     }
 };
 
+var timeNow = exports.timeNow = {
+    key: "time",
+    attributes: {
+        "value": moment().format("YYYYMMDDHHMMSS"),
+    }
+};
+
 var effectiveTime = exports.effectiveTime = {
     key: "effectiveTime",
     attributes: {
@@ -2845,6 +2852,13 @@ var provider = exports.provider = {
     content: {
         key: "assignedEntity",
         content: [{
+                key: "id",
+                attributes: {
+                    extension: leafLevel.inputProperty("extension"),
+                    root: leafLevel.inputProperty("root")
+                },
+                dataKey: "identity"
+            }, {
                 key: "code",
                 attributes: leafLevel.code,
                 dataKey: "type"
@@ -2877,6 +2891,32 @@ var provider = exports.provider = {
     dataKey: "providers"
 };
 
+var attributed_provider = exports.attributed_provider = {
+    key: "providerOrganization",
+    content: [{
+        key: "id",
+        attributes: {
+            extension: leafLevel.inputProperty("extension"),
+            root: leafLevel.inputProperty("root")
+        },
+        dataKey: "attributed_provider.identity"
+    }, {
+        key: "name",
+        text: leafLevel.inputProperty("full"),
+        dataKey: "attributed_provider.name"
+    }, {
+        key: "telecom",
+        attributes: [{
+            use: "WP",
+            value: function (input) {
+                return input.value.number;
+            }
+        }],
+        dataKey: "attributed_provider.phone"
+    }],
+    dataKey: "meta"
+};
+
 var recordTarget = exports.recordTarget = {
     key: "recordTarget",
     content: {
@@ -2884,7 +2924,8 @@ var recordTarget = exports.recordTarget = {
         content: [
             fieldLevel.id, [fieldLevel.usRealmAddress, dataKey("addresses")],
             fieldLevel.telecom,
-            patient
+            patient,
+            attributed_provider
         ]
     },
     dataKey: "data.demographics"
@@ -2892,24 +2933,34 @@ var recordTarget = exports.recordTarget = {
 
 var headerAuthor = exports.headerAuthor = {
     key: "author",
-    content: {
-        key: "assignedAuthor",
-        //attributes: {id:}
-        content: [{
-            key: "representedOrganization",
+    content: [
+        [fieldLevel.timeNow, required], {
+            key: "assignedAuthor",
+            //attributes: {id:}
             content: [{
                 key: "id",
                 attributes: {
                     root: leafLevel.inputProperty("id")
                 },
-                content: [{
-                    key: "name",
-                    text: leafLevel.inputProperty("name")
-                }],
                 dataKey: "author"
+
+            }, {
+                key: "representedOrganization",
+                content: [{
+                    key: "id",
+                    attributes: {
+                        root: leafLevel.inputProperty("id")
+                    },
+                    dataKey: "author"
+                }, {
+                    key: "name",
+                    text: leafLevel.inputProperty("name"),
+                    dataKey: "author"
+
+                }]
             }]
-        }]
-    },
+        }
+    ],
     dataKey: "meta.ccda_header"
 };
 var headerInformant = exports.headerInformant = {
@@ -2918,17 +2969,25 @@ var headerInformant = exports.headerInformant = {
         key: "assignedEntity",
         //attributes: {id:}
         content: [{
+            key: "id",
+            attributes: {
+                root: leafLevel.inputProperty("id")
+            },
+            dataKey: "informant"
+
+        }, {
             key: "representedOrganization",
             content: [{
                 key: "id",
                 attributes: {
                     root: leafLevel.inputProperty("id")
                 },
-                content: [{
-                    key: "name",
-                    text: leafLevel.inputProperty("name")
-                }],
                 dataKey: "informant"
+            }, {
+                key: "name",
+                text: leafLevel.inputProperty("name"),
+                dataKey: "informant"
+
             }]
         }]
     },
@@ -2946,11 +3005,12 @@ var headerCustodian = exports.headerCustodian = {
                 attributes: {
                     root: leafLevel.inputProperty("id")
                 },
-                content: [{
-                    key: "name",
-                    text: leafLevel.inputProperty("name")
-                }],
                 dataKey: "custodian"
+            }, {
+                key: "name",
+                text: leafLevel.inputProperty("name"),
+                dataKey: "custodian"
+
             }]
         }]
     },
@@ -3235,7 +3295,41 @@ exports.problemsSectionEntriesRequired = {
             fieldLevel.templateCode("ProblemSection"),
             fieldLevel.templateTitle("ProblemSection"), {
                 key: "text",
-                text: ""
+                content: [{
+                    key: "table",
+                    content: [{
+                        key: "thead",
+                        content: [{
+                            key: "th",
+                            attributes: {
+                                colspan: "2"
+                            },
+                            text: "Problems"
+                        }, {
+                            key: "tr",
+                            content: [{
+                                key: "th",
+                                text: leafLevel.input,
+                                dataTransform: function () {
+                                    return ['Condition', 'Severity'];
+                                }
+                            }]
+                        }]
+                    }, {
+                        key: "tbody",
+                        content: [{
+                            key: "tr",
+                            content: [{
+                                key: "td",
+                                text: leafLevel.deepInputProperty("problem.code.name", nda)
+                            }, {
+                                key: "td",
+                                text: leafLevel.deepInputProperty("problem.severity.code.name", nda)
+                            }]
+                        }],
+                        dataKey: 'problems'
+                    }]
+                }]
             }, {
                 key: "entry",
                 attributes: {
@@ -3261,7 +3355,50 @@ exports.proceduresSectionEntriesRequired = {
             fieldLevel.templateCode("ProceduresSection"),
             fieldLevel.templateTitle("ProceduresSection"), {
                 key: "text",
-                text: ""
+                content: [{
+                    key: "table",
+                    content: [{
+                        key: "thead",
+                        content: [{
+                            key: "th",
+                            attributes: {
+                                colspan: "5"
+                            },
+                            text: "Procedures"
+                        }, {
+                            key: "tr",
+                            content: [{
+                                key: "th",
+                                text: leafLevel.input,
+                                dataTransform: function () {
+                                    return ['Service', 'Procedure code', 'Service date', 'Servicing provider', 'Phone#'];
+                                }
+                            }]
+                        }]
+                    }, {
+                        key: "tbody",
+                        content: [{
+                            key: "tr",
+                            content: [{
+                                key: "td",
+                                text: leafLevel.deepInputProperty("procedure.name", nda)
+                            }, {
+                                key: "td",
+                                text: leafLevel.deepInputProperty("procedure.code", nda)
+                            }, {
+                                key: "td",
+                                text: leafLevel.deepInputDate("date_time.point", nda)
+                            }, {
+                                key: "td",
+                                text: leafLevel.deepInputProperty("performer.0.organization.0.name.0", nda)
+                            }, {
+                                key: "td",
+                                text: leafLevel.deepInputProperty("performer.0.organization.0.phone.0.value.number", nda)
+                            }]
+                        }],
+                        dataKey: 'procedures'
+                    }]
+                }]
             }, {
                 key: "entry",
                 attributes: {
@@ -3476,7 +3613,50 @@ exports.payersSection = {
             fieldLevel.templateCode("PayersSection"),
             fieldLevel.templateTitle("PayersSection"), {
                 key: "text",
-                text: ""
+                content: [{
+                    key: "table",
+                    content: [{
+                        key: "thead",
+                        content: [{
+                            key: "th",
+                            attributes: {
+                                colspan: "5"
+                            },
+                            text: "Payers"
+                        }, {
+                            key: "tr",
+                            content: [{
+                                key: "th",
+                                text: leafLevel.input,
+                                dataTransform: function () {
+                                    return ['Payer Name', 'Group ID', 'Member ID', 'Elegibility Start Date', 'Elegibility End Date'];
+                                }
+                            }]
+                        }]
+                    }, {
+                        key: "tbody",
+                        content: [{
+                            key: "tr",
+                            content: [{
+                                key: "td",
+                                text: leafLevel.deepInputProperty("policy.insurance.performer.organization.0.name.0", nda)
+                            }, {
+                                key: "td",
+                                text: leafLevel.deepInputProperty("policy.identifiers.0.extension", nda)
+                            }, {
+                                key: "td",
+                                text: leafLevel.deepInputProperty("participant.performer.identifiers.0.extension", nda)
+                            }, {
+                                key: "td",
+                                text: leafLevel.deepInputProperty("participant.date_time.low.date", nda)
+                            }, {
+                                key: "td",
+                                text: leafLevel.deepInputProperty("participant.date_time.high.date", nda)
+                            }]
+                        }],
+                        dataKey: 'payers'
+                    }]
+                }]
             }, {
                 key: "entry",
                 attributes: {
@@ -3500,7 +3680,105 @@ exports.planOfCareSection = {
             fieldLevel.templateCode("PlanOfCareSection"),
             fieldLevel.templateTitle("PlanOfCareSection"), {
                 key: "text",
-                text: ""
+                content: [{
+                    key: "table",
+                    content: [{
+                        key: "thead",
+                        content: [{
+                            key: "th",
+                            attributes: {
+                                colspan: "4"
+                            },
+                            text: "Plan of Care"
+                        }, {
+                            key: "tr",
+                            content: [{
+                                key: "th",
+                                text: leafLevel.input,
+                                dataTransform: function () {
+                                    return ['Program', 'Start Date', 'Severity', ''];
+                                }
+                            }]
+                        }]
+                    }, {
+                        key: "tbody",
+                        content: [{
+                            key: "tr",
+                            content: [{
+                                key: "td",
+                                text: leafLevel.deepInputProperty("plan.name", nda)
+                            }, {
+                                key: "td",
+                                text: leafLevel.deepInputDate("date_time.low", nda)
+                            }, {
+                                key: "td",
+                                text: leafLevel.deepInputProperty("severity.name", nda)
+                            }, {
+                                key: "td",
+                                content: {
+
+                                    key: "table",
+                                    content: [{
+                                        key: "thead",
+                                        content: [{
+                                            key: "tr",
+                                            content: [{
+                                                key: "th",
+                                                text: leafLevel.input,
+                                                dataTransform: function () {
+                                                    return ['Goals', ''];
+                                                }
+                                            }]
+                                        }]
+                                    }, {
+                                        key: "tbody",
+                                        content: [{
+                                            key: "tr",
+                                            content: [{
+                                                key: "td",
+                                                text: leafLevel.deepInputProperty("goal.name", nda)
+                                            }, {
+                                                key: "td",
+                                                content: {
+
+                                                    key: "table",
+                                                    content: [{
+                                                        key: "thead",
+                                                        content: [{
+                                                            key: "tr",
+                                                            content: [{
+                                                                key: "th",
+                                                                text: leafLevel.input,
+                                                                dataTransform: function () {
+                                                                    return ['Interventions'];
+                                                                }
+                                                            }]
+                                                        }]
+                                                    }, {
+                                                        key: "tbody",
+                                                        content: [{
+                                                            key: "tr",
+                                                            content: [{
+                                                                key: "td",
+                                                                text: leafLevel.deepInputProperty("intervention.name", nda)
+                                                            }]
+                                                        }],
+                                                        dataKey: 'interventions'
+                                                    }]
+
+                                                }
+
+                                            }]
+                                        }],
+                                        dataKey: 'goals'
+                                    }]
+                                }
+
+                            }]
+                        }],
+                        dataKey: 'plan_of_care'
+                    }]
+                }]
             }, {
                 key: "entry",
                 attributes: {
