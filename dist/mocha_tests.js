@@ -3256,9 +3256,7 @@ var medicationsTextRow = [ // Name, did not find class in the medication blue-bu
         }
     },
     leafLevel.deepInputProperty("supply.repeatNumber", ""),
-    function () {
-        return nda;
-    }
+    leafLevel.deepInputDate("supply.date_time.point", "")
 ];
 
 exports.medicationsSectionEntriesRequired = {
