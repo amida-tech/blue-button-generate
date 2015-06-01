@@ -97,6 +97,12 @@ exports.keyExists = function (key) {
     };
 };
 
+exports.keyDoesntExist = function (key) {
+    return function (input) {
+        return !input.hasOwnProperty(key);
+    };
+};
+
 exports.eitherKeyExists = function (key0, key1, key2, key3) {
     return function (input) {
         return input.hasOwnProperty(key0) || input.hasOwnProperty(key1) || input.hasOwnProperty(key2) || input.hasOwnProperty(key3);
@@ -3158,6 +3164,8 @@ var bbuo = bbu.object;
 
 var nda = "No Data Available";
 
+var condition = require('./condition');
+
 var getText = function (topArrayKey, headers, values) {
     var result = {
         key: "text",
@@ -3226,7 +3234,12 @@ exports.allergiesSectionEntriesRequired = {
             fieldLevel.templateId("2.16.840.1.113883.10.20.22.2.6"),
             fieldLevel.templateId("2.16.840.1.113883.10.20.22.2.6.1"),
             fieldLevel.templateCode("AllergiesSection"),
-            fieldLevel.templateTitle("AllergiesSection"),
+            fieldLevel.templateTitle("AllergiesSection"), {
+                key: "text",
+                text: "Not Applicable",
+                existsWhen: condition.keyDoesntExist("allergies")
+
+            },
             getText('allergies', alllergiesTextHeaders, allergiesTextRow), {
                 key: "entry",
                 attributes: {
@@ -3267,7 +3280,12 @@ exports.medicationsSectionEntriesRequired = {
             fieldLevel.templateId("2.16.840.1.113883.10.20.22.2.1"),
             fieldLevel.templateId("2.16.840.1.113883.10.20.22.2.1.1"),
             fieldLevel.templateCode("MedicationsSection"),
-            fieldLevel.templateTitle("MedicationsSection"),
+            fieldLevel.templateTitle("MedicationsSection"), {
+                key: "text",
+                text: "Not Applicable",
+                existsWhen: condition.keyDoesntExist("medications")
+
+            },
             getText('medications', medicationsTextHeaders, medicationsTextRow), {
                 key: "entry",
                 attributes: {
@@ -3292,6 +3310,11 @@ exports.problemsSectionEntriesRequired = {
             fieldLevel.templateId("2.16.840.1.113883.10.20.22.2.5.1"),
             fieldLevel.templateCode("ProblemSection"),
             fieldLevel.templateTitle("ProblemSection"), {
+                key: "text",
+                text: "Not Applicable",
+                existsWhen: condition.keyDoesntExist("problems")
+
+            }, {
                 key: "text",
                 content: [{
                     key: "table",
@@ -3352,6 +3375,11 @@ exports.proceduresSectionEntriesRequired = {
             fieldLevel.templateId("2.16.840.1.113883.10.20.22.2.7.1"),
             fieldLevel.templateCode("ProceduresSection"),
             fieldLevel.templateTitle("ProceduresSection"), {
+                key: "text",
+                text: "Not Applicable",
+                existsWhen: condition.keyDoesntExist("procedures")
+
+            }, {
                 key: "text",
                 content: [{
                     key: "table",
@@ -3427,6 +3455,11 @@ exports.resultsSectionEntriesRequired = {
             fieldLevel.templateId("2.16.840.1.113883.10.20.22.2.3.1"),
             fieldLevel.templateCode("ResultsSection"),
             fieldLevel.templateTitle("ResultsSection"), {
+                key: "text",
+                text: "Not Applicable",
+                existsWhen: condition.keyDoesntExist("results")
+
+            }, {
                 key: "text",
                 content: [{
                     key: "table",
@@ -3513,6 +3546,11 @@ exports.encountersSectionEntriesOptional = {
             fieldLevel.templateCode("EncountersSection"),
             fieldLevel.templateTitle("EncountersSection"), {
                 key: "text",
+                text: "Not Applicable",
+                existsWhen: condition.keyDoesntExist("encounters")
+
+            }, {
+                key: "text",
                 content: [{
                     key: "table",
                     content: [{
@@ -3590,7 +3628,9 @@ exports.immunizationsSectionEntriesOptional = {
             fieldLevel.templateCode("ImmunizationsSection"),
             fieldLevel.templateTitle("ImmunizationsSection"), {
                 key: "text",
-                text: ""
+                text: "Not Applicable",
+                existsWhen: condition.keyDoesntExist("immunizations")
+
             }, {
                 key: "entry",
                 attributes: {
@@ -3613,6 +3653,11 @@ exports.payersSection = {
             fieldLevel.templateId("2.16.840.1.113883.10.20.22.2.18"),
             fieldLevel.templateCode("PayersSection"),
             fieldLevel.templateTitle("PayersSection"), {
+                key: "text",
+                text: "Not Applicable",
+                existsWhen: condition.keyDoesntExist("payers")
+
+            }, {
                 key: "text",
                 content: [{
                     key: "table",
@@ -3680,6 +3725,11 @@ exports.planOfCareSection = {
             fieldLevel.templateId("2.16.840.1.113883.10.20.22.2.10"),
             fieldLevel.templateCode("PlanOfCareSection"),
             fieldLevel.templateTitle("PlanOfCareSection"), {
+                key: "text",
+                text: "Not Applicable",
+                existsWhen: condition.keyDoesntExist("plan_of_care")
+
+            }, {
                 key: "text",
                 content: [{
                     key: "table",
@@ -3811,7 +3861,9 @@ exports.socialHistorySection = {
             fieldLevel.templateCode("SocialHistorySection"),
             fieldLevel.templateTitle("SocialHistorySection"), {
                 key: "text",
-                text: ""
+                text: "Not Applicable",
+                existsWhen: condition.keyDoesntExist("social_history")
+
             }, {
                 key: "entry",
                 attributes: {
@@ -3841,7 +3893,9 @@ exports.vitalSignsSectionEntriesOptional = {
             fieldLevel.templateCode("VitalSignsSection"),
             fieldLevel.templateTitle("VitalSignsSection"), {
                 key: "text",
-                text: ""
+                text: "Not Applicable",
+                existsWhen: condition.keyDoesntExist("vitals")
+
             }, {
                 key: "entry",
                 attributes: {
@@ -3856,7 +3910,7 @@ exports.vitalSignsSectionEntriesOptional = {
     }]
 };
 
-},{"./contentModifier":4,"./entryLevel":10,"./fieldLevel":20,"./leafLevel":22,"blue-button-util":35}],24:[function(require,module,exports){
+},{"./condition":3,"./contentModifier":4,"./entryLevel":10,"./fieldLevel":20,"./leafLevel":22,"blue-button-util":35}],24:[function(require,module,exports){
 "use strict";
 
 var moment = require("moment");
