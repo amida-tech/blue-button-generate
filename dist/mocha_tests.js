@@ -85,6 +85,7 @@ var generate = exports.generate = function (template, input, options) {
 exports.generateCCD = function (input, options) {
     options = options || {};
     options.meta = input.meta;
+    console.log(JSON.stringify(documentLevel, null, 4));
     return generate(documentLevel.ccd, input, options);
 };
 
