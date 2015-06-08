@@ -56,3 +56,9 @@ exports.generateCCD = function (input, options) {
     options.meta = input.meta;
     return generate(documentLevel.ccd, input, options);
 };
+
+exports.fieldLevel = require("./lib/fieldLevel");
+exports.entryLevel = require("./lib/entryLevel");
+exports.leafLevel = require('./lib/leafLevel');
+exports.contentModifier = require("./lib/contentModifier");
+exports.condition = require('./lib/condition');
