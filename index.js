@@ -12,6 +12,8 @@ var documentLevel = require('./lib/documentLevel');
 
 var bbuo = bbu.object;
 
+var html_renderer = require('./lib/htmlHeaders');
+
 var createContext = (function () {
     var base = {
         nextReference: function (referenceKey) {
@@ -41,8 +43,12 @@ var createContext = (function () {
 })();
 
 var generate = exports.generate = function (template, input, options) {
+    if (!options.html_renderer) {
+        options.html_renderer = html_renderer;
+    }
+
     var context = createContext(options);
-    return engine.create(documentLevel.ccd, input, context);
+    return engine.create(documentLevel.ccd2(options.html_renderer), input, context);
 };
 
 exports.generateCCD = function (input, options) {

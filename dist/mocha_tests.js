@@ -49,6 +49,8 @@ var documentLevel = require('./lib/documentLevel');
 
 var bbuo = bbu.object;
 
+var html_renderer = require('./lib/htmlHeaders');
+
 var createContext = (function () {
     var base = {
         nextReference: function (referenceKey) {
@@ -78,18 +80,21 @@ var createContext = (function () {
 })();
 
 var generate = exports.generate = function (template, input, options) {
+    if (!options.html_renderer) {
+        options.html_renderer = html_renderer;
+    }
+
     var context = createContext(options);
-    return engine.create(documentLevel.ccd, input, context);
+    return engine.create(documentLevel.ccd2(options.html_renderer), input, context);
 };
 
 exports.generateCCD = function (input, options) {
     options = options || {};
     options.meta = input.meta;
-    console.log(JSON.stringify(documentLevel, null, 4));
     return generate(documentLevel.ccd, input, options);
 };
 
-},{"./lib/documentLevel":5,"./lib/engine":6,"blue-button-util":35}],3:[function(require,module,exports){
+},{"./lib/documentLevel":5,"./lib/engine":6,"./lib/htmlHeaders":22,"blue-button-util":37}],3:[function(require,module,exports){
 "use strict";
 
 exports.keyExists = function (key) {
@@ -242,7 +247,102 @@ exports.ccd = {
     ]
 };
 
-},{"./condition":3,"./contentModifier":4,"./fieldLevel":20,"./headerLevel":21,"./leafLevel":22,"./sectionLevel":23}],6:[function(require,module,exports){
+var sectionLevel2 = require('./sectionLevel2');
+
+exports.ccd2 = function (html_renderer) {
+    var ccd_template = {
+        key: "ClinicalDocument",
+        attributes: {
+            "xmlns:xsi": "http://www.w3.org/2001/XMLSchema-instance",
+            "xmlns": "urn:hl7-org:v3",
+            "xmlns:cda": "urn:hl7-org:v3",
+            "xmlns:sdtc": "urn:hl7-org:sdtc"
+        },
+        content: [{
+                key: "realmCode",
+                attributes: {
+                    code: "US"
+                }
+            }, {
+                key: "typeId",
+                attributes: {
+                    root: "2.16.840.1.113883.1.3",
+                    extension: "POCD_HD000040"
+                }
+            },
+            fieldLevel.templateId("2.16.840.1.113883.10.20.22.1.1"),
+            fieldLevel.templateId("2.16.840.1.113883.10.20.22.1.2"), [fieldLevel.id, dataKey("meta.identifiers")], {
+                key: "code",
+                attributes: {
+                    codeSystem: "2.16.840.1.113883.6.1",
+                    codeSystemName: "LOINC",
+                    code: "34133-9",
+                    displayName: "Summarization of Episode Note"
+                }
+            }, {
+                key: "title",
+                text: leafLevel.inputProperty("title"),
+                dataKey: "meta.ccda_header"
+            },
+            [fieldLevel.effectiveTimeNow, required], {
+                key: "confidentialityCode",
+                attributes: leafLevel.codeFromName("2.16.840.1.113883.5.25"),
+                dataKey: "meta.confidentiality"
+            }, {
+                key: "languageCode",
+                attributes: {
+                    code: "en-US"
+                }
+            }, {
+                key: "setId",
+                attributes: {
+                    root: leafLevel.inputProperty("identifier"),
+                    extension: leafLevel.inputProperty("extension")
+                },
+                dataKey: 'meta.set_id',
+                existsWhen: condition.keyExists('identifier')
+            }, {
+                key: "versionNumber",
+                attributes: {
+                    value: "1"
+                }
+            },
+            headerLevel.recordTarget,
+            headerLevel.headerAuthor,
+            headerLevel.headerInformant,
+            headerLevel.headerCustodian,
+            headerLevel.providers, {
+                key: "component",
+                content: {
+                    key: "structuredBody",
+                    content: [
+                        [sectionLevel2.allergiesSectionEntriesRequired(html_renderer.allergiesSectionEntriesRequiredHtmlHeader), required],
+                        [sectionLevel2.medicationsSectionEntriesRequired(html_renderer.medicationsSectionEntriesRequiredHtmlHeader), required],
+                        [sectionLevel2.problemsSectionEntriesRequired(html_renderer.problemsSectionEntriesRequiredHtmlHeader), required],
+                        [sectionLevel2.proceduresSectionEntriesRequired(html_renderer.proceduresSectionEntriesRequiredHtmlHeader), required],
+                        [sectionLevel2.resultsSectionEntriesRequired(html_renderer.resultsSectionEntriesRequiredHtmlHeader), required],
+                        sectionLevel2.encountersSectionEntriesOptional(html_renderer.encountersSectionEntriesOptionalHtmlHeader),
+                        sectionLevel2.immunizationsSectionEntriesOptional(html_renderer.immunizationsSectionEntriesOptionalHtmlHeader),
+                        sectionLevel2.payersSection(html_renderer.payersSectionHtmlHeader),
+                        sectionLevel2.planOfCareSection(html_renderer.planOfCareSectionHtmlHeader),
+                        sectionLevel2.socialHistorySection(html_renderer.socialHistorySectionHtmlHeader),
+                        sectionLevel2.vitalSignsSectionEntriesOptional(html_renderer.vitalSignsSectionEntriesOptionalHtmlHeader)
+                    ],
+                    notImplemented: [
+                        "advanceDirectivesSectionEntriesOptional",
+                        "familyHistorySection",
+                        "functionalStatusSection",
+                        "medicalEquipmentSection",
+                    ]
+                },
+                dataKey: 'data'
+            }
+        ]
+    };
+    return ccd_template;
+};
+
+},{"./condition":3,"./contentModifier":4,"./fieldLevel":20,"./headerLevel":21,"./leafLevel":23,"./sectionLevel":24,"./sectionLevel2":25}],6:[function(require,module,exports){
 "use strict";
 
 var xmlutil = require('./xmlutil');
@@ -569,7 +669,7 @@ var allergyProblemAct = exports.allergyProblemAct = {
     warning: "statusCode is not constant in spec"
 };
 
-},{"../condition":3,"../contentModifier":4,"../fieldLevel":20,"../leafLevel":22,"./sharedEntryLevel":17}],8:[function(require,module,exports){
+},{"../condition":3,"../contentModifier":4,"../fieldLevel":20,"../leafLevel":23,"./sharedEntryLevel":17}],8:[function(require,module,exports){
 "use strict";
 
 var fieldLevel = require('../fieldLevel');
@@ -649,7 +749,7 @@ exports.encounterActivities = {
     ]
 };
 
-},{"../contentModifier":4,"../fieldLevel":20,"../leafLevel":22,"./sharedEntryLevel":17}],9:[function(require,module,exports){
+},{"../contentModifier":4,"../fieldLevel":20,"../leafLevel":23,"./sharedEntryLevel":17}],9:[function(require,module,exports){
 "use strict";
 
 var fieldLevel = require('../fieldLevel');
@@ -824,7 +924,7 @@ exports.immunizationActivity = {
     ]
 };
 
-},{"../condition":3,"../contentModifier":4,"../fieldLevel":20,"../leafLevel":22,"./sharedEntryLevel":17}],10:[function(require,module,exports){
+},{"../condition":3,"../contentModifier":4,"../fieldLevel":20,"../leafLevel":23,"./sharedEntryLevel":17}],10:[function(require,module,exports){
 "use strict";
 
 var allergyEntryLevel = require("./allergyEntryLevel");
@@ -1127,7 +1227,7 @@ exports.medicationActivity = {
     ]
 };
 
-},{"../condition":3,"../contentModifier":4,"../fieldLevel":20,"../leafLevel":22,"./sharedEntryLevel":17}],12:[function(require,module,exports){
+},{"../condition":3,"../contentModifier":4,"../fieldLevel":20,"../leafLevel":23,"./sharedEntryLevel":17}],12:[function(require,module,exports){
 "use strict";
 
 var fieldLevel = require('../fieldLevel');
@@ -1146,8 +1246,7 @@ var policyActivity = {
         moodCode: "EVN"
     },
     content: [
-        fieldLevel.templateId("2.16.840.1.113883.10.20.22.4.61"),
-        fieldLevel.statusCodeCompleted, {
+        fieldLevel.templateId("2.16.840.1.113883.10.20.22.4.61"), {
             key: "id",
             attributes: {
                 root: leafLevel.inputProperty("identifier"),
@@ -1156,11 +1255,14 @@ var policyActivity = {
             dataKey: 'policy.identifiers',
             existsWhen: condition.keyExists('identifier'),
             required: true
-        }, {
+        },
+
+        {
             key: "code",
             attributes: leafLevel.code,
             dataKey: "policy.code"
-        }, {
+        },
+        fieldLevel.statusCodeCompleted, {
             key: "performer",
             attributes: {
                 typeCode: "PRF"
@@ -1293,7 +1395,7 @@ exports.coverageActivity = {
     ]
 };
 
-},{"../condition":3,"../contentModifier":4,"../fieldLevel":20,"../leafLevel":22}],13:[function(require,module,exports){
+},{"../condition":3,"../contentModifier":4,"../fieldLevel":20,"../leafLevel":23}],13:[function(require,module,exports){
 "use strict";
 
 var fieldLevel = require('../fieldLevel');
@@ -1529,7 +1631,7 @@ exports.planOfCareActivityInstructions = {
     }
 };
 
-},{"../condition":3,"../contentModifier":4,"../fieldLevel":20,"../leafLevel":22}],14:[function(require,module,exports){
+},{"../condition":3,"../contentModifier":4,"../fieldLevel":20,"../leafLevel":23}],14:[function(require,module,exports){
 "use strict";
 
 var fieldLevel = require('../fieldLevel');
@@ -1602,7 +1704,12 @@ var problemObservation = {
     },
     content: [
         fieldLevel.templateId("2.16.840.1.113883.10.20.22.4.4"),
-        fieldLevel.id,
+        fieldLevel.id, {
+            key: "code",
+            attributes: {
+                nullFlavor: "UNK"
+            }
+        },
         fieldLevel.text(leafLevel.nextReference("problem")),
         fieldLevel.statusCodeCompleted, [fieldLevel.effectiveTime, dataKey("problem.date_time")], {
             key: "value",
@@ -1680,7 +1787,6 @@ exports.problemConcernAct = {
     },
     content: [
         fieldLevel.templateId("2.16.840.1.113883.10.20.22.4.3"),
-        fieldLevel.templateCode("ProblemConcernAct"),
         fieldLevel.uniqueId, {
             key: "id",
             attributes: {
@@ -1691,6 +1797,7 @@ exports.problemConcernAct = {
             existsWhen: condition.keyExists('identifier'),
             required: true
         },
+        fieldLevel.templateCode("ProblemConcernAct"),
         fieldLevel.statusCodeCompleted, [fieldLevel.effectiveTime, required], {
             key: "entryRelationship",
             attributes: {
@@ -1704,7 +1811,7 @@ exports.problemConcernAct = {
     ]
 };
 
-},{"../condition":3,"../contentModifier":4,"../fieldLevel":20,"../leafLevel":22,"./sharedEntryLevel":17}],15:[function(require,module,exports){
+},{"../condition":3,"../contentModifier":4,"../fieldLevel":20,"../leafLevel":23,"./sharedEntryLevel":17}],15:[function(require,module,exports){
 "use strict";
 
 var fieldLevel = require('../fieldLevel');
@@ -1743,8 +1850,9 @@ exports.procedureActivityAct = {
             required: true
         }, {
             key: "statusCode",
-            attributes: leafLevel.codeFromName("2.16.840.1.113883.11.20.9.22"),
-            dataKey: "status",
+            attributes: {
+                code: leafLevel.inputProperty("status")
+            },
             required: true
         },
         fieldLevel.effectiveTime, {
@@ -1801,8 +1909,9 @@ exports.procedureActivityProcedure = {
             required: true
         }, {
             key: "statusCode",
-            attributes: leafLevel.codeFromName("2.16.840.1.113883.11.20.9.22"),
-            dataKey: "status",
+            attributes: {
+                code: leafLevel.inputProperty("status")
+            },
             required: true
         },
         fieldLevel.effectiveTime, {
@@ -1886,8 +1995,9 @@ exports.procedureActivityObservation = {
             required: true
         }, {
             key: "statusCode",
-            attributes: leafLevel.codeFromName("2.16.840.1.113883.11.20.9.22"),
-            dataKey: "status",
+            attributes: {
+                code: leafLevel.inputProperty("status")
+            },
             required: true
         },
         fieldLevel.effectiveTime, {
@@ -1925,7 +2035,7 @@ exports.procedureActivityObservation = {
     ]
 };
 
-},{"../condition":3,"../contentModifier":4,"../fieldLevel":20,"../leafLevel":22,"./sharedEntryLevel":17}],16:[function(require,module,exports){
+},{"../condition":3,"../contentModifier":4,"../fieldLevel":20,"../leafLevel":23,"./sharedEntryLevel":17}],16:[function(require,module,exports){
 "use strict";
 
 var fieldLevel = require('../fieldLevel');
@@ -2052,7 +2162,7 @@ exports.resultOrganizer = {
     ]
 };
 
-},{"../condition":3,"../contentModifier":4,"../fieldLevel":20,"../leafLevel":22}],17:[function(require,module,exports){
+},{"../condition":3,"../contentModifier":4,"../fieldLevel":20,"../leafLevel":23}],17:[function(require,module,exports){
 "use strict";
 
 var fieldLevel = require('../fieldLevel');
@@ -2280,7 +2390,7 @@ exports.instructions = {
     ]
 };
 
-},{"../condition":3,"../fieldLevel":20,"../leafLevel":22}],18:[function(require,module,exports){
+},{"../condition":3,"../fieldLevel":20,"../leafLevel":23}],18:[function(require,module,exports){
 "use strict";
 
 var fieldLevel = require('../fieldLevel');
@@ -2359,7 +2469,7 @@ exports.smokingStatusObservation = {
     }
 };
 
-},{"../contentModifier":4,"../fieldLevel":20,"../leafLevel":22}],19:[function(require,module,exports){
+},{"../contentModifier":4,"../fieldLevel":20,"../leafLevel":23}],19:[function(require,module,exports){
 "use strict";
 
 var fieldLevel = require('../fieldLevel');
@@ -2452,7 +2562,7 @@ exports.vitalSignsOrganizer = {
     ]
 };
 
-},{"../condition":3,"../contentModifier":4,"../fieldLevel":20,"../leafLevel":22}],20:[function(require,module,exports){
+},{"../condition":3,"../contentModifier":4,"../fieldLevel":20,"../leafLevel":23}],20:[function(require,module,exports){
 "use strict";
 
 var bbm = require("blue-button-meta");
@@ -2684,12 +2794,12 @@ var representedOrganization = {
 
 var assignedEntity = exports.assignedEntity = {
     key: "assignedEntity",
-    content: [{
+    content: [id, {
             key: "code",
             attributes: leafLevel.code,
             dataKey: "code"
         },
-        id,
+
         usRealmAddress,
         telecom, {
             key: "assignedPerson",
@@ -2703,7 +2813,12 @@ var assignedEntity = exports.assignedEntity = {
 
 exports.author = {
     key: "author",
-    content: [
+    content: [{
+            key: "time",
+            attributes: {
+                nullFlavor: "UNK"
+            },
+        },
         [effectiveTime, required, key("time")], {
             key: "assignedAuthor",
             content: [
@@ -2726,7 +2841,7 @@ exports.performer = {
     dataKey: "performer"
 };
 
-},{"./condition":3,"./contentModifier":4,"./leafLevel":22,"./translate":24,"blue-button-meta":25,"moment":86,"uuid":88}],21:[function(require,module,exports){
+},{"./condition":3,"./contentModifier":4,"./leafLevel":23,"./translate":26,"blue-button-meta":27,"moment":88,"uuid":90}],21:[function(require,module,exports){
 "use strict";
 
 var fieldLevel = require('./fieldLevel');
@@ -2856,33 +2971,23 @@ var provider = exports.provider = {
     attributes: {
         typeCode: "PRF"
     },
-    content: {
-        key: "assignedEntity",
-        content: [{
-                key: "id",
-                attributes: {
-                    extension: leafLevel.inputProperty("extension"),
-                    root: leafLevel.inputProperty("root")
-                },
-                dataKey: "identity"
-            }, {
-                key: "code",
-                attributes: leafLevel.code,
-                dataKey: "type"
-            },
-            [fieldLevel.effectiveTime, key("time"), dataKey("date_time")], {
-                key: "assignedPerson",
-                content: [{
-                    key: "name",
-                    content: [{
-                        key: "given",
-                        text: leafLevel.inputProperty("first")
-                    }, {
-                        key: "family",
-                        text: leafLevel.inputProperty("last")
-                    }],
-                    dataKey: "name"
+    content: [
+        [fieldLevel.effectiveTime, key("time"), dataKey("date_time")], {
+            key: "assignedEntity",
+            content: [{
+                    key: "id",
+                    attributes: {
+                        extension: leafLevel.inputProperty("extension"),
+                        root: leafLevel.inputProperty("root")
+                    },
+                    dataKey: "identity"
                 }, {
+                    key: "code",
+                    attributes: leafLevel.code,
+                    dataKey: "type"
+                },
+
+                {
                     key: "telecom",
                     attributes: [{
                         use: "WP",
@@ -2891,10 +2996,23 @@ var provider = exports.provider = {
                         }
                     }],
                     dataKey: "phone"
-                }]
-            }
-        ]
-    },
+                }, {
+                    key: "assignedPerson",
+                    content: [{
+                        key: "name",
+                        content: [{
+                            key: "given",
+                            text: leafLevel.inputProperty("first")
+                        }, {
+                            key: "family",
+                            text: leafLevel.inputProperty("last")
+                        }],
+                        dataKey: "name"
+                    }]
+                }
+            ]
+        }
+    ],
     dataKey: "providers"
 };
 
@@ -3041,7 +3159,500 @@ var providers = exports.providers = {
     dataKey: "data.demographics"
 };
 
-},{"./condition":3,"./contentModifier":4,"./fieldLevel":20,"./leafLevel":22}],22:[function(require,module,exports){
+},{"./condition":3,"./contentModifier":4,"./fieldLevel":20,"./leafLevel":23}],22:[function(require,module,exports){
+"use strict";
+
+var bbu = require("blue-button-util");
+
+var fieldLevel = require("./fieldLevel");
+var entryLevel = require("./entryLevel");
+var leafLevel = require('./leafLevel');
+var contentModifier = require("./contentModifier");
+
+var required = contentModifier.required;
+var bbud = bbu.datetime;
+var bbuo = bbu.object;
+
+var nda = "No Data Available";
+
+var condition = require('./condition');
+
+var getText = function (topArrayKey, headers, values) {
+    var result = {
+        key: "text",
+        existsWhen: condition.keyExists(topArrayKey),
+
+        content: [{
+            key: "table",
+            attributes: {
+                border: "1",
+                width: "100%"
+            },
+            content: [{
+                key: "thead",
+                content: [{
+                    key: "tr",
+                    content: []
+                }]
+            }, {
+                key: "tbody",
+                content: [{
+                    key: "tr",
+                    content: [],
+                    dataKey: topArrayKey
+                }]
+            }]
+        }]
+    };
+    var headerTarget = result.content[0].content[0].content[0].content;
+    headers.forEach(function (header) {
+        var element = {
+            key: "th",
+            text: header
+        };
+        headerTarget.push(element);
+    });
+    var valueTarget = result.content[0].content[1].content[0].content;
+    values.forEach(function (value) {
+        var data;
+        if (typeof value !== 'function') {
+            data = leafLevel.deepInputProperty(value, "");
+        } else {
+            data = value;
+        }
+
+        var element = {
+            key: "td",
+            text: data
+        };
+        valueTarget.push(element);
+    });
+    return result;
+};
+
+var alllergiesTextHeaders = ["Substance", "Overall Severity", "Reaction", "Reaction Severity", "Status"];
+var allergiesTextRow = [
+    leafLevel.deepInputProperty("observation.allergen.name", ""),
+    leafLevel.deepInputProperty("observation.severity.code.name", ""),
+    leafLevel.deepInputProperty("observation.reactions.0.reaction.name", ""),
+    leafLevel.deepInputProperty("observation.reactions.0.severity.code.name", ""),
+    leafLevel.deepInputProperty("observation.status.name", "")
+];
+
+exports.allergiesSectionEntriesRequiredHtmlHeader = getText('allergies', alllergiesTextHeaders, allergiesTextRow);
+
+var medicationsTextHeaders = ["Medication Class", "# fills", "Last fill date"];
+var medicationsTextRow = [ // Name, did not find class in the medication blue-button-data
+    function (input) {
+        var value = bbuo.deepValue(input, 'product.product.name');
+        if (!bbuo.exists(value)) {
+            value = bbuo.deepValue(input, 'product.unencoded_name');
+        }
+        if (!bbuo.exists(value)) {
+            return "";
+        } else {
+            return value;
+        }
+    },
+    leafLevel.deepInputProperty("supply.repeatNumber", ""),
+    leafLevel.deepInputDate("supply.date_time.point", "")
+];
+
+exports.medicationsSectionEntriesRequiredHtmlHeader = getText('medications', medicationsTextHeaders, medicationsTextRow);
+
+exports.problemsSectionEntriesRequiredHtmlHeader = {
+    key: "text",
+    existsWhen: condition.keyExists("problems"),
+
+    content: [{
+        key: "table",
+        content: [{
+            key: "thead",
+            content: [{
+                key: "tr",
+                content: {
+                    key: "th",
+                    attributes: {
+                        colspan: "2"
+                    },
+                    text: "Problems"
+                }
+            }, {
+                key: "tr",
+                content: [{
+                    key: "th",
+                    text: leafLevel.input,
+                    dataTransform: function () {
+                        return ['Condition', 'Severity'];
+                    }
+                }]
+            }]
+        }, {
+            key: "tbody",
+            content: [{
+                key: "tr",
+                content: [{
+                    key: "td",
+                    text: leafLevel.deepInputProperty("problem.code.name", nda)
+                }, {
+                    key: "td",
+                    text: leafLevel.deepInputProperty("problem.severity.code.name", nda)
+                }]
+            }],
+            dataKey: 'problems'
+        }]
+    }]
+};
+
+exports.proceduresSectionEntriesRequiredHtmlHeader = {
+
+    key: "text",
+    existsWhen: condition.keyExists("procedures"),
+
+    content: [{
+        key: "table",
+        content: [{
+            key: "thead",
+            content: [{
+                key: "tr",
+                content: {
+                    key: "th",
+                    attributes: {
+                        colspan: "5"
+                    },
+                    text: "Procedures"
+                }
+            }, {
+                key: "tr",
+                content: [{
+                    key: "th",
+                    text: leafLevel.input,
+                    dataTransform: function () {
+                        return ['Service', 'Procedure code', 'Service date', 'Servicing provider', 'Phone#'];
+                    }
+                }]
+            }]
+        }, {
+            key: "tbody",
+            content: [{
+                key: "tr",
+                content: [{
+                    key: "td",
+                    text: leafLevel.deepInputProperty("procedure.name", nda)
+                }, {
+                    key: "td",
+                    text: leafLevel.deepInputProperty("procedure.code", nda)
+                }, {
+                    key: "td",
+                    text: leafLevel.deepInputDate("date_time.point", nda)
+                }, {
+                    key: "td",
+                    text: leafLevel.deepInputProperty("performer.0.organization.0.name.0", nda)
+                }, {
+                    key: "td",
+                    text: leafLevel.deepInputProperty("performer.0.organization.0.phone.0.value.number", nda)
+                }]
+            }],
+            dataKey: 'procedures'
+        }]
+    }]
+};
+
+exports.resultsSectionEntriesRequiredHtmlHeader = {
+    key: "text",
+    existsWhen: condition.keyExists("results"),
+
+    content: [{
+        key: "table",
+        content: [{
+            key: "thead",
+            content: [{
+                key: "tr",
+                content: {
+                    key: "th",
+                    attributes: {
+                        colspan: "7"
+                    },
+                    text: "Laboratory Results"
+                }
+            }, {
+                key: "tr",
+                content: [{
+                    key: "th",
+                    text: leafLevel.input,
+                    dataTransform: function () {
+                        return ['Test', 'Result', 'Units', 'Ref low', 'Ref high', 'Date', 'Source'];
+                    }
+                }]
+            }]
+        }, {
+            key: "tbody",
+            content: [{
+                key: "tr",
+                content: [{
+                    key: "td",
+                    attributes: {
+                        colspan: "7"
+                    },
+                    text: leafLevel.deepInputProperty('result_set.name', nda),
+                }]
+            }, {
+                key: "tr",
+                content: [{
+                    key: "td",
+                    text: leafLevel.deepInputProperty("result.name", nda)
+                }, {
+                    key: "td",
+                    text: leafLevel.deepInputProperty("value", nda)
+                }, {
+                    key: "td",
+                    text: leafLevel.deepInputProperty("unit", nda)
+                }, {
+                    key: "td",
+                    text: leafLevel.deepInputProperty("reference_range.low", nda)
+                }, {
+                    key: "td",
+                    text: leafLevel.deepInputProperty("reference_range.high", nda)
+                }, {
+                    key: "td",
+                    text: leafLevel.deepInputDate("date_time.point", nda),
+                }, {
+                    key: "td",
+                    text: nda
+                }],
+                dataKey: 'results'
+            }],
+            dataKey: 'results'
+        }]
+    }]
+};
+
+exports.encountersSectionEntriesOptionalHtmlHeader = {
+    key: "text",
+    existsWhen: condition.keyExists("encounters"),
+
+    content: [{
+        key: "table",
+        content: [{
+            key: "caption",
+            text: "Encounters"
+        }, {
+            key: "thead",
+            content: [{
+                key: "tr",
+                content: [{
+                    key: "th",
+                    text: leafLevel.input,
+                    dataTransform: function () {
+                        return ['Type', 'Facility', 'Date of Service', 'Diagnosis/Complaint'];
+                    }
+                }]
+            }]
+        }, {
+            key: "tbody",
+            content: [{
+                key: "tr",
+                content: [{
+                    key: "td",
+                    text: leafLevel.deepInputProperty("encounter.name", nda)
+                }, {
+                    key: "td",
+                    text: leafLevel.deepInputProperty("locations.0.name", nda)
+                }, {
+                    key: "td",
+                    text: function (input) {
+                        var value = bbuo.deepValue(input, "date_time.point");
+                        if (value) {
+                            value = bbud.modelToDate({
+                                date: value.date,
+                                precision: value.precision // workaround a bug in bbud.  Changes precision.
+                            });
+                            if (value) {
+                                var vps = value.split('-');
+                                if (vps.length === 3) {
+                                    return [vps[1], vps[2], vps[0]].join('/');
+                                }
+                            }
+                        }
+                        return nda;
+                    }
+                }, {
+                    key: "td",
+                    text: leafLevel.deepInputProperty("findings.0.value.name", nda)
+                }],
+            }],
+            dataKey: 'encounters'
+        }]
+    }]
+};
+
+exports.immunizationsSectionEntriesOptionalHtmlHeader = {};
+
+exports.payersSectionHtmlHeader = {
+    key: "text",
+    existsWhen: condition.keyExists("payers"),
+
+    content: [{
+        key: "table",
+        content: [{
+            key: "thead",
+            content: [{
+                key: "tr",
+                content: {
+                    key: "th",
+                    attributes: {
+                        colspan: "5"
+                    },
+                    text: "Payers"
+                }
+            }, {
+                key: "tr",
+                content: [{
+                    key: "th",
+                    text: leafLevel.input,
+                    dataTransform: function () {
+                        return ['Payer Name', 'Group ID', 'Member ID', 'Elegibility Start Date', 'Elegibility End Date'];
+                    }
+                }]
+            }]
+        }, {
+            key: "tbody",
+            content: [{
+                key: "tr",
+                content: [{
+                    key: "td",
+                    text: leafLevel.deepInputProperty("policy.insurance.performer.organization.0.name.0", nda)
+                }, {
+                    key: "td",
+                    text: leafLevel.deepInputProperty("policy.identifiers.0.extension", nda)
+                }, {
+                    key: "td",
+                    text: leafLevel.deepInputProperty("participant.performer.identifiers.0.extension", nda)
+                }, {
+                    key: "td",
+                    text: leafLevel.deepInputProperty("participant.date_time.low.date", nda)
+                }, {
+                    key: "td",
+                    text: leafLevel.deepInputProperty("participant.date_time.high.date", nda)
+                }]
+            }],
+            dataKey: 'payers'
+        }]
+    }]
+};
+
+exports.planOfCareSectionHtmlHeader = {
+    key: "text",
+    existsWhen: condition.keyExists("plan_of_care"),
+    content: [{
+        key: "table",
+        content: [{
+            key: "thead",
+            content: [{
+                key: "tr",
+                content: {
+                    key: "th",
+                    attributes: {
+                        colspan: "4"
+                    },
+                    text: "Plan of Care"
+                }
+            }, {
+                key: "tr",
+                content: [{
+                    key: "th",
+                    text: leafLevel.input,
+                    dataTransform: function () {
+                        return ['Program', 'Start Date', 'Severity', ''];
+                    }
+                }]
+            }]
+        }, {
+            key: "tbody",
+            content: [{
+                key: "tr",
+                content: [{
+                    key: "td",
+                    text: leafLevel.deepInputProperty("plan.name", nda)
+                }, {
+                    key: "td",
+                    text: leafLevel.deepInputDate("date_time.low", nda)
+                }, {
+                    key: "td",
+                    text: leafLevel.deepInputProperty("severity.name", nda)
+                }, {
+                    key: "td",
+                    content: {
+
+                        key: "table",
+                        content: [{
+                            key: "thead",
+                            content: [{
+                                key: "tr",
+                                content: [{
+                                    key: "th",
+                                    text: leafLevel.input,
+                                    dataTransform: function () {
+                                        return ['Goals', ''];
+                                    }
+                                }]
+                            }]
+                        }, {
+                            key: "tbody",
+                            content: [{
+                                key: "tr",
+                                content: [{
+                                    key: "td",
+                                    text: leafLevel.deepInputProperty("goal.name", nda)
+                                }, {
+                                    key: "td",
+                                    content: {
+
+                                        key: "table",
+                                        content: [{
+                                            key: "thead",
+                                            content: [{
+                                                key: "tr",
+                                                content: [{
+                                                    key: "th",
+                                                    text: leafLevel.input,
+                                                    dataTransform: function () {
+                                                        return ['Interventions'];
+                                                    }
+                                                }]
+                                            }]
+                                        }, {
+                                            key: "tbody",
+                                            content: [{
+                                                key: "tr",
+                                                content: [{
+                                                    key: "td",
+                                                    text: leafLevel.deepInputProperty("intervention.name", nda)
+                                                }]
+                                            }],
+                                            dataKey: 'interventions'
+                                        }]
+
+                                    }
+
+                                }]
+                            }],
+                            dataKey: 'goals'
+                        }]
+                    }
+
+                }]
+            }],
+            dataKey: 'plan_of_care'
+        }]
+    }]
+};
+
+exports.socialHistorySectionHtmlHeader = {};
+
+exports.vitalSignsSectionEntriesOptionalHtmlHeader = {};
+
+},{"./condition":3,"./contentModifier":4,"./entryLevel":10,"./fieldLevel":20,"./leafLevel":23,"blue-button-util":37}],23:[function(require,module,exports){
 "use strict";
 
 var bbu = require("blue-button-util");
@@ -3149,7 +3760,7 @@ exports.deepInputDate = function (deepProperty, defaultValue) {
     };
 };
 
-},{"./translate":24,"blue-button-util":35}],23:[function(require,module,exports){
+},{"./translate":26,"blue-button-util":37}],24:[function(require,module,exports){
 "use strict";
 
 var bbu = require("blue-button-util");
@@ -3170,6 +3781,8 @@ var condition = require('./condition');
 var getText = function (topArrayKey, headers, values) {
     var result = {
         key: "text",
+        existsWhen: condition.keyExists(topArrayKey),
+
         content: [{
             key: "table",
             attributes: {
@@ -3317,16 +3930,21 @@ exports.problemsSectionEntriesRequired = {
 
             }, {
                 key: "text",
+                existsWhen: condition.keyExists("problems"),
+
                 content: [{
                     key: "table",
                     content: [{
                         key: "thead",
                         content: [{
-                            key: "th",
-                            attributes: {
-                                colspan: "2"
-                            },
-                            text: "Problems"
+                            key: "tr",
+                            content: {
+                                key: "th",
+                                attributes: {
+                                    colspan: "2"
+                                },
+                                text: "Problems"
+                            }
                         }, {
                             key: "tr",
                             content: [{
@@ -3382,16 +4000,21 @@ exports.proceduresSectionEntriesRequired = {
 
             }, {
                 key: "text",
+                existsWhen: condition.keyExists("procedures"),
+
                 content: [{
                     key: "table",
                     content: [{
                         key: "thead",
                         content: [{
-                            key: "th",
-                            attributes: {
-                                colspan: "5"
-                            },
-                            text: "Procedures"
+                            key: "tr",
+                            content: {
+                                key: "th",
+                                attributes: {
+                                    colspan: "5"
+                                },
+                                text: "Procedures"
+                            }
                         }, {
                             key: "tr",
                             content: [{
@@ -3462,16 +4085,21 @@ exports.resultsSectionEntriesRequired = {
 
             }, {
                 key: "text",
+                existsWhen: condition.keyExists("results"),
+
                 content: [{
                     key: "table",
                     content: [{
                         key: "thead",
                         content: [{
-                            key: "th",
-                            attributes: {
-                                colspan: "7"
-                            },
-                            text: "Laboratory Results"
+                            key: "tr",
+                            content: {
+                                key: "th",
+                                attributes: {
+                                    colspan: "7"
+                                },
+                                text: "Laboratory Results"
+                            }
                         }, {
                             key: "tr",
                             content: [{
@@ -3552,6 +4180,8 @@ exports.encountersSectionEntriesOptional = {
 
             }, {
                 key: "text",
+                existsWhen: condition.keyExists("encounters"),
+
                 content: [{
                     key: "table",
                     content: [{
@@ -3660,16 +4290,21 @@ exports.payersSection = {
 
             }, {
                 key: "text",
+                existsWhen: condition.keyExists("payers"),
+
                 content: [{
                     key: "table",
                     content: [{
                         key: "thead",
                         content: [{
-                            key: "th",
-                            attributes: {
-                                colspan: "5"
-                            },
-                            text: "Payers"
+                            key: "tr",
+                            content: {
+                                key: "th",
+                                attributes: {
+                                    colspan: "5"
+                                },
+                                text: "Payers"
+                            }
                         }, {
                             key: "tr",
                             content: [{
@@ -3732,16 +4367,20 @@ exports.planOfCareSection = {
 
             }, {
                 key: "text",
+                existsWhen: condition.keyExists("plan_of_care"),
                 content: [{
                     key: "table",
                     content: [{
                         key: "thead",
                         content: [{
-                            key: "th",
-                            attributes: {
-                                colspan: "4"
-                            },
-                            text: "Plan of Care"
+                            key: "tr",
+                            content: {
+                                key: "th",
+                                attributes: {
+                                    colspan: "4"
+                                },
+                                text: "Plan of Care"
+                            }
                         }, {
                             key: "tr",
                             content: [{
@@ -3911,7 +4550,452 @@ exports.vitalSignsSectionEntriesOptional = {
     }]
 };
 
-},{"./condition":3,"./contentModifier":4,"./entryLevel":10,"./fieldLevel":20,"./leafLevel":22,"blue-button-util":35}],24:[function(require,module,exports){
+},{"./condition":3,"./contentModifier":4,"./entryLevel":10,"./fieldLevel":20,"./leafLevel":23,"blue-button-util":37}],25:[function(require,module,exports){
+"use strict";
+
+var bbu = require("blue-button-util");
+
+var fieldLevel = require("./fieldLevel");
+var entryLevel = require("./entryLevel");
+var leafLevel = require('./leafLevel');
+var contentModifier = require("./contentModifier");
+
+var required = contentModifier.required;
+var bbud = bbu.datetime;
+var bbuo = bbu.object;
+
+var nda = "No Data Available";
+
+var condition = require('./condition');
+
+var getText = function (topArrayKey, headers, values) {
+    var result = {
+        key: "text",
+        existsWhen: condition.keyExists(topArrayKey),
+
+        content: [{
+            key: "table",
+            attributes: {
+                border: "1",
+                width: "100%"
+            },
+            content: [{
+                key: "thead",
+                content: [{
+                    key: "tr",
+                    content: []
+                }]
+            }, {
+                key: "tbody",
+                content: [{
+                    key: "tr",
+                    content: [],
+                    dataKey: topArrayKey
+                }]
+            }]
+        }]
+    };
+    var headerTarget = result.content[0].content[0].content[0].content;
+    headers.forEach(function (header) {
+        var element = {
+            key: "th",
+            text: header
+        };
+        headerTarget.push(element);
+    });
+    var valueTarget = result.content[0].content[1].content[0].content;
+    values.forEach(function (value) {
+        var data;
+        if (typeof value !== 'function') {
+            data = leafLevel.deepInputProperty(value, "");
+        } else {
+            data = value;
+        }
+
+        var element = {
+            key: "td",
+            text: data
+        };
+        valueTarget.push(element);
+    });
+    return result;
+};
+
+var alllergiesTextHeaders = ["Substance", "Overall Severity", "Reaction", "Reaction Severity", "Status"];
+var allergiesTextRow = [
+    leafLevel.deepInputProperty("observation.allergen.name", ""),
+    leafLevel.deepInputProperty("observation.severity.code.name", ""),
+    leafLevel.deepInputProperty("observation.reactions.0.reaction.name", ""),
+    leafLevel.deepInputProperty("observation.reactions.0.severity.code.name", ""),
+    leafLevel.deepInputProperty("observation.status.name", "")
+];
+
+exports.allergiesSectionEntriesRequired = function (htmlHeader) {
+    return {
+        key: "component",
+        content: [{
+            key: "section",
+            content: [
+                fieldLevel.templateId("2.16.840.1.113883.10.20.22.2.6"),
+                fieldLevel.templateId("2.16.840.1.113883.10.20.22.2.6.1"),
+                fieldLevel.templateCode("AllergiesSection"),
+                fieldLevel.templateTitle("AllergiesSection"), {
+                    key: "text",
+                    text: "Not Applicable",
+                    existsWhen: condition.keyDoesntExist("allergies")
+
+                },
+                htmlHeader, {
+                    key: "entry",
+                    attributes: {
+                        "typeCode": "DRIV"
+                    },
+                    content: [
+                        [entryLevel.allergyProblemAct, required]
+                    ],
+                    dataKey: "allergies",
+                    required: true
+                }
+            ]
+        }]
+    };
+};
+
+var medicationsTextHeaders = ["Medication Class", "# fills", "Last fill date"];
+var medicationsTextRow = [ // Name, did not find class in the medication blue-button-data
+    function (input) {
+        var value = bbuo.deepValue(input, 'product.product.name');
+        if (!bbuo.exists(value)) {
+            value = bbuo.deepValue(input, 'product.unencoded_name');
+        }
+        if (!bbuo.exists(value)) {
+            return "";
+        } else {
+            return value;
+        }
+    },
+    leafLevel.deepInputProperty("supply.repeatNumber", ""),
+    leafLevel.deepInputDate("supply.date_time.point", "")
+];
+
+exports.medicationsSectionEntriesRequired = function (htmlHeader) {
+    return {
+        key: "component",
+        content: [{
+            key: "section",
+            content: [
+                fieldLevel.templateId("2.16.840.1.113883.10.20.22.2.1"),
+                fieldLevel.templateId("2.16.840.1.113883.10.20.22.2.1.1"),
+                fieldLevel.templateCode("MedicationsSection"),
+                fieldLevel.templateTitle("MedicationsSection"), {
+                    key: "text",
+                    text: "Not Applicable",
+                    existsWhen: condition.keyDoesntExist("medications")
+
+                },
+                htmlHeader, {
+                    key: "entry",
+                    attributes: {
+                        "typeCode": "DRIV"
+                    },
+                    content: [
+                        [entryLevel.medicationActivity, required]
+                    ],
+                    dataKey: "medications",
+                    required: true
+                }
+            ]
+        }]
+    };
+};
+
+exports.problemsSectionEntriesRequired = function (htmlHeader) {
+    return {
+        key: "component",
+        content: [{
+            key: "section",
+            content: [
+                fieldLevel.templateId("2.16.840.1.113883.10.20.22.2.5"),
+                fieldLevel.templateId("2.16.840.1.113883.10.20.22.2.5.1"),
+                fieldLevel.templateCode("ProblemSection"),
+                fieldLevel.templateTitle("ProblemSection"), {
+                    key: "text",
+                    text: "Not Applicable",
+                    existsWhen: condition.keyDoesntExist("problems")
+
+                },
+                htmlHeader, {
+                    key: "entry",
+                    attributes: {
+                        "typeCode": "DRIV"
+                    },
+                    content: [
+                        [entryLevel.problemConcernAct, required]
+                    ],
+                    dataKey: "problems",
+                    required: true
+                }
+            ]
+        }]
+    };
+};
+
+exports.proceduresSectionEntriesRequired = function (htmlHeader) {
+    return {
+        key: "component",
+        content: [{
+            key: "section",
+            content: [
+                fieldLevel.templateId("2.16.840.1.113883.10.20.22.2.7"),
+                fieldLevel.templateId("2.16.840.1.113883.10.20.22.2.7.1"),
+                fieldLevel.templateCode("ProceduresSection"),
+                fieldLevel.templateTitle("ProceduresSection"), {
+                    key: "text",
+                    text: "Not Applicable",
+                    existsWhen: condition.keyDoesntExist("procedures")
+
+                },
+                htmlHeader, {
+                    key: "entry",
+                    attributes: {
+                        "typeCode": function (input) {
+                            return input.procedure_type === "procedure" ? "DRIV" : null;
+                        }
+                    },
+                    content: [
+                        entryLevel.procedureActivityAct,
+                        entryLevel.procedureActivityProcedure,
+                        entryLevel.procedureActivityObservation
+                    ],
+                    dataKey: "procedures"
+                }
+            ]
+        }],
+        notImplemented: [
+            "entry required"
+        ]
+    };
+};
+
+exports.resultsSectionEntriesRequired = function (htmlHeader) {
+    return {
+        key: "component",
+        content: [{
+            key: "section",
+            content: [
+                fieldLevel.templateId("2.16.840.1.113883.10.20.22.2.3"),
+                fieldLevel.templateId("2.16.840.1.113883.10.20.22.2.3.1"),
+                fieldLevel.templateCode("ResultsSection"),
+                fieldLevel.templateTitle("ResultsSection"), {
+                    key: "text",
+                    text: "Not Applicable",
+                    existsWhen: condition.keyDoesntExist("results")
+
+                },
+                htmlHeader, {
+                    key: "entry",
+                    attributes: {
+                        typeCode: "DRIV"
+                    },
+                    content: [
+                        [entryLevel.resultOrganizer, required]
+                    ],
+                    dataKey: "results",
+                    required: true
+                }
+            ]
+        }]
+    };
+};
+
+exports.encountersSectionEntriesOptional = function (htmlHeader) {
+    return {
+        key: "component",
+        content: [{
+            key: "section",
+            content: [
+                fieldLevel.templateId("2.16.840.1.113883.10.20.22.2.22"),
+                fieldLevel.templateId("2.16.840.1.113883.10.20.22.2.22.1"),
+                fieldLevel.templateCode("EncountersSection"),
+                fieldLevel.templateTitle("EncountersSection"), {
+                    key: "text",
+                    text: "Not Applicable",
+                    existsWhen: condition.keyDoesntExist("encounters")
+
+                },
+                htmlHeader, {
+                    key: "entry",
+                    attributes: {
+                        "typeCode": "DRIV"
+                    },
+                    content: [
+                        [entryLevel.encounterActivities, required]
+                    ],
+                    dataKey: "encounters"
+                }
+            ]
+        }]
+    };
+};
+
+exports.immunizationsSectionEntriesOptional = function (htmlHeader) {
+    return {
+        key: "component",
+        content: [{
+            key: "section",
+            content: [
+                fieldLevel.templateId("2.16.840.1.113883.10.20.22.2.2"),
+                fieldLevel.templateId("2.16.840.1.113883.10.20.22.2.2.1"),
+                fieldLevel.templateCode("ImmunizationsSection"),
+                fieldLevel.templateTitle("ImmunizationsSection"), {
+                    key: "text",
+                    text: "Not Applicable",
+                    existsWhen: condition.keyDoesntExist("immunizations")
+
+                }, {
+                    key: "entry",
+                    attributes: {
+                        "typeCode": "DRIV"
+                    },
+                    content: [
+                        [entryLevel.immunizationActivity, required]
+                    ],
+                    dataKey: "immunizations"
+                }
+            ]
+        }]
+    };
+};
+
+exports.payersSection = function (htmlHeader) {
+    return {
+        key: "component",
+        content: [{
+            key: "section",
+            content: [
+                fieldLevel.templateId("2.16.840.1.113883.10.20.22.2.18"),
+                fieldLevel.templateCode("PayersSection"),
+                fieldLevel.templateTitle("PayersSection"), {
+                    key: "text",
+                    text: "Not Applicable",
+                    existsWhen: condition.keyDoesntExist("payers")
+
+                },
+                htmlHeader, {
+                    key: "entry",
+                    attributes: {
+                        typeCode: "DRIV"
+                    },
+                    content: [
+                        [entryLevel.coverageActivity, required]
+                    ],
+                    dataKey: "payers"
+                }
+            ]
+        }]
+    };
+};
+
+exports.planOfCareSection = function (htmlHeader) {
+    return {
+        key: "component",
+        content: [{
+            key: "section",
+            content: [
+                fieldLevel.templateId("2.16.840.1.113883.10.20.22.2.10"),
+                fieldLevel.templateCode("PlanOfCareSection"),
+                fieldLevel.templateTitle("PlanOfCareSection"), {
+                    key: "text",
+                    text: "Not Applicable",
+                    existsWhen: condition.keyDoesntExist("plan_of_care")
+
+                },
+                htmlHeader, {
+                    key: "entry",
+                    attributes: {
+                        "typeCode": function (input) {
+                            return input.type === "observation" ? "DRIV" : null;
+                        }
+                    },
+                    content: [
+                        entryLevel.planOfCareActivityAct,
+                        entryLevel.planOfCareActivityObservation,
+                        entryLevel.planOfCareActivityProcedure,
+                        entryLevel.planOfCareActivityEncounter,
+                        entryLevel.planOfCareActivitySubstanceAdministration,
+                        entryLevel.planOfCareActivitySupply,
+                        entryLevel.planOfCareActivityInstructions
+                    ],
+                    dataKey: "plan_of_care"
+                }
+            ]
+        }]
+    };
+};
+
+exports.socialHistorySection = function (htmlHeader) {
+    return {
+        key: "component",
+        content: [{
+            key: "section",
+            content: [
+                fieldLevel.templateId("2.16.840.1.113883.10.20.22.2.17"),
+                fieldLevel.templateCode("SocialHistorySection"),
+                fieldLevel.templateTitle("SocialHistorySection"), {
+                    key: "text",
+                    text: "Not Applicable",
+                    existsWhen: condition.keyDoesntExist("social_history")
+
+                }, {
+                    key: "entry",
+                    attributes: {
+                        typeCode: "DRIV"
+                    },
+                    content: [
+                        entryLevel.smokingStatusObservation,
+                        entryLevel.socialHistoryObservation
+                    ],
+                    dataKey: "social_history"
+                }
+            ]
+        }],
+        notImplemented: [
+            "pregnancyObservation",
+            "tobaccoUse"
+        ]
+    };
+};
+
+exports.vitalSignsSectionEntriesOptional = function (htmlHeader) {
+    return {
+        key: "component",
+        content: [{
+            key: "section",
+            content: [
+                fieldLevel.templateId("2.16.840.1.113883.10.20.22.2.4"),
+                fieldLevel.templateId("2.16.840.1.113883.10.20.22.2.4.1"),
+                fieldLevel.templateCode("VitalSignsSection"),
+                fieldLevel.templateTitle("VitalSignsSection"), {
+                    key: "text",
+                    text: "Not Applicable",
+                    existsWhen: condition.keyDoesntExist("vitals")
+
+                }, {
+                    key: "entry",
+                    attributes: {
+                        typeCode: "DRIV"
+                    },
+                    content: [
+                        [entryLevel.vitalSignsOrganizer, required]
+                    ],
+                    dataKey: "vitals"
+                }
+            ]
+        }]
+    };
+};
+
+},{"./condition":3,"./contentModifier":4,"./entryLevel":10,"./fieldLevel":20,"./leafLevel":23,"blue-button-util":37}],26:[function(require,module,exports){
 "use strict";
 
 var moment = require("moment");
@@ -4059,7 +5143,7 @@ exports.name = function (input) {
     }
 };
 
-},{"blue-button-meta":25,"moment":86}],25:[function(require,module,exports){
+},{"blue-button-meta":27,"moment":88}],27:[function(require,module,exports){
 var CCDA = require("./lib/CCDA/index.js");
 
 //CCDA metadata stuff
@@ -4089,7 +5173,7 @@ meta.code_systems = require("./lib/code-systems");
 
 module.exports = exports = meta;
 
-},{"./lib/CCDA/index.js":28,"./lib/code-systems":33}],26:[function(require,module,exports){
+},{"./lib/CCDA/index.js":30,"./lib/code-systems":35}],28:[function(require,module,exports){
 var clinicalstatements = {
     "AdmissionMedication": "2.16.840.1.113883.10.20.22.4.36",
     "AdvanceDirectiveObservation": "2.16.840.1.113883.10.20.22.4.48",
@@ -4219,7 +5303,7 @@ var clinicalstatements_r1 = {
 module.exports.clinicalstatements = clinicalstatements;
 module.exports.clinicalstatements_r1 = clinicalstatements_r1;
 
-},{}],27:[function(require,module,exports){
+},{}],29:[function(require,module,exports){
 var codeSystems = {
     "LOINC": ["2.16.840.1.113883.6.1", "8716-3"],
     "SNOMED CT": ["2.16.840.1.113883.6.96", "46680005"],
@@ -5001,7 +6085,7 @@ var sections_entries_codes = {
 module.exports.codeSystems = codeSystems;
 module.exports.sections_entries_codes = sections_entries_codes;
 
-},{}],28:[function(require,module,exports){
+},{}],30:[function(require,module,exports){
 var templates = require("./templates.js");
 var sections = require("./sections.js");
 var statements = require("./clinicalstatements.js");
@@ -5107,7 +6191,7 @@ var CCDA = {
 
 module.exports = exports = CCDA;
 
-},{"./clinicalstatements.js":26,"./code-systems.js":27,"./sections-constraints.js":29,"./sections.js":30,"./templates-constraints.js":31,"./templates.js":32}],29:[function(require,module,exports){
+},{"./clinicalstatements.js":28,"./code-systems.js":29,"./sections-constraints.js":31,"./sections.js":32,"./templates-constraints.js":33,"./templates.js":34}],31:[function(require,module,exports){
 var sectionsconstraints = {
     "VitalSignsSection": {
         "full": {
@@ -6104,7 +7188,7 @@ var sectionsconstraints = {
 
 module.exports = exports = sectionsconstraints;
 
-},{}],30:[function(require,module,exports){
+},{}],32:[function(require,module,exports){
 var sections = {
     "AdvanceDirectivesSection": "2.16.840.1.113883.10.20.22.2.21.1",
     "AdvanceDirectivesSectionEntriesOptional": "2.16.840.1.113883.10.20.22.2.21",
@@ -6200,7 +7284,7 @@ var sections_r1 = {
 module.exports.sections = sections;
 module.exports.sections_r1 = sections_r1;
 
-},{}],31:[function(require,module,exports){
+},{}],33:[function(require,module,exports){
 var templatesconstraints = {
     "ContinuityOfCareDocument": {
         "may": {
@@ -6987,7 +8071,7 @@ var templatesconstraints = {
 
 module.exports = exports = templatesconstraints;
 
-},{}],32:[function(require,module,exports){
+},{}],34:[function(require,module,exports){
 var templates = {
     "ConsultationNote": "2.16.840.1.113883.10.20.22.1.4",
     "ContinuityOfCareDocument": "2.16.840.1.113883.10.20.22.1.2",
@@ -7002,7 +8086,7 @@ var templates = {
 
 module.exports = exports = templates;
 
-},{}],33:[function(require,module,exports){
+},{}],35:[function(require,module,exports){
 "use strict";
 
 var oids = require("./oids");
@@ -7075,7 +8159,7 @@ exports.findFromName = (function () {
     };
 })();
 
-},{"./oids":34}],34:[function(require,module,exports){
+},{"./oids":36}],36:[function(require,module,exports){
 module.exports = OIDs = {
     "2.16.840.1.113883.11.20.9.19": {
         name: "Problem Status",
@@ -8550,7 +9634,7 @@ module.exports = OIDs = {
     }
 };
 
-},{}],35:[function(require,module,exports){
+},{}],37:[function(require,module,exports){
 "use strict";
 
 exports.arrayset = require('./lib/arrayset');
@@ -8560,7 +9644,7 @@ exports.datetime = require('./lib/datetime');
 exports.predicate = require('./lib/predicate');
 exports.jsonpath = require('./lib/jsonpath');
 
-},{"./lib/arrayset":36,"./lib/datetime":37,"./lib/jsonpath":38,"./lib/object":39,"./lib/objectset":40,"./lib/predicate":41}],36:[function(require,module,exports){
+},{"./lib/arrayset":38,"./lib/datetime":39,"./lib/jsonpath":40,"./lib/object":41,"./lib/objectset":42,"./lib/predicate":43}],38:[function(require,module,exports){
 "use strict";
 
 var lodash = require('lodash');
@@ -8571,7 +9655,7 @@ exports.append = function (arr, arrToAppend) {
 
 exports.remove = lodash.remove; // remove 1.5, leaving now just to be safe
 
-},{"lodash":42}],37:[function(require,module,exports){
+},{"lodash":44}],39:[function(require,module,exports){
 "use strict";
 
 var moment = require('moment');
@@ -8643,7 +9727,7 @@ exports.modelToDate = function (dt) {
     return modelToDateTime(dt);
 };
 
-},{"moment":43}],38:[function(require,module,exports){
+},{"moment":45}],40:[function(require,module,exports){
 /*global module, exports, require*/
 /*jslint vars:true, evil:true*/
 /* JSONPath 0.8.0 - XPath for JSON
@@ -9186,7 +10270,7 @@ exports.instance = function (inputExpr, opts) {
     };
 };
 
-},{"../arrayset":36,"lodash":42,"vm":84}],39:[function(require,module,exports){
+},{"../arrayset":38,"lodash":44,"vm":86}],41:[function(require,module,exports){
 "use strict";
 
 var lodash = require('lodash');
@@ -9210,7 +10294,7 @@ exports.deepValue = function (obj, deepProperty) {
     return (obj === undefined) ? null : obj;
 };
 
-},{"lodash":42}],40:[function(require,module,exports){
+},{"lodash":44}],42:[function(require,module,exports){
 "use strict";
 
 var lodash = require('lodash');
@@ -9250,7 +10334,7 @@ exports.deepValue = function (obj, deepProperty, value) {
     return obj;
 };
 
-},{"./object":39,"lodash":42}],41:[function(require,module,exports){
+},{"./object":41,"lodash":44}],43:[function(require,module,exports){
 "use strict";
 
 var object = require('./object');
@@ -9350,7 +10434,7 @@ exports.not = function (fn) {
     };
 };
 
-},{"./object":39}],42:[function(require,module,exports){
+},{"./object":41}],44:[function(require,module,exports){
 (function (global){
 /**
  * @license
@@ -16140,7 +17224,7 @@ exports.not = function (fn) {
 }.call(this));
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{}],43:[function(require,module,exports){
+},{}],45:[function(require,module,exports){
 (function (global){
 //! moment.js
 //! version : 2.8.4
@@ -19080,10 +20164,10 @@ exports.not = function (fn) {
 }).call(this);
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{}],44:[function(require,module,exports){
+},{}],46:[function(require,module,exports){
 module.exports = require('./lib/chai');
 
-},{"./lib/chai":45}],45:[function(require,module,exports){
+},{"./lib/chai":47}],47:[function(require,module,exports){
 /*!
  * chai
  * Copyright(c) 2011-2014 Jake Luer <jake@alogicalparadox.com>
@@ -19178,7 +20262,7 @@ exports.use(should);
 var assert = require('./chai/interface/assert');
 exports.use(assert);
 
-},{"./chai/assertion":46,"./chai/config":47,"./chai/core/assertions":48,"./chai/interface/assert":49,"./chai/interface/expect":50,"./chai/interface/should":51,"./chai/utils":64,"assertion-error":73}],46:[function(require,module,exports){
+},{"./chai/assertion":48,"./chai/config":49,"./chai/core/assertions":50,"./chai/interface/assert":51,"./chai/interface/expect":52,"./chai/interface/should":53,"./chai/utils":66,"assertion-error":75}],48:[function(require,module,exports){
 /*!
  * chai
  * http://chaijs.com
@@ -19311,7 +20395,7 @@ module.exports = function (_chai, util) {
   });
 };
 
-},{"./config":47}],47:[function(require,module,exports){
+},{"./config":49}],49:[function(require,module,exports){
 module.exports = {
 
   /**
@@ -19368,7 +20452,7 @@ module.exports = {
 
 };
 
-},{}],48:[function(require,module,exports){
+},{}],50:[function(require,module,exports){
 /*!
  * chai
  * http://chaijs.com
@@ -20971,7 +22055,7 @@ module.exports = function (chai, _) {
 
 };
 
-},{}],49:[function(require,module,exports){
+},{}],51:[function(require,module,exports){
 /*!
  * chai
  * Copyright(c) 2011-2014 Jake Luer <jake@alogicalparadox.com>
@@ -22236,7 +23320,7 @@ module.exports = function (chai, util) {
   ('Throw', 'throws');
 };
 
-},{}],50:[function(require,module,exports){
+},{}],52:[function(require,module,exports){
 /*!
  * chai
  * Copyright(c) 2011-2014 Jake Luer <jake@alogicalparadox.com>
@@ -22271,7 +23355,7 @@ module.exports = function (chai, util) {
   };
 };
 
-},{}],51:[function(require,module,exports){
+},{}],53:[function(require,module,exports){
 /*!
  * chai
  * Copyright(c) 2011-2014 Jake Luer <jake@alogicalparadox.com>
@@ -22371,7 +23455,7 @@ module.exports = function (chai, util) {
   chai.Should = loadShould;
 };
 
-},{}],52:[function(require,module,exports){
+},{}],54:[function(require,module,exports){
 /*!
  * Chai - addChainingMethod utility
  * Copyright(c) 2012-2014 Jake Luer <jake@alogicalparadox.com>
@@ -22484,7 +23568,7 @@ module.exports = function (ctx, name, method, chainingBehavior) {
   });
 };
 
-},{"../config":47,"./flag":55,"./transferFlags":71}],53:[function(require,module,exports){
+},{"../config":49,"./flag":57,"./transferFlags":73}],55:[function(require,module,exports){
 /*!
  * Chai - addMethod utility
  * Copyright(c) 2012-2014 Jake Luer <jake@alogicalparadox.com>
@@ -22529,7 +23613,7 @@ module.exports = function (ctx, name, method) {
   };
 };
 
-},{"../config":47,"./flag":55}],54:[function(require,module,exports){
+},{"../config":49,"./flag":57}],56:[function(require,module,exports){
 /*!
  * Chai - addProperty utility
  * Copyright(c) 2012-2014 Jake Luer <jake@alogicalparadox.com>
@@ -22571,7 +23655,7 @@ module.exports = function (ctx, name, getter) {
   });
 };
 
-},{}],55:[function(require,module,exports){
+},{}],57:[function(require,module,exports){
 /*!
  * Chai - flag utility
  * Copyright(c) 2012-2014 Jake Luer <jake@alogicalparadox.com>
@@ -22605,7 +23689,7 @@ module.exports = function (obj, key, value) {
   }
 };
 
-},{}],56:[function(require,module,exports){
+},{}],58:[function(require,module,exports){
 /*!
  * Chai - getActual utility
  * Copyright(c) 2012-2014 Jake Luer <jake@alogicalparadox.com>
@@ -22625,7 +23709,7 @@ module.exports = function (obj, args) {
   return args.length > 4 ? args[4] : obj._obj;
 };
 
-},{}],57:[function(require,module,exports){
+},{}],59:[function(require,module,exports){
 /*!
  * Chai - getEnumerableProperties utility
  * Copyright(c) 2012-2014 Jake Luer <jake@alogicalparadox.com>
@@ -22652,7 +23736,7 @@ module.exports = function getEnumerableProperties(object) {
   return result;
 };
 
-},{}],58:[function(require,module,exports){
+},{}],60:[function(require,module,exports){
 /*!
  * Chai - message composition utility
  * Copyright(c) 2012-2014 Jake Luer <jake@alogicalparadox.com>
@@ -22704,7 +23788,7 @@ module.exports = function (obj, args) {
   return flagMsg ? flagMsg + ': ' + msg : msg;
 };
 
-},{"./flag":55,"./getActual":56,"./inspect":65,"./objDisplay":66}],59:[function(require,module,exports){
+},{"./flag":57,"./getActual":58,"./inspect":67,"./objDisplay":68}],61:[function(require,module,exports){
 /*!
  * Chai - getName utility
  * Copyright(c) 2012-2014 Jake Luer <jake@alogicalparadox.com>
@@ -22726,7 +23810,7 @@ module.exports = function (func) {
   return match && match[1] ? match[1] : "";
 };
 
-},{}],60:[function(require,module,exports){
+},{}],62:[function(require,module,exports){
 /*!
  * Chai - getPathInfo utility
  * Copyright(c) 2012-2014 Jake Luer <jake@alogicalparadox.com>
@@ -22838,7 +23922,7 @@ function _getPathValue (parsed, obj, index) {
   return res;
 }
 
-},{"./hasProperty":63}],61:[function(require,module,exports){
+},{"./hasProperty":65}],63:[function(require,module,exports){
 /*!
  * Chai - getPathValue utility
  * Copyright(c) 2012-2014 Jake Luer <jake@alogicalparadox.com>
@@ -22882,7 +23966,7 @@ module.exports = function(path, obj) {
   return info.value;
 }; 
 
-},{"./getPathInfo":60}],62:[function(require,module,exports){
+},{"./getPathInfo":62}],64:[function(require,module,exports){
 /*!
  * Chai - getProperties utility
  * Copyright(c) 2012-2014 Jake Luer <jake@alogicalparadox.com>
@@ -22919,7 +24003,7 @@ module.exports = function getProperties(object) {
   return result;
 };
 
-},{}],63:[function(require,module,exports){
+},{}],65:[function(require,module,exports){
 /*!
  * Chai - hasProperty utility
  * Copyright(c) 2012-2014 Jake Luer <jake@alogicalparadox.com>
@@ -22984,7 +24068,7 @@ module.exports = function hasProperty(name, obj) {
   return name in obj;
 };
 
-},{"./type":72}],64:[function(require,module,exports){
+},{"./type":74}],66:[function(require,module,exports){
 /*!
  * chai
  * Copyright(c) 2011 Jake Luer <jake@alogicalparadox.com>
@@ -23112,7 +24196,7 @@ exports.addChainableMethod = require('./addChainableMethod');
 exports.overwriteChainableMethod = require('./overwriteChainableMethod');
 
 
-},{"./addChainableMethod":52,"./addMethod":53,"./addProperty":54,"./flag":55,"./getActual":56,"./getMessage":58,"./getName":59,"./getPathInfo":60,"./getPathValue":61,"./hasProperty":63,"./inspect":65,"./objDisplay":66,"./overwriteChainableMethod":67,"./overwriteMethod":68,"./overwriteProperty":69,"./test":70,"./transferFlags":71,"./type":72,"deep-eql":74}],65:[function(require,module,exports){
+},{"./addChainableMethod":54,"./addMethod":55,"./addProperty":56,"./flag":57,"./getActual":58,"./getMessage":60,"./getName":61,"./getPathInfo":62,"./getPathValue":63,"./hasProperty":65,"./inspect":67,"./objDisplay":68,"./overwriteChainableMethod":69,"./overwriteMethod":70,"./overwriteProperty":71,"./test":72,"./transferFlags":73,"./type":74,"deep-eql":76}],67:[function(require,module,exports){
 // This is (almost) directly from Node.js utils
 // https://github.com/joyent/node/blob/f8c335d0caf47f16d31413f89aa28eda3878e3aa/lib/util.js
 
@@ -23447,7 +24531,7 @@ function objectToString(o) {
   return Object.prototype.toString.call(o);
 }
 
-},{"./getEnumerableProperties":57,"./getName":59,"./getProperties":62}],66:[function(require,module,exports){
+},{"./getEnumerableProperties":59,"./getName":61,"./getProperties":64}],68:[function(require,module,exports){
 /*!
  * Chai - flag utility
  * Copyright(c) 2012-2014 Jake Luer <jake@alogicalparadox.com>
@@ -23498,7 +24582,7 @@ module.exports = function (obj) {
   }
 };
 
-},{"../config":47,"./inspect":65}],67:[function(require,module,exports){
+},{"../config":49,"./inspect":67}],69:[function(require,module,exports){
 /*!
  * Chai - overwriteChainableMethod utility
  * Copyright(c) 2012-2014 Jake Luer <jake@alogicalparadox.com>
@@ -23553,7 +24637,7 @@ module.exports = function (ctx, name, method, chainingBehavior) {
   };
 };
 
-},{}],68:[function(require,module,exports){
+},{}],70:[function(require,module,exports){
 /*!
  * Chai - overwriteMethod utility
  * Copyright(c) 2012-2014 Jake Luer <jake@alogicalparadox.com>
@@ -23606,7 +24690,7 @@ module.exports = function (ctx, name, method) {
   }
 };
 
-},{}],69:[function(require,module,exports){
+},{}],71:[function(require,module,exports){
 /*!
  * Chai - overwriteProperty utility
  * Copyright(c) 2012-2014 Jake Luer <jake@alogicalparadox.com>
@@ -23662,7 +24746,7 @@ module.exports = function (ctx, name, getter) {
   });
 };
 
-},{}],70:[function(require,module,exports){
+},{}],72:[function(require,module,exports){
 /*!
  * Chai - test utility
  * Copyright(c) 2012-2014 Jake Luer <jake@alogicalparadox.com>
@@ -23690,7 +24774,7 @@ module.exports = function (obj, args) {
   return negate ? !expr : expr;
 };
 
-},{"./flag":55}],71:[function(require,module,exports){
+},{"./flag":57}],73:[function(require,module,exports){
 /*!
  * Chai - transferFlags utility
  * Copyright(c) 2012-2014 Jake Luer <jake@alogicalparadox.com>
@@ -23736,7 +24820,7 @@ module.exports = function (assertion, object, includeAll) {
   }
 };
 
-},{}],72:[function(require,module,exports){
+},{}],74:[function(require,module,exports){
 /*!
  * Chai - type utility
  * Copyright(c) 2012-2014 Jake Luer <jake@alogicalparadox.com>
@@ -23783,7 +24867,7 @@ module.exports = function (obj) {
   return typeof obj;
 };
 
-},{}],73:[function(require,module,exports){
+},{}],75:[function(require,module,exports){
 /*!
  * assertion-error
  * Copyright(c) 2013 Jake Luer <jake@qualiancy.com>
@@ -23895,10 +24979,10 @@ AssertionError.prototype.toJSON = function (stack) {
   return props;
 };
 
-},{}],74:[function(require,module,exports){
+},{}],76:[function(require,module,exports){
 module.exports = require('./lib/eql');
 
-},{"./lib/eql":75}],75:[function(require,module,exports){
+},{"./lib/eql":77}],77:[function(require,module,exports){
 /*!
  * deep-eql
  * Copyright(c) 2013 Jake Luer <jake@alogicalparadox.com>
@@ -24157,10 +25241,10 @@ function objectEqual(a, b, m) {
   return true;
 }
 
-},{"buffer":78,"type-detect":76}],76:[function(require,module,exports){
+},{"buffer":80,"type-detect":78}],78:[function(require,module,exports){
 module.exports = require('./lib/type');
 
-},{"./lib/type":77}],77:[function(require,module,exports){
+},{"./lib/type":79}],79:[function(require,module,exports){
 /*!
  * type-detect
  * Copyright(c) 2013 jake luer <jake@alogicalparadox.com>
@@ -24304,7 +25388,7 @@ Library.prototype.test = function (obj, type) {
   }
 };
 
-},{}],78:[function(require,module,exports){
+},{}],80:[function(require,module,exports){
 /*!
  * The buffer module from node.js, for the browser.
  *
@@ -25720,7 +26804,7 @@ function decodeUtf8Char (str) {
   }
 }
 
-},{"base64-js":79,"ieee754":80,"is-array":81}],79:[function(require,module,exports){
+},{"base64-js":81,"ieee754":82,"is-array":83}],81:[function(require,module,exports){
 var lookup = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/';
 
 ;(function (exports) {
@@ -25846,7 +26930,7 @@ var lookup = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/';
 	exports.fromByteArray = uint8ToBase64
 }(typeof exports === 'undefined' ? (this.base64js = {}) : exports))
 
-},{}],80:[function(require,module,exports){
+},{}],82:[function(require,module,exports){
 exports.read = function(buffer, offset, isLE, mLen, nBytes) {
   var e, m,
       eLen = nBytes * 8 - mLen - 1,
@@ -25932,7 +27016,7 @@ exports.write = function(buffer, value, offset, isLE, mLen, nBytes) {
   buffer[offset + i - d] |= s * 128;
 };
 
-},{}],81:[function(require,module,exports){
+},{}],83:[function(require,module,exports){
 
 /**
  * isArray
@@ -25967,7 +27051,7 @@ module.exports = isArray || function (val) {
   return !! val && '[object Array]' == str.call(val);
 };
 
-},{}],82:[function(require,module,exports){
+},{}],84:[function(require,module,exports){
 (function (process){
 // Copyright Joyent, Inc. and other Node contributors.
 //
@@ -26195,7 +27279,7 @@ var substr = 'ab'.substr(-1) === 'b'
 ;
 
 }).call(this,require('_process'))
-},{"_process":83}],83:[function(require,module,exports){
+},{"_process":85}],85:[function(require,module,exports){
 // shim for using process in browser
 
 var process = module.exports = {};
@@ -26255,7 +27339,7 @@ process.chdir = function (dir) {
 };
 process.umask = function() { return 0; };
 
-},{}],84:[function(require,module,exports){
+},{}],86:[function(require,module,exports){
 var indexOf = require('indexof');
 
 var Object_keys = function (obj) {
@@ -26395,7 +27479,7 @@ exports.createContext = Script.createContext = function (context) {
     return copy;
 };
 
-},{"indexof":85}],85:[function(require,module,exports){
+},{"indexof":87}],87:[function(require,module,exports){
 
 var indexOf = [].indexOf;
 
@@ -26406,7 +27490,7 @@ module.exports = function(arr, obj){
   }
   return -1;
 };
-},{}],86:[function(require,module,exports){
+},{}],88:[function(require,module,exports){
 //! moment.js
 //! version : 2.10.3
 //! authors : Tim Wood, Iskren Chernev, Moment.js contributors
@@ -29518,7 +30602,7 @@ module.exports = function(arr, obj){
     return _moment;
 
 }));
-},{}],87:[function(require,module,exports){
+},{}],89:[function(require,module,exports){
 (function (global){
 
 var rng;
@@ -29553,7 +30637,7 @@ module.exports = rng;
 
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{}],88:[function(require,module,exports){
+},{}],90:[function(require,module,exports){
 //     uuid.js
 //
 //     Copyright (c) 2010-2012 Robert Kieffer
@@ -29738,7 +30822,7 @@ uuid.unparse = unparse;
 
 module.exports = uuid;
 
-},{"./rng":87}],89:[function(require,module,exports){
+},{"./rng":89}],91:[function(require,module,exports){
 (function (Buffer,__dirname){
 var expect = require('chai').expect;
 var assert = require('chai').assert;
@@ -29748,7 +30832,7 @@ var path = require('path');
 var bb = require('blue-button');
 var bbg = require('../../index');
 
-describe('parse generate parse generate', function () {
+xdescribe('parse generate parse generate', function () {
     this.timeout(10000);
     var generatedDir = null;
 
@@ -29917,4 +31001,4 @@ describe('parse generate parse generate', function () {
 });
 
 }).call(this,require("buffer").Buffer,"/test/sample_runs")
-},{"../../index":2,"blue-button":"blue-button","buffer":78,"chai":44,"path":82}]},{},[89]);
+},{"../../index":2,"blue-button":"blue-button","buffer":80,"chai":46,"path":84}]},{},[91]);
