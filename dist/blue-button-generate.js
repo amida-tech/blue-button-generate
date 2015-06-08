@@ -4674,6 +4674,26 @@ exports.problemsSectionEntriesRequired = function (htmlHeader) {
                     ],
                     dataKey: "problems",
                     required: true
+                }, {
+
+                    key: "entry",
+                    existsWhen: condition.keyExists("problems_comment"),
+                    content: {
+                        key: "act",
+                        attributes: {
+                            classCode: "ACT",
+                            moodCode: "EVN"
+                        },
+                        content: [
+                            fieldLevel.templateId("2.16.840.1.113883.10.20.22.4.64"),
+                            fieldLevel.templateCode("CommentActivity"), {
+                                key: "text",
+                                text: leafLevel.deepInputProperty("problems_comment")
+                            },
+                        ]
+
+                    },
+                    dataKey: "demographics.meta"
                 }
             ]
         }]
