@@ -17,7 +17,7 @@ var ccd1GeneratorMods = require('../xmlmods/ccd1Generator');
 var viteraParserMods = require('../xmlmods/viteraParser');
 var viteraGeneratorMods = require('../xmlmods/viteraGenerator');
 
-describe('xml vs parse generate xml ', function () {
+xdescribe('xml vs parse generate xml ', function () {
     var generatedDir = null;
     var sampleDir = null;
 
@@ -131,5 +131,5 @@ describe('xml vs parse generate xml ', function () {
 
     describe('CCD_1.xml', testSampleFile('CCD_1', true, ccd1ParserMods, ccd1GeneratorMods));
 
-    describe('Vitera.xml', testSampleFile('Vitera', false, viteraParserMods, viteraGeneratorMods, true));
+    //describe('Vitera.xml', testSampleFile('Vitera', false, viteraParserMods, viteraGeneratorMods, true));
 });

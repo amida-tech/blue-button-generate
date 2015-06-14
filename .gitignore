@@ -31,3 +31,5 @@ bower_components
 
 # Generated Files For Tests
 test/fixtures/files/generated/
+
+resources
