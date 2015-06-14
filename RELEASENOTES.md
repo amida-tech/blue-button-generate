@@ -1,10 +1,11 @@
 # blue-button-generate.js Release Notes
 
-# v.1.5.0 - TBD
+# v.1.5.0 - June 14, 2015
 - Separate race and ethnicity from blue-button is now supported.
 - Support for input data only is removed.  Your input now must have both data and meta components.
 - Set Identifier and Confidentiality Code are now read from  CCDA JSON meta properties.
 - Add preventNullFlavor option to generateCCD
+- Refactored humand readable section generation (HTML)
 
 # v.1.4.0 - March 25, 2105
 - Results of xsi:type ST are now supported
