@@ -12,7 +12,10 @@ before_script:
 
 script:
     - grunt
-    - istanbul cover ./node_modules/mocha/bin/_mocha --report lcovonly -- -R spec -t 5000 --recursive && cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js && rm -rf ./coverage
+    
+after_script:
+    - istanbul cover ./node_modules/mocha/bin/_mocha --report lcovonly -- -R spec --timeout 10000 --recursive 
+    - cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js
 
 notifications:
   slack: amida:GclZqFLfLqmjWZ4bwUbRIw5M
