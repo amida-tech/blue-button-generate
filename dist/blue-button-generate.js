@@ -256,17 +256,17 @@ exports.ccd2 = function (html_renderer) {
                 content: {
                     key: "structuredBody",
                     content: [
-                        [sectionLevel2.allergiesSectionEntriesRequired(html_renderer.allergiesSectionEntriesRequiredHtmlHeader), required],
-                        [sectionLevel2.medicationsSectionEntriesRequired(html_renderer.medicationsSectionEntriesRequiredHtmlHeader), required],
-                        [sectionLevel2.problemsSectionEntriesRequired(html_renderer.problemsSectionEntriesRequiredHtmlHeader), required],
-                        [sectionLevel2.proceduresSectionEntriesRequired(html_renderer.proceduresSectionEntriesRequiredHtmlHeader), required],
-                        [sectionLevel2.resultsSectionEntriesRequired(html_renderer.resultsSectionEntriesRequiredHtmlHeader), required],
-                        sectionLevel2.encountersSectionEntriesOptional(html_renderer.encountersSectionEntriesOptionalHtmlHeader),
-                        sectionLevel2.immunizationsSectionEntriesOptional(html_renderer.immunizationsSectionEntriesOptionalHtmlHeader),
-                        sectionLevel2.payersSection(html_renderer.payersSectionHtmlHeader),
-                        sectionLevel2.planOfCareSection(html_renderer.planOfCareSectionHtmlHeader),
-                        sectionLevel2.socialHistorySection(html_renderer.socialHistorySectionHtmlHeader),
-                        sectionLevel2.vitalSignsSectionEntriesOptional(html_renderer.vitalSignsSectionEntriesOptionalHtmlHeader)
+                        [sectionLevel2.allergiesSectionEntriesRequired(html_renderer.allergiesSectionEntriesRequiredHtmlHeader, html_renderer.allergiesSectionEntriesRequiredHtmlHeaderNA), required],
+                        [sectionLevel2.medicationsSectionEntriesRequired(html_renderer.medicationsSectionEntriesRequiredHtmlHeader, html_renderer.medicationsSectionEntriesRequiredHtmlHeaderNA), required],
+                        [sectionLevel2.problemsSectionEntriesRequired(html_renderer.problemsSectionEntriesRequiredHtmlHeader, html_renderer.problemsSectionEntriesRequiredHtmlHeaderNA), required],
+                        [sectionLevel2.proceduresSectionEntriesRequired(html_renderer.proceduresSectionEntriesRequiredHtmlHeader, html_renderer.proceduresSectionEntriesRequiredHtmlHeaderNA), required],
+                        [sectionLevel2.resultsSectionEntriesRequired(html_renderer.resultsSectionEntriesRequiredHtmlHeader, html_renderer.resultsSectionEntriesRequiredHtmlHeaderNA), required],
+                        sectionLevel2.encountersSectionEntriesOptional(html_renderer.encountersSectionEntriesOptionalHtmlHeader, html_renderer.encountersSectionEntriesOptionalHtmlHeaderNA),
+                        sectionLevel2.immunizationsSectionEntriesOptional(html_renderer.immunizationsSectionEntriesOptionalHtmlHeader, html_renderer.immunizationsSectionEntriesOptionalHtmlHeaderNA),
+                        sectionLevel2.payersSection(html_renderer.payersSectionHtmlHeader, html_renderer.payersSectionHtmlHeaderNA),
+                        sectionLevel2.planOfCareSection(html_renderer.planOfCareSectionHtmlHeader, html_renderer.planOfCareSectionHtmlHeaderNA),
+                        sectionLevel2.socialHistorySection(html_renderer.socialHistorySectionHtmlHeader, html_renderer.socialHistorySectionHtmlHeaderNA),
+                        sectionLevel2.vitalSignsSectionEntriesOptional(html_renderer.vitalSignsSectionEntriesOptionalHtmlHeader, html_renderer.vitalSignsSectionEntriesOptionalHtmlHeaderNA)
                     ],
                     notImplemented: [
                         "advanceDirectivesSectionEntriesOptional",
@@ -3592,6 +3592,18 @@ exports.socialHistorySectionHtmlHeader = {};
 
 exports.vitalSignsSectionEntriesOptionalHtmlHeader = {};
 
+exports.allergiesSectionEntriesRequiredHtmlHeaderNA = "Not Available";
+exports.medicationsSectionEntriesRequiredHtmlHeaderNA = "Not Available";
+exports.problemsSectionEntriesRequiredHtmlHeaderNA = "Not Available";
+exports.proceduresSectionEntriesRequiredHtmlHeaderNA = "Not Available";
+exports.resultsSectionEntriesRequiredHtmlHeaderNA = "Not Available";
+exports.encountersSectionEntriesOptionalHtmlHeaderNA = "Not Available";
+exports.immunizationsSectionEntriesOptionalHtmlHeaderNA = "Not Available";
+exports.payersSectionHtmlHeaderNA = "Not Available";
+exports.planOfCareSectionHtmlHeaderNA = "Not Available";
+exports.socialHistorySectionHtmlHeaderNA = "Not Available";
+exports.vitalSignsSectionEntriesOptionalHtmlHeaderNA = "Not Available";
+
 },{"./condition":2,"./contentModifier":3,"./entryLevel":9,"./fieldLevel":19,"./leafLevel":22,"blue-button-util":36}],22:[function(require,module,exports){
 "use strict";
 
@@ -4570,7 +4582,7 @@ var allergiesTextRow = [
     leafLevel.deepInputProperty("observation.status.name", "")
 ];
 
-exports.allergiesSectionEntriesRequired = function (htmlHeader) {
+exports.allergiesSectionEntriesRequired = function (htmlHeader, na) {
     return {
         key: "component",
         content: [{
@@ -4581,7 +4593,7 @@ exports.allergiesSectionEntriesRequired = function (htmlHeader) {
                 fieldLevel.templateCode("AllergiesSection"),
                 fieldLevel.templateTitle("AllergiesSection"), {
                     key: "text",
-                    text: "Not Applicable",
+                    text: na,
                     existsWhen: condition.keyDoesntExist("allergies")
 
                 },
@@ -4618,7 +4630,7 @@ var medicationsTextRow = [ // Name, did not find class in the medication blue-bu
     leafLevel.deepInputDate("supply.date_time.point", "")
 ];
 
-exports.medicationsSectionEntriesRequired = function (htmlHeader) {
+exports.medicationsSectionEntriesRequired = function (htmlHeader, na) {
     return {
         key: "component",
         content: [{
@@ -4629,7 +4641,7 @@ exports.medicationsSectionEntriesRequired = function (htmlHeader) {
                 fieldLevel.templateCode("MedicationsSection"),
                 fieldLevel.templateTitle("MedicationsSection"), {
                     key: "text",
-                    text: "Not Applicable",
+                    text: na,
                     existsWhen: condition.keyDoesntExist("medications")
 
                 },
@@ -4649,7 +4661,7 @@ exports.medicationsSectionEntriesRequired = function (htmlHeader) {
     };
 };
 
-exports.problemsSectionEntriesRequired = function (htmlHeader) {
+exports.problemsSectionEntriesRequired = function (htmlHeader, na) {
     return {
         key: "component",
         content: [{
@@ -4660,7 +4672,7 @@ exports.problemsSectionEntriesRequired = function (htmlHeader) {
                 fieldLevel.templateCode("ProblemSection"),
                 fieldLevel.templateTitle("ProblemSection"), {
                     key: "text",
-                    text: "Not Applicable",
+                    text: na,
                     existsWhen: condition.keyDoesntExist("problems")
 
                 },
@@ -4700,7 +4712,7 @@ exports.problemsSectionEntriesRequired = function (htmlHeader) {
     };
 };
 
-exports.proceduresSectionEntriesRequired = function (htmlHeader) {
+exports.proceduresSectionEntriesRequired = function (htmlHeader, na) {
     return {
         key: "component",
         content: [{
@@ -4711,7 +4723,7 @@ exports.proceduresSectionEntriesRequired = function (htmlHeader) {
                 fieldLevel.templateCode("ProceduresSection"),
                 fieldLevel.templateTitle("ProceduresSection"), {
                     key: "text",
-                    text: "Not Applicable",
+                    text: na,
                     existsWhen: condition.keyDoesntExist("procedures")
 
                 },
@@ -4737,7 +4749,7 @@ exports.proceduresSectionEntriesRequired = function (htmlHeader) {
     };
 };
 
-exports.resultsSectionEntriesRequired = function (htmlHeader) {
+exports.resultsSectionEntriesRequired = function (htmlHeader, na) {
     return {
         key: "component",
         content: [{
@@ -4748,7 +4760,7 @@ exports.resultsSectionEntriesRequired = function (htmlHeader) {
                 fieldLevel.templateCode("ResultsSection"),
                 fieldLevel.templateTitle("ResultsSection"), {
                     key: "text",
-                    text: "Not Applicable",
+                    text: na,
                     existsWhen: condition.keyDoesntExist("results")
 
                 },
@@ -4768,7 +4780,7 @@ exports.resultsSectionEntriesRequired = function (htmlHeader) {
     };
 };
 
-exports.encountersSectionEntriesOptional = function (htmlHeader) {
+exports.encountersSectionEntriesOptional = function (htmlHeader, na) {
     return {
         key: "component",
         content: [{
@@ -4779,7 +4791,7 @@ exports.encountersSectionEntriesOptional = function (htmlHeader) {
                 fieldLevel.templateCode("EncountersSection"),
                 fieldLevel.templateTitle("EncountersSection"), {
                     key: "text",
-                    text: "Not Applicable",
+                    text: na,
                     existsWhen: condition.keyDoesntExist("encounters")
 
                 },
@@ -4798,7 +4810,7 @@ exports.encountersSectionEntriesOptional = function (htmlHeader) {
     };
 };
 
-exports.immunizationsSectionEntriesOptional = function (htmlHeader) {
+exports.immunizationsSectionEntriesOptional = function (htmlHeader, na) {
     return {
         key: "component",
         content: [{
@@ -4809,7 +4821,7 @@ exports.immunizationsSectionEntriesOptional = function (htmlHeader) {
                 fieldLevel.templateCode("ImmunizationsSection"),
                 fieldLevel.templateTitle("ImmunizationsSection"), {
                     key: "text",
-                    text: "Not Applicable",
+                    text: na,
                     existsWhen: condition.keyDoesntExist("immunizations")
 
                 }, {
@@ -4827,7 +4839,7 @@ exports.immunizationsSectionEntriesOptional = function (htmlHeader) {
     };
 };
 
-exports.payersSection = function (htmlHeader) {
+exports.payersSection = function (htmlHeader, na) {
     return {
         key: "component",
         content: [{
@@ -4837,7 +4849,7 @@ exports.payersSection = function (htmlHeader) {
                 fieldLevel.templateCode("PayersSection"),
                 fieldLevel.templateTitle("PayersSection"), {
                     key: "text",
-                    text: "Not Applicable",
+                    text: na,
                     existsWhen: condition.keyDoesntExist("payers")
 
                 },
@@ -4856,7 +4868,7 @@ exports.payersSection = function (htmlHeader) {
     };
 };
 
-exports.planOfCareSection = function (htmlHeader) {
+exports.planOfCareSection = function (htmlHeader, na) {
     return {
         key: "component",
         content: [{
@@ -4866,7 +4878,7 @@ exports.planOfCareSection = function (htmlHeader) {
                 fieldLevel.templateCode("PlanOfCareSection"),
                 fieldLevel.templateTitle("PlanOfCareSection"), {
                     key: "text",
-                    text: "Not Applicable",
+                    text: na,
                     existsWhen: condition.keyDoesntExist("plan_of_care")
 
                 },
@@ -4893,7 +4905,7 @@ exports.planOfCareSection = function (htmlHeader) {
     };
 };
 
-exports.socialHistorySection = function (htmlHeader) {
+exports.socialHistorySection = function (htmlHeader, na) {
     return {
         key: "component",
         content: [{
@@ -4903,7 +4915,7 @@ exports.socialHistorySection = function (htmlHeader) {
                 fieldLevel.templateCode("SocialHistorySection"),
                 fieldLevel.templateTitle("SocialHistorySection"), {
                     key: "text",
-                    text: "Not Applicable",
+                    text: na,
                     existsWhen: condition.keyDoesntExist("social_history")
 
                 }, {
@@ -4926,7 +4938,7 @@ exports.socialHistorySection = function (htmlHeader) {
     };
 };
 
-exports.vitalSignsSectionEntriesOptional = function (htmlHeader) {
+exports.vitalSignsSectionEntriesOptional = function (htmlHeader, na) {
     return {
         key: "component",
         content: [{
@@ -4937,7 +4949,7 @@ exports.vitalSignsSectionEntriesOptional = function (htmlHeader) {
                 fieldLevel.templateCode("VitalSignsSection"),
                 fieldLevel.templateTitle("VitalSignsSection"), {
                     key: "text",
-                    text: "Not Applicable",
+                    text: na,
                     existsWhen: condition.keyDoesntExist("vitals")
 
                 }, {
@@ -9591,6 +9603,12 @@ module.exports = OIDs = {
     },
     "2.16.840.1.113883.5.7": {
         name: "ActPriority"
+    },
+    "2.16.840.1.113883.6.63": {
+        name: "First DataBank Diagnostic Codes"
+    },
+    "2.16.840.1.113883.3.26.1.2": {
+        name: "NCI Metathesaurus"
     }
 };
 
@@ -9706,7 +9724,9 @@ var arrayset = require('../arrayset');
 var append = arrayset.append;
 
 var properties = function (obj) {
-    if (Array.isArray(obj)) {
+    if (!obj) {
+        return null;
+    } else if (Array.isArray(obj)) {
         return _.range(obj.length);
     } else if (typeof obj === 'object') {
         return Object.keys(obj);
@@ -9781,8 +9801,7 @@ var normalize = exports.normalize = function (expr) {
         }
         if ((c === '^') || (c === '$')) {
             if (lastIndex !== index) {
-                var subExprUC = expr.substring(lastIndex, index);
-                exprList.push(subExprUC);
+                throw new Error('Invalid use of \'^\' or \'$\' in the expression.');
             }
             exprList.push(c);
             ++index;
@@ -9844,10 +9863,11 @@ var Accumulator = {
         this.location = location;
     },
     back: function () {
-        if (this.objHistory && this.objHistory.length > 0) {
+        if (this.objHistory.length > 0) {
             this.obj = this.objHistory.splice(-1, 1)[0];
         }
-        if (this.path && this.objHistory.length > 0) {
+
+        if (this.path && this.path.length > 0) {
             this.location = this.path.splice(-1, 1)[0];
         }
     },
@@ -9879,7 +9899,7 @@ var Accumulator = {
             return options.wrap ? options.emptyValue : null;
         }
         if (result.length === 1 && !options.wrap && !Array.isArray(result[0].value)) {
-            return result[0][options.resultType] || null;
+            return result[0][options.resultType];
         }
         return result.reduce(function (result, ea) {
             var valOrPath = ea[options.resultType];
@@ -9968,14 +9988,9 @@ var Tracer = {
         return accumulator.toResult(opts);
     },
     eval: function (code, obj, addlLocation, path) {
-        if (!this._obj || !obj) {
-            return false;
-        }
         if (code.indexOf(PATH_VAR) > -1) {
-            if (addlLocation !== null) {
-                path = path.slice();
-                path.push(addlLocation);
-            }
+            path = path.slice();
+            path.push(addlLocation);
             this.sandbox[PATH_VAR] = asPath(path);
         }
         if (code.indexOf(VALUE_VAR) > -1) {
@@ -9984,7 +9999,6 @@ var Tracer = {
         try {
             return vm.runInNewContext(code, this.sandbox);
         } catch (e) {
-            console.log(e);
             throw new Error('jsonPath: ' + e.message + ': ' + code);
         }
     },
