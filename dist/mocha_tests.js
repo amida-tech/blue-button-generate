@@ -2788,6 +2788,13 @@ var representedOrganization = {
     key: "representedOrganization",
     content: [
         id, {
+            key: "id",
+            attributes: {
+                extension: leafLevel.inputProperty("extension"),
+                root: leafLevel.inputProperty("root")
+            },
+            dataKey: "identity"
+        }, {
             key: "name",
             text: leafLevel.input,
             dataKey: "name"
@@ -2817,16 +2824,7 @@ var assignedEntity = exports.assignedEntity = {
         },
 
         usRealmAddress,
-        telecom,
-
-        {
-            key: "id",
-            attributes: {
-                extension: leafLevel.inputProperty("extension"),
-                root: leafLevel.inputProperty("root")
-            },
-            dataKey: "identity"
-        }, {
+        telecom, {
             key: "assignedPerson",
             content: usRealmName,
             existsWhen: condition.keyExists("name")
