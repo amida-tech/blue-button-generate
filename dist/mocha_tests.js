@@ -1870,7 +1870,7 @@ exports.procedureActivityAct = {
             attributes: leafLevel.code,
             dataKey: "body_sites"
         },
-        [fieldLevel.performer, dataKey("performers")], {
+        [fieldLevel.performer, dataKey("performer")], {
             key: "participant",
             attributes: {
                 typeCode: "LOC"
@@ -1953,7 +1953,7 @@ exports.procedureActivityProcedure = {
             },
             dataKey: "specimen"
         },
-        [fieldLevel.performer, dataKey("performers")], {
+        [fieldLevel.performer, dataKey("performer")], {
             key: "participant",
             attributes: {
                 typeCode: "LOC"
@@ -2793,7 +2793,17 @@ var representedOrganization = {
             dataKey: "name"
         },
         usRealmAddress,
-        telecom
+        telecom, {
+            key: "telecom",
+            attributes: [{
+                use: "WP",
+                value: function (input) {
+                    return input.value.number;
+                }
+            }],
+            existsWhen: condition.keyExists("value"),
+            dataKey: "phone"
+        }
     ],
     dataKey: "organization"
 };
@@ -2807,7 +2817,16 @@ var assignedEntity = exports.assignedEntity = {
         },
 
         usRealmAddress,
-        telecom, {
+        telecom,
+
+        {
+            key: "id",
+            attributes: {
+                extension: leafLevel.inputProperty("extension"),
+                root: leafLevel.inputProperty("root")
+            },
+            dataKey: "identity"
+        }, {
             key: "assignedPerson",
             content: usRealmName,
             existsWhen: condition.keyExists("name")
