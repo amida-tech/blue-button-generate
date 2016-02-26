@@ -26,6 +26,8 @@ describe('parse generate parse generate', function () {
         // generate ccda
         var xml = bbg.generateCCD(result);
 
+        fs.writeFileSync(generatedDir + '/CCD_1.xml', xml);
+
         assert.ok(xml);
     });
 
