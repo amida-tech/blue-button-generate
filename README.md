@@ -1,13 +1,9 @@
-blue-button-generate
+Blue Button Generate
 ====================
 
 Blue Button CCDA Generator
 
-[![NPM](https://nodei.co/npm/blue-button-generate.png)](https://nodei.co/npm/blue-button-generate/)
-
-[![Build Status](https://travis-ci.org/amida-tech/blue-button-generate.svg)](https://travis-ci.org/amida-tech/blue-button-generate)
-[![Coverage Status](https://coveralls.io/repos/amida-tech/blue-button-generate/badge.png)](https://coveralls.io/r/amida-tech/blue-button-generate)
-[![Dependency Status](https://david-dm.org/amida-tech/blue-button-generate.svg)](https://david-dm.org/amida-tech/blue-button-generate)
+[![NPM](https://nodei.co/npm/@amida-tech/blue-button-generate.png)](https://nodei.co/npm/@amida-tech/blue-button-generate/)
 
 blue-button-generate is a module to generate CCDA files from JSON data.  Currently it only supports [blue-button](https://github.com/amida-tech/blue-button) JSON data model.
 
@@ -15,8 +11,8 @@ blue-button-generate is a module to generate CCDA files from JSON data.  Current
 
 ``` javascript
 var fs = require('fs');
-var bb = require('blue-button');
-var bbg = require('blue-button-generate');
+var bb = require('@amida-tech/blue-button');
+var bbg = require('@amida-tech/blue-button-generate');
 
 var xmlString = fs.readFileSync('test/fixtures/files/ccda_xml/CCD_1.xml', 'utf-8');
 var record = bb.parseString(xmlString);
