@@ -35,7 +35,7 @@
   "dependencies": {
     "blue-button-meta": "1.5.0",
     "blue-button-util": "~1.5.0",
-    "libxmljs": "^0.18.0",
+    "libxmljs": "^0.19.10",
     "moment": "~2.10.2",
     "uuid": "^2.0.1"
   },
