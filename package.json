@@ -1,6 +1,6 @@
 {
   "name": "@amida-tech/blue-button-generate",
-  "version": "1.5.8",
+  "version": "1.5.9",
   "description": "Blue Button CCDA Generator.",
   "main": "./index.js",
   "browser": {
@@ -34,13 +34,13 @@
   },
   "dependencies": {
     "@amida-tech/blue-button-meta": "^1.7.3",
-    "@amida-tech/blue-button-util": "^1.6.2",
+    "@amida-tech/blue-button-util": "^1.6.3",
     "libxmljs": "^0.19.10",
     "moment": "^2.29.4",
     "uuid": "^8.3.2"
   },
   "devDependencies": {
-    "@amida-tech/blue-button": "^1.10.7",
+    "@amida-tech/blue-button": "^1.10.8",
     "brfs": "^2.0.2",
     "grunt": "^1.5.3",
     "grunt-contrib-connect": "^3.0.0",
