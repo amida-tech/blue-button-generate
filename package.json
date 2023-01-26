@@ -33,7 +33,7 @@
     "node": ">= 14.19.3"
   },
   "dependencies": {
-    "@amida-tech/blue-button-meta": "^1.7.3",
+    "@amida-tech/blue-button-meta": "^1.7.4",
     "@amida-tech/blue-button-util": "^1.6.3",
     "libxmljs": "^0.19.10",
     "moment": "^2.29.4",
